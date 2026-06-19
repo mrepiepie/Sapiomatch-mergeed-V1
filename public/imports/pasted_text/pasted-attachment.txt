@@ -1,0 +1,372 @@
+Update the existing SapioMatch AI Super Admin Control Panel.
+
+OBJECTIVE:
+Restructure the left sidebar menu, remove the standalone MIS section, move the existing MIS analytics content into the Admins Dashboards section, and simplify the “Update Users or Admins” section into three unified account-management options.
+
+GENERAL DESIGN STYLE:
+Keep the existing SapioMatch AI visual identity:
+
+* dark futuristic AI SaaS theme
+* deep navy / black background
+* cyan, blue, and purple accent icons
+* glassmorphism cards
+* subtle glowing borders
+* neon highlights
+* premium enterprise dashboard look
+* Space Grotesk for headings
+* Inter for body text
+* smooth hover states
+* consistent sidebar, header, cards, tables, and forms
+
+IMPORTANT SIDEBAR CHANGES:
+
+1. Remove / delete the top-level MIS menu item from the left sidebar.
+2. Remove / delete “User Dashboards” from the Dashboard dropdown.
+3. Under Dashboard, keep only:
+
+   * Admins Dashboards
+   * Campaign Dashboard
+4. Under “Update Users or Admins”, remove:
+
+   * Add Admin
+   * Delete Admin
+   * Update / Modify Admin
+5. Under “Update Users or Admins”, keep only:
+
+   * Add User
+   * Delete User
+   * Update / Modify User
+
+UPDATED SIDEBAR STRUCTURE:
+The left sidebar should now have this structure only:
+
+Dashboard
+
+* Admins Dashboards
+* Campaign Dashboard
+
+Update Users or Admins
+
+* Add User
+* Delete User
+* Update / Modify User
+
+Do not show MIS as an independent sidebar item anymore.
+Do not show User Dashboards anymore.
+Do not show Add Admin, Delete Admin, or Update / Modify Admin anymore.
+
+SIDEBAR BEHAVIOR:
+
+* Sidebar remains on the left-hand side.
+* Sidebar can collapse and expand.
+* Dashboard should be expanded by default.
+* Admins Dashboards should be highlighted as the active/default page.
+* Campaign Dashboard remains visible as the second dashboard option, but do not build its full page yet.
+* Update Users or Admins should remain expandable.
+* The three options under Update Users or Admins should look clickable:
+
+  * Add User
+  * Delete User
+  * Update / Modify User
+
+TOP HEADER UPDATE:
+The top title should remain:
+“Super Admin Control Panel”
+
+When Admins Dashboards is active, update the breadcrumb/subtitle to:
+“Governance / Dashboard / Admins Dashboards”
+
+MAIN CONTENT CHANGE — ADMINS DASHBOARDS:
+Move or copy all existing MIS content into:
+
+Dashboard → Admins Dashboards
+
+Rename the main page heading from:
+“MIS — Management Information System”
+
+To:
+“Admins Dashboard — Management Information System”
+
+Subtitle:
+“Live platform analytics, admin activity, user conversion, institution updates, and operational monitoring.”
+
+The Admins Dashboards page should include all previous MIS dashboard sections:
+
+1. KPI Summary Cards
+
+* Total Website Visitors
+* Total Clicks
+* Completed AI Match Journeys
+* Confirmed Enrollments
+
+2. Main Multi-Line Chart
+   Title:
+   “Visitors vs Logged-In Users vs Completed Matches vs Enrollments”
+
+Keep the same mock 12-month data and four glowing chart lines:
+
+* Visitors
+* Logged In
+* Completed Matches
+* Enrolled
+
+3. User Journey Funnel
+   Keep the stages:
+
+* Website Visitors
+* Clicked “Find My Best Program”
+* Completed AI Questionnaire
+* Logged In / Registered
+* Contacted Institution
+* Enrolled
+
+4. Live Active Accounts Table
+   Keep:
+
+* Users
+* Admins
+* Super Admins
+* Institutions
+
+5. Top Performing Programs Table
+
+6. Admin Workload Monitoring Table
+
+7. Institution Data Approval Status
+
+8. Live Alerts / Warnings Panel
+
+VISUAL BEHAVIOR FOR ADMINS DASHBOARDS:
+Make the page look like a live admin analytics dashboard:
+
+* “Live” badges
+* green active status dots
+* “Last updated 2 seconds ago”
+* KPI trend arrows
+* glowing chart points
+* live monitoring tables
+* alert cards
+* premium enterprise AI SaaS dashboard styling
+
+DEFAULT STATE:
+When the Super Admin dashboard loads:
+
+* Sidebar is visible
+* Dashboard section is expanded
+* Admins Dashboards is highlighted as active
+* Main content shows the analytics dashboard previously created under MIS
+
+ACCOUNT MANAGEMENT SECTION:
+Build the screens/states for the three remaining “Update Users or Admins” options:
+
+1. Add User
+2. Delete User
+3. Update / Modify User
+
+IMPORTANT ACCOUNT MANAGEMENT LOGIC:
+Although the menu says “User”, the Super Admin can manage multiple account types through these unified options:
+
+* Learner
+* Admin
+* Super Admin
+* Institution
+
+Do not create separate Add Admin / Delete Admin / Update Admin menu items.
+
+SECTION A — ADD USER PAGE:
+When the Super Admin clicks:
+Update Users or Admins → Add User
+
+Show a page/form titled:
+“Add New Account”
+
+Subtitle:
+“Create a new learner, admin, super admin, or institution account from one unified form.”
+
+The form should include:
+
+1. Role dropdown field:
+   Label:
+   “Add this account as which role? *”
+
+Dropdown options:
+
+* Learner
+* Admin
+* Super Admin
+* Institution
+
+2. Email field:
+   Label:
+   “Email Address *”
+   Mark it as mandatory.
+
+3. Mobile number field:
+   Label:
+   “Mobile Number *”
+   Mark it as mandatory.
+
+4. Submit button:
+   “Submit”
+
+After submit, show a small success state / toast / inline message:
+“Successfully added.”
+
+Design notes:
+
+* Use glassmorphism form card.
+* Use glowing mandatory star markers.
+* Use a green success toast with a check icon.
+* Keep the form simple and clean.
+
+SECTION B — DELETE USER PAGE:
+When the Super Admin clicks:
+Update Users or Admins → Delete User
+
+Show a page/form titled:
+“Delete Account”
+
+Subtitle:
+“Enter the mandatory account identifiers to confirm deletion.”
+
+The form should include:
+
+1. Email field:
+   Label:
+   “Email Address *”
+   Mandatory.
+
+2. Mobile number field:
+   Label:
+   “Mobile Number *”
+   Mandatory.
+
+Do not ask what role/entity is being deleted.
+Do not include a role dropdown here.
+
+Add a warning note:
+“The system will identify the account type using the email address and mobile number.”
+
+Button:
+“Confirm Deletion”
+
+After clicking confirm deletion, show a small success/confirmation message:
+“Account deletion confirmed.”
+
+Design notes:
+
+* Use a more caution-focused style for this page.
+* Use amber/red warning accents, but still keep the dark futuristic SapioMatch AI theme.
+* Include a warning icon.
+* Keep the deletion confirmation visually serious.
+
+SECTION C — UPDATE / MODIFY USER PAGE:
+When the Super Admin clicks:
+Update Users or Admins → Update / Modify User
+
+Show a page/form titled:
+“Update / Modify Account”
+
+Subtitle:
+“Enter the account identifiers first. The system will detect the account type automatically.”
+
+Step 1 form fields:
+
+1. Email field:
+   Label:
+   “Email Address *”
+   Mandatory.
+
+2. Mobile number field:
+   Label:
+   “Mobile Number *”
+   Mandatory.
+
+Button:
+“Find Account”
+
+After Find Account, simulate an auto-detection state:
+Show a small detection box/card:
+“Account detected successfully.”
+“Account type will be identified automatically based on the submitted email and mobile number.”
+
+Then show another dropdown/card asking:
+“What would you like to update?”
+
+Dropdown options:
+
+* Learner Info
+* Admin Info
+* Admin Privileges
+* Institution Credits
+* Institution Info
+
+No further detail pages are required for now.
+Do not build full update forms for each selected option yet.
+Only show the available update categories.
+
+Design notes:
+
+* Make the detection state feel intelligent and automated.
+* Use a glowing AI scan / verification indicator.
+* Use a status chip like “Auto-detected”.
+* Use a clean dropdown card for the update options.
+
+INTERACTION / PROTOTYPE REQUIREMENTS:
+Create click navigation/states where possible:
+
+* Dashboard → Admins Dashboards opens the analytics dashboard.
+
+* Dashboard → Campaign Dashboard can show a placeholder page only:
+  “Campaign Dashboard — Coming Next”
+  Do not build the full Campaign Dashboard yet.
+
+* Update Users or Admins → Add User opens the Add New Account form.
+
+* Submit on Add User shows “Successfully added.”
+
+* Update Users or Admins → Delete User opens the Delete Account form.
+
+* Confirm Deletion shows “Account deletion confirmed.”
+
+* Update Users or Admins → Update / Modify User opens the Update / Modify Account form.
+
+* Find Account reveals the auto-detection card and the update-options dropdown.
+
+PLACEHOLDER FOR CAMPAIGN DASHBOARD:
+If Campaign Dashboard is clicked, show a simple placeholder page with:
+Title:
+“Campaign Dashboard”
+
+Subtitle:
+“Campaign performance, outreach analytics, and promotional activity will be configured in the next phase.”
+
+Do not create detailed campaign charts yet.
+
+DO NOT:
+
+* Do not recreate the MIS top-level menu.
+* Do not show User Dashboards.
+* Do not show Add Admin, Delete Admin, or Update / Modify Admin as sidebar items.
+* Do not create separate pages for Add Admin / Delete Admin / Update Admin.
+* Do not build the full Campaign Dashboard yet.
+* Do not build institution dashboard, admin dashboard, or user dashboard beyond what is described.
+* Do not remove the Update Users or Admins section.
+* Do not remove the existing Super Admin Control Panel styling.
+
+FINAL EXPECTED RESULT:
+The Super Admin sidebar should now be cleaner and more logical:
+
+Dashboard
+
+* Admins Dashboards
+* Campaign Dashboard
+
+Update Users or Admins
+
+* Add User
+* Delete User
+* Update / Modify User
+
+The previous MIS analytics dashboard should now live under Admins Dashboards.
+The account-management area should handle Learners, Admins, Super Admins, and Institutions from the unified Add / Delete / Update User flows.

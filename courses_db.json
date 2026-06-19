@@ -1,0 +1,40 @@
+[
+  {
+    "institution": "University of Birmingham Dubai",
+    "courses": [
+      { "name": "Public Policy Master's", "fee": "AED 95k", "mode": "Hybrid" },
+      { "name": "Global Executive MBA", "fee": "AED 115k", "mode": "Hybrid" },
+      { "name": "Data Science MSc", "fee": "AED 90k", "mode": "On-Campus" }
+    ]
+  },
+  {
+    "institution": "Middlesex University Dubai",
+    "courses": [
+      { "name": "MBA General", "fee": "AED 75k", "mode": "Hybrid" },
+      { "name": "MA International Relations", "fee": "AED 62k", "mode": "Hybrid" },
+      { "name": "MSc Cyber Security", "fee": "AED 68k", "mode": "Hybrid" }
+    ]
+  },
+  {
+    "institution": "American University of Sharjah",
+    "courses": [
+      { "name": "Master of Public Policy", "fee": "AED 88k", "mode": "Hybrid" },
+      { "name": "MBA", "fee": "AED 95k", "mode": "Hybrid" },
+      { "name": "MSc Engineering Systems", "fee": "AED 92k", "mode": "On-Campus" }
+    ]
+  },
+  {
+    "institution": "AstroLabs Academy",
+    "courses": [
+      { "name": "Data Science Bootcamp", "fee": "AED 9.5k", "mode": "Hybrid" },
+      { "name": "Digital Marketing Specialist", "fee": "AED 5.2k", "mode": "Hybrid" },
+      { "name": "Full Stack Web Dev", "fee": "AED 11k", "mode": "Live Online" }
+    ]
+  },
+  {
+    "institution": "SapioMatch Advanced AI Academy",
+    "courses": [
+      { "name": "Agentic Coding Specialist", "fee": "AED 15k", "mode": "Live Online" }
+    ]
+  }
+]
