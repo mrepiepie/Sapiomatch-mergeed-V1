@@ -15,6 +15,7 @@ import Contact from '../views/Contact';
 import RoleSwitcher from '../components/RoleSwitcher';
 import SapioVisualShell from '../components/SapioVisualShell';
 import SapioLegacySections from '../components/SapioLegacySections';
+import CheckoutModal from '../components/CheckoutModal';
 import { mockInstitutions, mockQuestions } from '../mockData';
 import { generateAiResponse } from '../services/aiEngine';
 import { 
@@ -521,6 +522,7 @@ export default function App() {
   }, []);
 
   const [selectedInstId, setSelectedInstId] = useState('university-birmingham-dubai');
+  const [exploreSearchTerm, setExploreSearchTerm] = useState('');
   const [pendingGlobeInstId, setPendingGlobeInstId] = useState(null);
   const [bookmarks, setBookmarks] = useState([1]);
   const [completedQuiz, setCompletedQuiz] = useState(false);
@@ -603,8 +605,63 @@ export default function App() {
   // Monetization & Credit System States
   const [credits, setCredits] = useState(10); // Default standard = 10 (reduced from 100)
   const [plan, setPlan] = useState('Standard');
+  const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
+
+  const handleCheckoutSuccess = async () => {
+    const nextPlan = 'Premium';
+    const nextCredits = (currentUser ? currentUser.credits : credits) + 700;
+
+    setPlan(nextPlan);
+    setCredits(nextCredits);
+
+    const updates = { plan: nextPlan, credits: nextCredits };
+
+    if (currentUser) {
+      setCurrentUser(prev => (prev ? { ...prev, ...updates } : prev));
+
+      // Update in backend database
+      try {
+        await fetch('/api/users', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: currentUser.email,
+            updates
+          })
+        });
+      } catch (err) {
+        console.error("Failed to sync membership update to backend:", err);
+      }
+
+      // Update in client local storage
+      try {
+        const dbStr = localStorage.getItem('sapio_db');
+        if (dbStr) {
+          const localDb = JSON.parse(dbStr);
+          localDb.users = (localDb.users || []).map(user => (
+            user.email?.toLowerCase() === currentUser.email.toLowerCase()
+              ? { ...user, ...updates }
+              : user
+          ));
+          localStorage.setItem('sapio_db', JSON.stringify(localDb));
+        }
+      } catch (err) {
+        console.error("Failed to persist membership update locally:", err);
+      }
+      
+      triggerAlert("Successfully upgraded to Premium! 700 credits added to your balance.", "Upgrade Successful", "success");
+    } else {
+      triggerAlert("Successfully upgraded to Premium! 700 credits added to guest balance.", "Upgrade Successful", "success");
+    }
+  };
 
   const updateCurrentUserMembership = ({ plan: nextPlan, credits: nextCredits }) => {
+    // If they want to upgrade to Premium, open the CheckoutModal!
+    if (nextPlan === 'Premium') {
+      setIsCheckoutOpen(true);
+      return;
+    }
+
     const updates = {};
     if (nextPlan !== undefined) {
       updates.plan = nextPlan;
@@ -1065,15 +1122,9 @@ export default function App() {
 
   // Render content according to the active view
   const renderView = () => {
-    // Route guard: Questionnaire and Results are restricted to student accounts
+    // Route guard: Questionnaire and Results are restricted to student accounts (or guests)
     if (view === 'questionnaire' || view === 'results') {
-      if (!currentUser) {
-        setTimeout(() => {
-          triggerAlert("Please sign in with a student account to access AI Matching.", "Student Login Required", "warning");
-          setView('auth');
-        }, 0);
-        return <Auth setCurrentUser={setCurrentUser} setView={setView} alert={alert} />;
-      } else if (currentUser.role !== 'Student') {
+      if (currentUser && currentUser.role !== 'Student') {
         if (currentUser.role === 'Admin' && view === 'questionnaire') {
           // Allow Super Admin to access AI Match configurator in 'questionnaire' view
         } else {
@@ -1113,12 +1164,24 @@ export default function App() {
       case 'public-home':
         return (
           <>
-            <Home setView={setView} />
+            <Home 
+              setView={setView} 
+              setExploreSearchTerm={setExploreSearchTerm} 
+              onUpgradePremium={() => setIsCheckoutOpen(true)} 
+            />
             <SapioLegacySections setView={setView} />
           </>
         );
       case 'public-explore':
-        return <Explore setView={setView} setSelectedInstId={setSelectedInstId} institutions={institutions} />;
+        return (
+          <Explore 
+            setView={setView} 
+            setSelectedInstId={setSelectedInstId} 
+            institutions={institutions} 
+            searchTerm={exploreSearchTerm}
+            setSearchTerm={setExploreSearchTerm}
+          />
+        );
       case 'institution-detail':
         return (
           <InstitutionDetail 
@@ -1202,7 +1265,16 @@ export default function App() {
       case 'contact':
         return <Contact setView={setView} alert={alert} />;
       default:
-        return <Home setView={setView} />;
+        return (
+          <>
+            <Home 
+              setView={setView} 
+              setExploreSearchTerm={setExploreSearchTerm} 
+              onUpgradePremium={() => setIsCheckoutOpen(true)} 
+            />
+            <SapioLegacySections setView={setView} />
+          </>
+        );
     }
   };
 
@@ -2009,6 +2081,13 @@ export default function App() {
             </div>
           </div>
         </div>
+      )}
+      {isCheckoutOpen && (
+        <CheckoutModal 
+          isOpen={isCheckoutOpen} 
+          onClose={() => setIsCheckoutOpen(false)} 
+          onSuccess={handleCheckoutSuccess} 
+        />
       )}
     </div>
   );

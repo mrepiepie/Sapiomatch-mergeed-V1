@@ -4,7 +4,14 @@ import gsap from 'gsap';
 import { TextPlugin } from 'gsap/TextPlugin';
 import SapioEarthGlobe from '../components/SapioEarthGlobe';
 
-export default function Home({ setView }) {
+export default function Home({ setView, setExploreSearchTerm, onUpgradePremium }) {
+  const handleProgramClick = (categorySearch) => {
+    if (setExploreSearchTerm) {
+      setExploreSearchTerm(categorySearch);
+    }
+    setView('public-explore');
+  };
+
   const [scrollY, setScrollY] = useState(0);
   const [mouseCoords, setMouseCoords] = useState({ x: 540, y: 260 });
   const heroGlobeSlotRef = useRef(null);
@@ -552,6 +559,113 @@ export default function Home({ setView }) {
         </div>
       </section>
 
+      {/* Mission Summary / Core Vision Section & Degree Program Navigator */}
+      <section style={{ padding: '60px 24px', borderTop: '1px solid var(--card-border)' }}>
+        <div style={{ maxWidth: '1000px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '60px' }}>
+          {/* Mission Summary */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '40px', alignItems: 'center' }}>
+            <div style={{ textAlign: 'left' }}>
+              <span style={{ fontSize: '11px', color: 'var(--primary)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Our Core Vision</span>
+              <h2 style={{ fontSize: '28px', fontFamily: 'var(--font-display)', color: 'white', marginTop: '8px', marginBottom: '16px' }}>
+                Democratizing Academic Matches with <span className="gradient-text">Empathetic AI</span>
+              </h2>
+              <p style={{ color: 'var(--text-muted)', fontSize: '14.5px', lineHeight: '1.6', marginBottom: '20px' }}>
+                We believe that choosing an education path is one of the most critical decisions of a lifetime. SapioMatch bypasses traditional marketing directories to connect students and professionals directly to courses based on budget, values, and career goals.
+              </p>
+              <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+                <Check size={16} style={{ color: 'var(--primary)' }} />
+                <span style={{ fontSize: '13.5px', color: '#e5e7eb', fontWeight: 500 }}>No hidden agency sponsorships or biased rankings.</span>
+              </div>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+              <div className="glass-card" style={{ padding: '16px 20px', textAlign: 'left' }}>
+                <div style={{ fontSize: '18px', fontWeight: 800, color: 'var(--primary)', marginBottom: '4px' }}>100%</div>
+                <div style={{ fontSize: '13px', fontWeight: 600, color: 'white' }}>Honest Compatibility</div>
+                <div style={{ fontSize: '11.5px', color: 'var(--text-muted)', marginTop: '2px' }}>AI suggestions based strictly on your input params.</div>
+              </div>
+              <div className="glass-card" style={{ padding: '16px 20px', textAlign: 'left' }}>
+                <div style={{ fontSize: '18px', fontWeight: 800, color: 'var(--secondary)', marginBottom: '4px' }}>Direct</div>
+                <div style={{ fontSize: '13px', fontWeight: 600, color: 'white' }}>Portal Connection</div>
+                <div style={{ fontSize: '11.5px', color: 'var(--text-muted)', marginTop: '2px' }}>Submit applications directly to admissions.</div>
+              </div>
+            </div>
+          </div>
+
+          {/* Degree Program Navigator */}
+          <div style={{ textAlign: 'center' }}>
+            <h3 style={{ fontSize: '22px', fontFamily: 'var(--font-display)', marginBottom: '12px', color: 'white' }}>
+              Select a Program to <span className="gradient-text">Explore</span>
+            </h3>
+            <p style={{ color: 'var(--text-muted)', fontSize: '14px', marginBottom: '32px' }}>
+              Jump straight to our catalog of courses, pre-filtered for your choice.
+            </p>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '20px' }}>
+              {/* Card 1: Technology & AI */}
+              <div 
+                className="spotlight-card" 
+                onClick={() => handleProgramClick('technology')}
+                onMouseMove={handleMouseMove} 
+                onMouseLeave={handleMouseLeave} 
+                style={{ cursor: 'pointer', padding: '24px 20px', '--spotlight-color': 'rgba(16, 185, 129, 0.12)' }}
+              >
+                <div style={{ background: 'rgba(16, 185, 129, 0.08)', width: '48px', height: '48px', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px auto', color: 'var(--primary)' }}>
+                  <Brain size={24} />
+                </div>
+                <h4 style={{ fontSize: '15.5px', fontWeight: 600, color: 'white', marginBottom: '6px' }}>Technology & AI</h4>
+                <p style={{ fontSize: '12px', color: 'var(--text-muted)' }}>MSc Data Science, Cybersecurity, Coding Bootcamps...</p>
+              </div>
+
+              {/* Card 2: Business & MBA */}
+              <div 
+                className="spotlight-card" 
+                onClick={() => handleProgramClick('mba')}
+                onMouseMove={handleMouseMove} 
+                onMouseLeave={handleMouseLeave} 
+                style={{ cursor: 'pointer', padding: '24px 20px', '--spotlight-color': 'rgba(251, 146, 60, 0.12)' }}
+              >
+                <div style={{ background: 'rgba(251, 146, 60, 0.08)', width: '48px', height: '48px', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px auto', color: 'var(--secondary)' }}>
+                  <Award size={24} />
+                </div>
+                <h4 style={{ fontSize: '15.5px', fontWeight: 600, color: 'white', marginBottom: '6px' }}>Business & MBA</h4>
+                <p style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Global Executive MBA, Strategic Management...</p>
+              </div>
+
+              {/* Card 3: Law & Public Policy */}
+              <div 
+                className="spotlight-card" 
+                onClick={() => handleProgramClick('policy')}
+                onMouseMove={handleMouseMove} 
+                onMouseLeave={handleMouseLeave} 
+                style={{ cursor: 'pointer', padding: '24px 20px', '--spotlight-color': 'rgba(236, 72, 153, 0.12)' }}
+              >
+                <div style={{ background: 'rgba(236, 72, 153, 0.08)', width: '48px', height: '48px', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px auto', color: 'var(--accent)' }}>
+                  <BookOpen size={24} />
+                </div>
+                <h4 style={{ fontSize: '15.5px', fontWeight: 600, color: 'white', marginBottom: '6px' }}>Law & Policy</h4>
+                <p style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Public Policy, International Relations, Regulation...</p>
+              </div>
+
+              {/* Card 4: Healthcare & Sciences */}
+              <div 
+                className="spotlight-card" 
+                onClick={() => handleProgramClick('health')}
+                onMouseMove={handleMouseMove} 
+                onMouseLeave={handleMouseLeave} 
+                style={{ cursor: 'pointer', padding: '24px 20px', '--spotlight-color': 'rgba(59, 130, 246, 0.12)' }}
+              >
+                <div style={{ background: 'rgba(59, 130, 246, 0.08)', width: '48px', height: '48px', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px auto', color: '#60a5fa' }}>
+                  <Clock size={24} />
+                </div>
+                <h4 style={{ fontSize: '15.5px', fontWeight: 600, color: 'white', marginBottom: '6px' }}>Healthcare & Sciences</h4>
+                <p style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Clinical Medicine, Bioscience, Healthcare Systems...</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
 
       {/* How it Works Section */}
       <section style={{ padding: '60px 24px', background: 'rgba(255, 255, 255, 0.01)', borderTop: '1px solid var(--card-border)' }}>
@@ -758,7 +872,7 @@ export default function Home({ setView }) {
                 </div>
               </div>
 
-              <button className="btn-premium" onClick={() => setView('auth')} style={{ width: '100%', justifyContent: 'center' }}>
+              <button className="btn-premium" onClick={onUpgradePremium ? onUpgradePremium : () => setView('auth')} style={{ width: '100%', justifyContent: 'center' }}>
                 Upgrade to Premium
               </button>
             </div>

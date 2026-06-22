@@ -13,11 +13,9 @@ export default function Questionnaire({ setView, answers, setAnswers, completedQ
   const [matchProgress, setMatchProgress] = useState(0);
   const [statusText, setStatusText] = useState("Initializing matchmaking engines...");
 
-  // Client-side local route guard
+  // Client-side local route guard (allows guest view)
   useEffect(() => {
-    if (!currentUser) {
-      setView('auth');
-    } else if (currentUser.role !== 'Student' && currentUser.role !== 'Admin') {
+    if (currentUser && currentUser.role !== 'Student' && currentUser.role !== 'Admin') {
       setView('institution-dashboard');
     }
   }, [currentUser, setView]);
@@ -344,6 +342,46 @@ export default function Questionnaire({ setView, answers, setAnswers, completedQ
       className="page-fade-enter"
     >
       
+      {/* Guest Mode Active Banner */}
+      {!currentUser && (
+        <div 
+          className="glass-card" 
+          style={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'space-between', 
+            gap: '16px', 
+            padding: '12px 20px', 
+            borderLeft: '4px solid var(--primary)', 
+            marginBottom: '20px',
+            background: 'linear-gradient(90deg, rgba(52, 211, 153, 0.05) 0%, rgba(0,0,0,0) 100%)',
+            position: 'relative',
+            zIndex: 10
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <div style={{
+              width: '8px',
+              height: '8px',
+              borderRadius: '50%',
+              background: 'var(--primary)',
+              boxShadow: '0 0 6px var(--primary)',
+              animation: 'pulse 1.5s infinite alternate'
+            }} />
+            <div style={{ fontSize: '13px', color: '#e5e7eb' }}>
+              <strong>Guest Mode Active:</strong> You are exploring and consulting anonymously. <span style={{ color: 'var(--secondary)' }}>Sign in or create an account</span> to save your recommendations and bookmarks.
+            </div>
+          </div>
+          <button 
+            className="btn-premium-outline" 
+            onClick={() => setView('auth')} 
+            style={{ padding: '4px 12px', fontSize: '12px' }}
+          >
+            Sign In / Register
+          </button>
+        </div>
+      )}
+
       {/* Dynamic Ambient Background Design & Keyframes */}
       <style>{`
         @keyframes floatGlow1 {
