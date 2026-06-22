@@ -12,6 +12,10 @@
   --text-muted: #9ca3af;          /* Slate gray */
   --text-dark: #0b0e0c;          /* Dark forest for light badges */
   --text-heading: #ffffff;       /* Pure white headings */
+  --text-lift-soft: 0 1px 2px rgba(0, 0, 0, 0.45), 0 0 18px rgba(255, 255, 255, 0.08);
+  --text-lift-strong: 0 2px 8px rgba(0, 0, 0, 0.55), 0 0 28px rgba(255, 255, 255, 0.12);
+  --text-lift-primary: 0 2px 8px rgba(0, 0, 0, 0.55), 0 0 22px rgba(52, 211, 153, 0.32);
+  --text-lift-secondary: 0 2px 8px rgba(0, 0, 0, 0.55), 0 0 22px rgba(251, 146, 60, 0.32);
   
   --primary: #34d399;            /* Glowing Emerald / Mint Green */
   --primary-glow: rgba(52, 211, 153, 0.15);
@@ -60,6 +64,7 @@ body {
   overflow-x: hidden;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
+  text-rendering: geometricPrecision;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -67,6 +72,15 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 600;
   color: var(--text-heading);
   line-height: 1.2;
+  text-shadow: var(--text-lift-strong);
+}
+
+p,
+li,
+span,
+label,
+small {
+  text-shadow: var(--text-lift-soft);
 }
 
 a {
@@ -146,6 +160,7 @@ button, input, select, textarea {
 
 .gradient-text {
   color: var(--secondary); /* Keep it solid teal for high accessibility and minimal look */
+  text-shadow: var(--text-lift-secondary);
 }
 
 /* Premium Minimalist Button */
@@ -162,6 +177,7 @@ button, input, select, textarea {
   display: inline-flex;
   align-items: center;
   gap: 8px;
+  text-shadow: var(--text-lift-soft);
 }
 
 .btn-premium:hover {
@@ -851,4 +867,3 @@ button, input, select, textarea {
   animation: alertIconPulse 2s infinite ease-in-out;
   display: inline-block;
 }
-

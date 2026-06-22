@@ -307,7 +307,7 @@ export default function SapioLegacySections({ setView }) {
 
   return (
     <div className="sapio-legacy-sections">
-      <section className="sapio-section sapio-find-university">
+      <section className="sapio-section sapio-find-university sapio-snap-section">
         <div className="sapio-copy">
           <h2>Find your university now</h2>
           <p>Browse our catalog of universities and programs worldwide.</p>
@@ -327,7 +327,7 @@ export default function SapioLegacySections({ setView }) {
         </div>
       </section>
 
-      <section className="sapio-section sapio-help-section">
+      <section className="sapio-section sapio-help-section sapio-snap-section">
         <div className="sapio-centered-heading">
           <h2>How Can We Help?</h2>
           <p>Select one of our specialized educational pathways to match with top tutors, camps, provisions, or self-paced courses.</p>
@@ -369,7 +369,7 @@ export default function SapioLegacySections({ setView }) {
         </div>
       </section>
 
-      <section ref={choiceSectionRef} className="sapio-section sapio-choice-section">
+      <section ref={choiceSectionRef} className="sapio-section sapio-choice-section sapio-snap-section">
         <div className="sapio-copy">
           <h2>Why students choose SapioMatch AI</h2>
           <p>Free to use, no middlemen, and AI-matched to you - built on real rankings, costs, and requirements.</p>
@@ -390,7 +390,7 @@ export default function SapioLegacySections({ setView }) {
         </div>
       </section>
 
-      <section className="sapio-section sapio-destinations">
+      <section className="sapio-section sapio-destinations sapio-snap-section">
         <div className="sapio-centered-heading">
           <h2>Popular Study Destinations</h2>
           <p>Select a country to explore visa requirements, cost of living, post-study work options, and search partner courses.</p>
@@ -404,9 +404,25 @@ export default function SapioLegacySections({ setView }) {
             </button>
           ))}
         </div>
+        <div className="sapio-worldwide sapio-worldwide-embedded">
+          <div className="sapio-centered-heading">
+            <h2>Universities worldwide</h2>
+            <p>UK, USA, Canada, Germany, Australia - and growing.</p>
+          </div>
+          <div className="sapio-uni-marquee">
+            {[...universityLogos, ...universityLogos].map((uni, index) => (
+              <div key={`${uni.code}-${index}`} className="sapio-uni-card">
+                <span>{uni.country}</span>
+                <button type="button" onClick={goToExplore}>+</button>
+                <strong>{uni.code}</strong>
+                <small>{uni.name}</small>
+              </div>
+            ))}
+          </div>
+        </div>
       </section>
 
-      <section className="sapio-section sapio-visa-section">
+      <section className="sapio-section sapio-visa-section sapio-snap-section">
         <div className="sapio-copy">
           <h2>Apply for your visa with confidence</h2>
           <h3>Stop guessing. Start knowing.</h3>
@@ -485,24 +501,7 @@ export default function SapioLegacySections({ setView }) {
         </div>
       </section>
 
-      <section className="sapio-section sapio-worldwide">
-        <div className="sapio-centered-heading">
-          <h2>Universities worldwide</h2>
-          <p>UK, USA, Canada, Germany, Australia - and growing.</p>
-        </div>
-        <div className="sapio-uni-marquee">
-          {[...universityLogos, ...universityLogos].map((uni, index) => (
-            <div key={`${uni.code}-${index}`} className="sapio-uni-card">
-              <span>{uni.country}</span>
-              <button type="button" onClick={goToExplore}>+</button>
-              <strong>{uni.code}</strong>
-              <small>{uni.name}</small>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <section ref={testimonialSectionRef} className="sapio-section sapio-testimonials">
+      <section ref={testimonialSectionRef} className="sapio-section sapio-testimonials sapio-snap-section">
         <div className="sapio-centered-heading">
           <h2>Hear from Our Students</h2>
           <p>Real stories from students who found their path with SapioMatch AI</p>

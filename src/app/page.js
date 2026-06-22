@@ -472,6 +472,14 @@ export default function App() {
   }, []);
 
   const [view, setView] = useState('public-home');
+
+  useEffect(() => {
+    const root = document.documentElement;
+    root.classList.toggle('sapio-home-snap', view === 'public-home');
+
+    return () => root.classList.remove('sapio-home-snap');
+  }, [view]);
+
   const [questions, setQuestions] = useState(() => {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('sapio_questions');
