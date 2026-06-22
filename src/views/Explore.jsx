@@ -1,10 +1,21 @@
 import React, { useState } from 'react';
 import { Search, MapPin, DollarSign, Award, Clock, ArrowRight } from 'lucide-react';
 
-export default function Explore({ setView, setSelectedInstId, institutions }) {
-  const [searchTerm, setSearchTerm] = useState('');
+export default function Explore({ 
+  setView, 
+  setSelectedInstId, 
+  institutions,
+  searchTerm: externalSearchTerm,
+  setSearchTerm: setExternalSearchTerm
+}) {
+  const [localSearchTerm, setLocalSearchTerm] = useState('');
+  
+  const searchTerm = externalSearchTerm !== undefined ? externalSearchTerm : localSearchTerm;
+  const setSearchTerm = setExternalSearchTerm !== undefined ? setExternalSearchTerm : setLocalSearchTerm;
+
   const [typeFilter, setTypeFilter] = useState('All');
   const [budgetFilter, setBudgetFilter] = useState('All');
+  const [deliveryFilter, setDeliveryFilter] = useState('All');
 
   const handleMouseMove = (e) => {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -26,15 +37,108 @@ export default function Explore({ setView, setSelectedInstId, institutions }) {
     e.currentTarget.style.setProperty('--tilt-y', '0px');
   };
 
+  // NLP parsing function
+  const parseNLPQuery = (text) => {
+    if (!text) return null;
+    const lower = text.toLowerCase();
+    const tags = [];
+    let detectedCategory = null;
+    let detectedDelivery = null;
+    let detectedBudget = null;
+    let detectedLocation = null;
+
+    // 1. Detect Category
+    if (lower.includes('tech') || lower.includes('computer') || lower.includes('software') || lower.includes('coding') || lower.includes('data') || lower.includes('ai') || lower.includes('machine learning') || lower.includes('cyber')) {
+      detectedCategory = 'Technology & AI';
+      tags.push({ label: 'Category: Tech & AI', type: 'category' });
+    } else if (lower.includes('business') || lower.includes('mba') || lower.includes('manage') || lower.includes('finance') || lower.includes('marketing') || lower.includes('strategy')) {
+      detectedCategory = 'Business & Management';
+      tags.push({ label: 'Category: Business & MBA', type: 'category' });
+    } else if (lower.includes('policy') || lower.includes('govern') || lower.includes('law') || lower.includes('international') || lower.includes('legal')) {
+      detectedCategory = 'Law & Public Policy';
+      tags.push({ label: 'Category: Law & Policy', type: 'category' });
+    } else if (lower.includes('health') || lower.includes('science') || lower.includes('medical') || lower.includes('clinical') || lower.includes('doctor')) {
+      detectedCategory = 'Healthcare & Sciences';
+      tags.push({ label: 'Category: Healthcare & Sciences', type: 'category' });
+    }
+
+    // 2. Detect Delivery Mode
+    if (lower.includes('online') || lower.includes('remote') || lower.includes('self-paced') || lower.includes('udemy') || lower.includes('coursera')) {
+      detectedDelivery = 'Online';
+      tags.push({ label: 'Delivery: 100% Online', type: 'delivery' });
+    } else if (lower.includes('physical') || lower.includes('on-campus') || lower.includes('campus') || lower.includes('in-person')) {
+      detectedDelivery = 'On-Campus';
+      tags.push({ label: 'Delivery: On-Campus', type: 'delivery' });
+    } else if (lower.includes('hybrid') || lower.includes('blended')) {
+      detectedDelivery = 'Hybrid';
+      tags.push({ label: 'Delivery: Hybrid', type: 'delivery' });
+    }
+
+    // 3. Detect Budget/Cost
+    if (lower.includes('cheap') || lower.includes('affordable') || lower.includes('low cost') || lower.includes('under 15k') || lower.includes('free')) {
+      detectedBudget = 'Under10k';
+      tags.push({ label: 'Budget: Low (< 15k)', type: 'budget' });
+    } else if (lower.includes('moderate') || lower.includes('mid') || lower.includes('medium') || lower.includes('under 50k') || lower.includes('around 50k')) {
+      detectedBudget = 'Medium';
+      tags.push({ label: 'Budget: Moderate (15k-70k)', type: 'budget' });
+    } else if (lower.includes('premium') || lower.includes('expensive') || lower.includes('russell') || lower.includes('prestigious') || lower.includes('over 70k')) {
+      detectedBudget = 'Premium';
+      tags.push({ label: 'Budget: Premium (> 70k)', type: 'budget' });
+    }
+
+    // 4. Detect Location
+    if (lower.includes('dubai')) {
+      detectedLocation = 'Dubai';
+      tags.push({ label: 'Location: Dubai', type: 'location' });
+    } else if (lower.includes('sharjah')) {
+      detectedLocation = 'Sharjah';
+      tags.push({ label: 'Location: Sharjah', type: 'location' });
+    }
+
+    return { tags, category: detectedCategory, delivery: detectedDelivery, budget: detectedBudget, location: detectedLocation };
+  };
+
+  const nlp = parseNLPQuery(searchTerm);
+
   const filtered = institutions.filter(inst => {
-    // Search filter
-    const matchesSearch = inst.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                          inst.tagline.toLowerCase().includes(searchTerm.toLowerCase());
-    
-    // Type filter
+    // 1. NLP or standard search text matching
+    let matchesSearch = true;
+    if (nlp && nlp.tags.length > 0) {
+      if (nlp.category) {
+        const matchesCategory = inst.courses.some(c => c.name.toLowerCase().includes(nlp.category.split(' ')[0].toLowerCase())) ||
+                                inst.tagline.toLowerCase().includes(nlp.category.split(' ')[0].toLowerCase());
+        if (!matchesCategory) matchesSearch = false;
+      }
+      if (nlp.delivery) {
+        const matchesDeliv = inst.mode.toLowerCase().includes(nlp.delivery.toLowerCase()) || 
+                             inst.courses.some(c => c.mode.toLowerCase().includes(nlp.delivery.toLowerCase()));
+        if (!matchesDeliv) matchesSearch = false;
+      }
+      if (nlp.budget) {
+        let matchesBud = true;
+        if (nlp.budget === 'Under10k') {
+          matchesBud = inst.feeNum < 15000;
+        } else if (nlp.budget === 'Medium') {
+          matchesBud = inst.feeNum >= 15000 && inst.feeNum <= 70000;
+        } else if (nlp.budget === 'Premium') {
+          matchesBud = inst.feeNum > 70000;
+        }
+        if (!matchesBud) matchesSearch = false;
+      }
+      if (nlp.location) {
+        const matchesLoc = inst.location.toLowerCase().includes(nlp.location.toLowerCase());
+        if (!matchesLoc) matchesSearch = false;
+      }
+    } else {
+      matchesSearch = inst.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                      inst.tagline.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                      inst.courses.some(c => c.name.toLowerCase().includes(searchTerm.toLowerCase()));
+    }
+
+    // 2. Type filter
     const matchesType = typeFilter === 'All' || inst.type === typeFilter;
     
-    // Budget filter
+    // 3. Budget filter
     let matchesBudget = true;
     if (budgetFilter === 'Under10k') {
       matchesBudget = inst.feeNum < 15000;
@@ -44,7 +148,14 @@ export default function Explore({ setView, setSelectedInstId, institutions }) {
       matchesBudget = inst.feeNum > 70000;
     }
 
-    return matchesSearch && matchesType && matchesBudget;
+    // 4. Delivery filter
+    let matchesDelivery = true;
+    if (deliveryFilter !== 'All') {
+      matchesDelivery = inst.mode.toLowerCase().includes(deliveryFilter.toLowerCase()) ||
+                        inst.courses.some(c => c.mode.toLowerCase().includes(deliveryFilter.toLowerCase()));
+    }
+
+    return matchesSearch && matchesType && matchesBudget && matchesDelivery;
   });
 
   return (
@@ -72,6 +183,32 @@ export default function Explore({ setView, setSelectedInstId, institutions }) {
           />
           <Search size={18} style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
         </div>
+
+        {/* NLP Tag Chips */}
+        {nlp && nlp.tags.length > 0 && (
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', alignItems: 'center', marginTop: '-4px', animation: 'fadeIn 0.3s ease-out' }}>
+            <span style={{ fontSize: '11px', color: 'var(--primary)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>✨ NLP Extracted Filters:</span>
+            {nlp.tags.map((tag, idx) => (
+              <div 
+                key={idx} 
+                style={{ 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  gap: '4px', 
+                  background: 'rgba(52, 211, 153, 0.1)', 
+                  border: '1px solid rgba(52, 211, 153, 0.2)', 
+                  borderRadius: '12px', 
+                  padding: '2px 10px', 
+                  fontSize: '11.5px', 
+                  color: 'white', 
+                  fontWeight: 500 
+                }}
+              >
+                <span>{tag.label}</span>
+              </div>
+            ))}
+          </div>
+        )}
 
         {/* Filter Buttons Row */}
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '24px', alignItems: 'center', position: 'relative', zIndex: 2 }}>
@@ -121,6 +258,29 @@ export default function Explore({ setView, setSelectedInstId, institutions }) {
                   }}
                 >
                   {budget.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Delivery Mode Filter */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+            <span style={{ fontSize: '12px', fontWeight: 600, color: 'var(--text-muted)' }}>Delivery Mode</span>
+            <div style={{ display: 'flex', gap: '8px' }}>
+              {['All', 'On-Campus', 'Hybrid', 'Online'].map(mode => (
+                <button
+                  key={mode}
+                  className={`btn-premium-outline`}
+                  onClick={() => setDeliveryFilter(mode)}
+                  style={{
+                    padding: '6px 12px',
+                    fontSize: '13px',
+                    background: deliveryFilter === mode ? 'var(--primary)' : 'var(--card-bg)',
+                    borderColor: deliveryFilter === mode ? 'var(--secondary)' : 'var(--card-border)',
+                    color: deliveryFilter === mode ? 'white' : 'var(--text-primary)'
+                  }}
+                >
+                  {mode === 'Online' ? '100% Online' : mode}
                 </button>
               ))}
             </div>

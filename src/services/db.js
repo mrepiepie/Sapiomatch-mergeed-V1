@@ -125,7 +125,8 @@ function getInitialData() {
         status: "New",
         date: "2026-06-15"
       }
-    ]
+    ],
+    aiInteractions: []
   };
 }
 
@@ -326,5 +327,20 @@ export const db = {
     data.contacts = data.contacts.filter(c => c.id !== id);
     writeData(data);
     return true;
+  },
+
+  // --- AI INTERACTIONS ---
+  getAiInteractions: () => readData().aiInteractions || [],
+  addAiInteraction: (interaction) => {
+    const data = readData();
+    if (!data.aiInteractions) data.aiInteractions = [];
+    const newInteraction = {
+      id: `ai_${Date.now()}`,
+      date: new Date().toISOString(),
+      ...interaction
+    };
+    data.aiInteractions.push(newInteraction);
+    writeData(data);
+    return newInteraction;
   }
 };

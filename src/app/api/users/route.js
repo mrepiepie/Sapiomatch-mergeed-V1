@@ -39,3 +39,24 @@ export async function DELETE(request) {
     return NextResponse.json({ error: 'Internal server error.' }, { status: 500 });
   }
 }
+
+export async function PUT(request) {
+  try {
+    const body = await request.json();
+    const { email, updates } = body;
+
+    if (!email) {
+      return NextResponse.json({ error: 'User email is required.' }, { status: 400 });
+    }
+
+    const updatedUser = db.updateUser(email, updates);
+    if (!updatedUser) {
+      return NextResponse.json({ error: 'User not found.' }, { status: 404 });
+    }
+
+    return NextResponse.json({ success: true, user: updatedUser });
+  } catch (err) {
+    console.error('Error in PUT user api:', err);
+    return NextResponse.json({ error: 'Internal server error.' }, { status: 500 });
+  }
+}

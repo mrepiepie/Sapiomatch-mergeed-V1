@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { generateAiResponse } from '../../../services/aiEngine';
+import { db } from '../../../services/db';
 import { promises as fs } from 'fs';
 import path from 'path';
 
@@ -80,6 +81,7 @@ Keep your responses concise, user-friendly, and formatted in markdown.`
 
         let response = null;
         let success = false;
+        let modelUsed = 'local-semantic-engine';
 
         for (const model of modelsToTry) {
           console.log(`[SapioMatch API Route] Trying Gemini model: ${model}...`);
@@ -91,6 +93,7 @@ Keep your responses concise, user-friendly, and formatted in markdown.`
 
           if (response.ok) {
             success = true;
+            modelUsed = model;
             break;
           } else if (response.status !== 404) {
             // If it's a non-404 error (e.g. 400, 403), log it and break to fallback to avoid multiple failed requests
@@ -111,6 +114,15 @@ Keep your responses concise, user-friendly, and formatted in markdown.`
             if (q.includes('counselor') || q.includes('consultee') || q.includes('real person') || q.includes('talk to someone')) {
               action = 'connect_human';
             }
+            try {
+              db.addAiInteraction({
+                prompt: message,
+                response: responseText,
+                model: modelUsed
+              });
+            } catch (dbErr) {
+              console.warn("Failed to log interaction to db:", dbErr);
+            }
             return NextResponse.json({ text: responseText, action });
           }
         }
@@ -122,6 +134,15 @@ Keep your responses concise, user-friendly, and formatted in markdown.`
     // Fallback to local AI Engine
     console.log(`[SapioMatch API Route] Falling back to local semantic AI Engine...`);
     const aiResult = generateAiResponse(message, history);
+    try {
+      db.addAiInteraction({
+        prompt: message,
+        response: aiResult.text,
+        model: 'local-semantic-engine'
+      });
+    } catch (dbErr) {
+      console.warn("Failed to log interaction to db:", dbErr);
+    }
     return NextResponse.json(aiResult);
   } catch (err) {
     console.error("Error in /api/chat route:", err);

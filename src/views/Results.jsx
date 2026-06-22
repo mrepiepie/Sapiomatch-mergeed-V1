@@ -8,9 +8,7 @@ export default function Results({ setView, answers, bookmarks = [], toggleBookma
 
   // Client-side local route guard
   useEffect(() => {
-    if (!currentUser) {
-      setView('auth');
-    } else if (currentUser.role !== 'Student') {
+    if (currentUser && currentUser.role !== 'Student') {
       const destView = currentUser.role === 'Admin' ? 'admin-dashboard' : 'institution-dashboard';
       setView(destView);
     }
@@ -59,6 +57,46 @@ export default function Results({ setView, answers, bookmarks = [], toggleBookma
   return (
     <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '40px 24px' }} className="page-fade-enter">
       
+      {/* Guest Mode Active Banner */}
+      {!currentUser && (
+        <div 
+          className="glass-card" 
+          style={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'space-between', 
+            gap: '16px', 
+            padding: '12px 20px', 
+            borderLeft: '4px solid var(--primary)', 
+            marginBottom: '30px',
+            background: 'linear-gradient(90deg, rgba(52, 211, 153, 0.05) 0%, rgba(0,0,0,0) 100%)',
+            position: 'relative',
+            zIndex: 10
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <div style={{
+              width: '8px',
+              height: '8px',
+              borderRadius: '50%',
+              background: 'var(--primary)',
+              boxShadow: '0 0 6px var(--primary)',
+              animation: 'pulse 1.5s infinite alternate'
+            }} />
+            <div style={{ fontSize: '13px', color: '#e5e7eb' }}>
+              <strong>Guest Mode Active:</strong> You are exploring and consulting anonymously. <span style={{ color: 'var(--secondary)' }}>Sign in or create an account</span> to save your recommendations, bookmarks, and apply to programs.
+            </div>
+          </div>
+          <button 
+            className="btn-premium-outline" 
+            onClick={() => setView('auth')} 
+            style={{ padding: '4px 12px', fontSize: '12px' }}
+          >
+            Sign In / Register
+          </button>
+        </div>
+      )}
+
       {/* Header Banner */}
       <div style={{ textAlign: 'center', marginBottom: '40px' }}>
         <div style={{ 

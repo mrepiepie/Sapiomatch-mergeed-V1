@@ -2,6 +2,7 @@ import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
 import { generateAiResponse } from './src/services/aiEngine.js';
+import { db } from './src/services/db.js';
 import { promises as fs } from 'fs';
 import path from 'path';
 
@@ -153,6 +154,15 @@ Keep your responses concise, user-friendly, and formatted in markdown.`
             if (asksForHuman) {
               action = 'connect_human';
             }
+            try {
+              db.addAiInteraction({
+                prompt: message,
+                response: responseText,
+                model: 'gemini-api'
+              });
+            } catch (dbErr) {
+              console.warn("Failed to log interaction to db:", dbErr);
+            }
             return res.json({ text: responseText, action });
           }
         } else {
@@ -182,6 +192,15 @@ Keep your responses concise, user-friendly, and formatted in markdown.`
     // Fallback to local NLP if API key is not configured or fails
     console.log(`[SapioMatch Server] Falling back to local semantic AI Engine...`);
     const aiResult = generateAiResponse(message, history);
+    try {
+      db.addAiInteraction({
+        prompt: message,
+        response: aiResult.text,
+        model: 'local-semantic-engine'
+      });
+    } catch (dbErr) {
+      console.warn("Failed to log interaction to db:", dbErr);
+    }
     res.json(aiResult);
   } catch (err) {
     console.error("Error in /api/chat:", err);
