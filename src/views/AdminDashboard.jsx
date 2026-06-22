@@ -39,59 +39,68 @@ export default function AdminDashboard({
   const [newUserRole, setNewUserRole] = useState('Student');
   const [newUserPassword, setNewUserPassword] = useState('password');
 
-  // Live simulation of traffic fluctuations and dynamic logging
+  // Live simulation of traffic fluctuations, dynamic logging, and database polling
   useEffect(() => {
-    if (activeTab !== 'analytics') return;
-    
-    const interval = setInterval(() => {
-      // 1. Fluctuate active visitors
-      const change = Math.floor(Math.random() * 9) - 4; // -4 to +4
-      setLiveVisitors(prev => {
-        const nextVal = Math.max(90, Math.min(280, prev + change));
-        
-        // Update history (last item matches live visitors)
-        setTrafficHistory(history => {
-          const updated = [...history];
-          updated[updated.length - 1] = nextVal;
-          return updated;
-        });
-        
-        return nextVal;
-      });
+    // Initial load on mount or tab change
+    fetchUsers();
+    fetchInquiries();
+    if (onRefreshApplications) {
+      onRefreshApplications();
+    }
 
-      // 2. Randomly trigger a mock live activity log (25% chance every interval)
-      if (Math.random() < 0.25) {
-        const locations = ['Dubai', 'Abu Dhabi', 'Sharjah', 'Riyadh', 'Doha', 'Muscat'];
-        const programs = ['Middlesex MBA', 'Birmingham Data Science', 'AstroLabs Bootcamp', 'AUS Engineering'];
-        const randomLocation = locations[Math.floor(Math.random() * locations.length)];
-        const randomProgram = programs[Math.floor(Math.random() * programs.length)];
-        
-        const eventTypes = [
-          { type: 'visit', text: `Anonymous visitor from ${randomLocation} is exploring ${randomProgram}` },
-          { type: 'match', text: `Guest student from ${randomLocation} completed matching: ${Math.floor(Math.random() * 15) + 80}% Fit` },
-          { type: 'click', text: `User in ${randomLocation} clicked 'Apply Now' for ${randomProgram}` }
-        ];
-        const selectedEvent = eventTypes[Math.floor(Math.random() * eventTypes.length)];
-        
-        setActivityLogs(prev => [
-          {
-            id: Date.now(),
-            type: selectedEvent.type,
-            text: selectedEvent.text,
-            time: 'Just now'
-          },
-          ...prev.slice(0, 7) // Keep last 8 logs
-        ]);
+    const interval = setInterval(() => {
+      // 1. Fluctuate active visitors if on analytics tab
+      if (activeTab === 'analytics') {
+        const change = Math.floor(Math.random() * 9) - 4; // -4 to +4
+        setLiveVisitors(prev => {
+          const nextVal = Math.max(90, Math.min(280, prev + change));
+          
+          // Update history (last item matches live visitors)
+          setTrafficHistory(history => {
+            const updated = [...history];
+            updated[updated.length - 1] = nextVal;
+            return updated;
+          });
+          
+          return nextVal;
+        });
+
+        // 2. Randomly trigger a mock live activity log (25% chance every interval)
+        if (Math.random() < 0.25) {
+          const locations = ['Dubai', 'Abu Dhabi', 'Sharjah', 'Riyadh', 'Doha', 'Muscat'];
+          const programs = ['Middlesex MBA', 'Birmingham Data Science', 'AstroLabs Bootcamp', 'AUS Engineering'];
+          const randomLocation = locations[Math.floor(Math.random() * locations.length)];
+          const randomProgram = programs[Math.floor(Math.random() * programs.length)];
+          
+          const eventTypes = [
+            { type: 'visit', text: `Anonymous visitor from ${randomLocation} is exploring ${randomProgram}` },
+            { type: 'match', text: `Guest student from ${randomLocation} completed matching: ${Math.floor(Math.random() * 15) + 80}% Fit` },
+            { type: 'click', text: `User in ${randomLocation} clicked 'Apply Now' for ${randomProgram}` }
+          ];
+          const selectedEvent = eventTypes[Math.floor(Math.random() * eventTypes.length)];
+          
+          setActivityLogs(prev => [
+            {
+              id: Date.now(),
+              type: selectedEvent.type,
+              text: selectedEvent.text,
+              time: 'Just now'
+            },
+            ...prev.slice(0, 7) // Keep last 8 logs
+          ]);
+        }
+      }
+
+      // 3. Keep database states fresh in real-time
+      fetchUsers();
+      fetchInquiries();
+      if (onRefreshApplications) {
+        onRefreshApplications();
       }
     }, 4000);
     
     return () => clearInterval(interval);
-  }, [activeTab]);
-
-  useEffect(() => {
-    fetchUsers();
-    fetchInquiries();
-  }, []);
+  }, [activeTab, onRefreshApplications]);
 
   const fetchUsers = async () => {
     try {
