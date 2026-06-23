@@ -563,31 +563,39 @@ export default function Home({ setView, setExploreSearchTerm, onUpgradePremium }
       <section style={{ padding: '60px 24px', borderTop: '1px solid var(--card-border)' }}>
         <div style={{ maxWidth: '1000px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '60px' }}>
           {/* Mission Summary */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '40px', alignItems: 'center' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '40px', alignItems: 'start' }}>
             <div style={{ textAlign: 'left' }}>
               <span style={{ fontSize: '11px', color: 'var(--primary)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Our Core Vision</span>
               <h2 style={{ fontSize: '28px', fontFamily: 'var(--font-display)', color: 'white', marginTop: '8px', marginBottom: '16px' }}>
                 Democratizing Academic Matches with <span className="gradient-text">Empathetic AI</span>
               </h2>
-              <p style={{ color: 'var(--text-muted)', fontSize: '14.5px', lineHeight: '1.6', marginBottom: '20px' }}>
-                We believe that choosing an education path is one of the most critical decisions of a lifetime. SapioMatch bypasses traditional marketing directories to connect students and professionals directly to courses based on budget, values, and career goals.
+              <p style={{ color: 'var(--text-muted)', fontSize: '14.5px', lineHeight: '1.6', marginBottom: '16px' }}>
+                We believe that choosing an education path is one of the most critical decisions of a lifetime. The traditional search landscape is dominated by commercial directories, paid sponsorships, and biased ranking systems that often prioritize institutional budgets over student needs.
               </p>
-              <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
-                <Check size={16} style={{ color: 'var(--primary)' }} />
-                <span style={{ fontSize: '13.5px', color: '#e5e7eb', fontWeight: 500 }}>No hidden agency sponsorships or biased rankings.</span>
-              </div>
+              <p style={{ color: 'var(--text-muted)', fontSize: '14.5px', lineHeight: '1.6', marginBottom: '0' }}>
+                SapioMatch bypasses these middlemen to connect students and professionals directly to verified courses. By utilizing transparent matching logic, we analyze your career aspirations, academic credentials, and financial parameters to curate recommendation matrices that are entirely honest, relevant, and personalized.
+              </p>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-              <div className="glass-card" style={{ padding: '16px 20px', textAlign: 'left' }}>
-                <div style={{ fontSize: '18px', fontWeight: 800, color: 'var(--primary)', marginBottom: '4px' }}>100%</div>
-                <div style={{ fontSize: '13px', fontWeight: 600, color: 'white' }}>Honest Compatibility</div>
-                <div style={{ fontSize: '11.5px', color: 'var(--text-muted)', marginTop: '2px' }}>AI suggestions based strictly on your input params.</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '32px', textAlign: 'left' }}>
+              <div>
+                <h4 style={{ fontSize: '17px', fontWeight: 600, color: 'white', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--primary)', boxShadow: '0 0 8px var(--primary-glow)' }} />
+                  100% Unbiased Compatibility Scoring
+                </h4>
+                <p style={{ color: 'var(--text-muted)', fontSize: '14px', lineHeight: '1.6' }}>
+                  Our proprietary match scoring engine works strictly in the interest of the candidate. Every compatibility rating is generated using forensic validation metrics, measuring your specific target region, learning formats, timeline preferences, and budgetary constraints directly against verified data templates updated by the partner institutions themselves. We accept no paid placements to boost rankings, ensuring that a 100% match represents true academic and environmental alignment.
+                </p>
               </div>
-              <div className="glass-card" style={{ padding: '16px 20px', textAlign: 'left' }}>
-                <div style={{ fontSize: '18px', fontWeight: 800, color: 'var(--secondary)', marginBottom: '4px' }}>Direct</div>
-                <div style={{ fontSize: '13px', fontWeight: 600, color: 'white' }}>Portal Connection</div>
-                <div style={{ fontSize: '11.5px', color: 'var(--text-muted)', marginTop: '2px' }}>Submit applications directly to admissions.</div>
+
+              <div>
+                <h4 style={{ fontSize: '17px', fontWeight: 600, color: 'white', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--secondary)', boxShadow: '0 0 8px var(--secondary-glow)' }} />
+                  Direct Admission Desk Communications
+                </h4>
+                <p style={{ color: 'var(--text-muted)', fontSize: '14px', lineHeight: '1.6' }}>
+                  We bridge the gap between candidates and university representatives. Instead of navigating confusing application forms or third-party recruiters, the SapioMatch portal lets you submit pre-screened packages directly to the partner admissions desk. This direct channel facilitates fast portfolio reviews, credentials provisioning, and automated email callbacks, placing you in control of your academic matching journey.
+                </p>
               </div>
             </div>
           </div>
