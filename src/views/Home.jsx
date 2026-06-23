@@ -5,7 +5,7 @@ import { TextPlugin } from 'gsap/TextPlugin';
 import SapioEarthGlobe from '../components/SapioEarthGlobe';
 import GuidedJourneyTimeline from '../components/GuidedJourneyTimeline';
 
-export default function Home({ setView }) {
+export default function Home({ setView, isPageReady = true }) {
   const [scrollY, setScrollY] = useState(0);
   const [mouseCoords, setMouseCoords] = useState({ x: 540, y: 260 });
   const heroGlobeSlotRef = useRef(null);
@@ -18,6 +18,8 @@ export default function Home({ setView }) {
   const globeTypewriterRef = useRef(null);
   const globeCursorRef = useRef(null);
   const typewriterTweenRef = useRef(null);
+  const heroWordRotatorRef = useRef(null);
+  const hasPlayedHeroReelRef = useRef(false);
   const heroCardsRef = useRef(null);
   const [movingGlobeFrame, setMovingGlobeFrame] = useState(null);
   const globeTitleText = 'Explore universities around the globe';
@@ -227,13 +229,111 @@ export default function Home({ setView }) {
   }, []);
 
   useEffect(() => {
+    const rotator = heroWordRotatorRef.current;
+    if (!rotator) return;
+
+    const words = Array.from(rotator.querySelectorAll('.sapio-hero-reel-word'));
+    if (!words.length) return;
+
+    gsap.set(words, {
+      opacity: 0,
+      xPercent: 48,
+      yPercent: 42,
+      rotationX: -18,
+      rotationY: 14,
+      rotationZ: 2,
+      scale: 1.08,
+      filter: 'blur(12px)',
+      transformOrigin: '50% 50%'
+    });
+    gsap.set(words[0], {
+      opacity: 1,
+      xPercent: 0,
+      yPercent: 0,
+      rotationX: 0,
+      rotationY: 0,
+      rotationZ: 0,
+      scale: 1,
+      filter: 'blur(0px)'
+    });
+
+    if (!isPageReady || hasPlayedHeroReelRef.current) return;
+
+    hasPlayedHeroReelRef.current = true;
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      gsap.set(words, { opacity: 0 });
+      gsap.set(words[words.length - 1], {
+        opacity: 1,
+        xPercent: 0,
+        yPercent: 0,
+        rotationX: 0,
+        rotationY: 0,
+        rotationZ: 0,
+        scale: 1,
+        filter: 'blur(0px)'
+      });
+      return;
+    }
+
+    const reelTimeline = gsap.timeline({ delay: 0.72 });
+
+    words.slice(0, -1).forEach((currentWord, index) => {
+      const nextWord = words[index + 1];
+
+      reelTimeline
+        .to(currentWord, {
+          opacity: 0,
+          xPercent: -46,
+          yPercent: -38,
+          rotationX: 18,
+          rotationY: -16,
+          rotationZ: -2,
+          scale: 0.9,
+          filter: 'blur(11px)',
+          duration: 0.74,
+          ease: 'power3.inOut'
+        }, '+=0.86')
+        .fromTo(nextWord, {
+          opacity: 0,
+          xPercent: 48,
+          yPercent: 42,
+          rotationX: -18,
+          rotationY: 14,
+          rotationZ: 2,
+          scale: 1.08,
+          filter: 'blur(12px)'
+        }, {
+          opacity: 1,
+          xPercent: 0,
+          yPercent: 0,
+          rotationX: 0,
+          rotationY: 0,
+          rotationZ: 0,
+          scale: 1,
+          filter: 'blur(0px)',
+          duration: 0.78,
+          ease: 'power3.inOut'
+        }, '<0.08');
+    });
+
+    return () => reelTimeline.kill();
+  }, [isPageReady]);
+
+  useEffect(() => {
     const row = heroCardsRef.current;
     if (!row) return;
 
     const cards = row.querySelectorAll('.sapio-hero-feature-card');
     const cardTextNodes = row.querySelectorAll('.sapio-hero-feature-card h4, .sapio-hero-feature-card p');
     let cardTimeline = null;
+    let startTimer = 0;
     let wasVisible = false;
+
+    if (!isPageReady) {
+      gsap.set(cards, { opacity: 0, y: 42, scale: 0.955, filter: 'blur(10px)' });
+      return () => gsap.killTweensOf(cards);
+    }
 
     const playCards = () => {
       gsap.registerPlugin(TextPlugin);
@@ -265,9 +365,9 @@ export default function Home({ setView }) {
           y: 0,
           scale: 1,
           filter: 'blur(0px)',
-          duration: 1.05,
+          duration: 1.4,
           ease: 'power3.out',
-          stagger: 0.46
+          stagger: 0.78
         }
       );
 
@@ -275,7 +375,7 @@ export default function Home({ setView }) {
         const heading = card.querySelector('h4');
         const subtitle = card.querySelector('p');
         const icon = card.querySelector('.icon-container');
-        const startAt = index * 0.46 + 0.34;
+        const startAt = index * 0.78 + 0.52;
 
         if (icon) {
           cardTimeline.to(
@@ -284,7 +384,7 @@ export default function Home({ setView }) {
               opacity: 1,
               scale: 1,
               rotate: 0,
-              duration: 0.62,
+              duration: 0.82,
               ease: 'back.out(1.7)'
             },
             startAt
@@ -297,7 +397,7 @@ export default function Home({ setView }) {
             score,
             {
               value: 94,
-              duration: 0.95,
+              duration: 1.2,
               ease: 'power2.out',
               onUpdate: () => {
                 heading.textContent = `${Math.round(score.value)}% Match Score`;
@@ -310,7 +410,7 @@ export default function Home({ setView }) {
             heading,
             {
               text: heading.dataset.fullText,
-              duration: 0.72,
+              duration: 0.95,
               ease: 'none'
             },
             startAt + 0.12
@@ -322,7 +422,7 @@ export default function Home({ setView }) {
             subtitle,
             {
               text: subtitle.dataset.fullText,
-              duration: 0.78,
+              duration: 1.08,
               ease: 'none'
             },
             startAt + 0.42
@@ -336,10 +436,12 @@ export default function Home({ setView }) {
         const visible = entry.isIntersecting && entry.intersectionRatio >= 0.28;
         if (visible && !wasVisible) {
           wasVisible = true;
-          playCards();
+          window.clearTimeout(startTimer);
+          startTimer = window.setTimeout(playCards, 520);
         }
         if (!visible) {
           wasVisible = false;
+          window.clearTimeout(startTimer);
         }
       },
       { threshold: [0, 0.28], rootMargin: '-8% 0px -12% 0px' }
@@ -348,10 +450,11 @@ export default function Home({ setView }) {
     observer.observe(row);
     return () => {
       observer.disconnect();
+      window.clearTimeout(startTimer);
       cardTimeline?.kill();
       gsap.killTweensOf([cards, cardTextNodes]);
     };
-  }, []);
+  }, [isPageReady]);
 
   const handleMouseMove = (e) => {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -379,9 +482,6 @@ export default function Home({ setView }) {
 
   const starOffsetX = (mouseCoords.x - winWidth / 2) * -0.06;
   const starOffsetY = (mouseCoords.y - winHeight / 2) * -0.06;
-
-  const heroOffsetX = (mouseCoords.x - winWidth / 2) * 0.012;
-  const heroOffsetY = (mouseCoords.y - winHeight / 2) * 0.012;
 
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
@@ -439,9 +539,7 @@ export default function Home({ setView }) {
           <div style={{ 
             flex: 1.2, 
             minWidth: '320px', 
-            textAlign: 'left',
-            transform: `translate(${heroOffsetX}px, ${scrollY * -0.15 + heroOffsetY}px)`,
-            transition: 'transform 0.08s ease-out'
+            textAlign: 'left'
           }}>
             <div style={{ 
               display: 'inline-flex', 
@@ -460,14 +558,19 @@ export default function Home({ setView }) {
               Next-Gen AI Recommendation System
             </div>
             
-            <h1 style={{ 
+            <h1 aria-label="Find Your Best-Fit Program with Apply" style={{ 
               fontSize: 'clamp(2.5rem, 5vw, 3.8rem)', 
               fontFamily: 'var(--font-display)', 
               lineHeight: 1.1,
               marginBottom: '24px',
               color: '#ffffff'
             }}>
-              Find Your Best-Fit Program with <span className="gradient-text">SapioMatch AI</span>
+              <span className="sapio-hero-title-static">Find Your Best-Fit Program with</span>
+              <span ref={heroWordRotatorRef} className="sapio-hero-word-rotator" aria-hidden="true">
+                {['SapioMatch AI', 'Fill', 'Match', 'Apply'].map((phrase) => (
+                  <span key={phrase} className="gradient-text sapio-hero-reel-word">{phrase}</span>
+                ))}
+              </span>
             </h1>
             
             <p style={{ 
@@ -490,14 +593,14 @@ export default function Home({ setView }) {
             </div>
           </div>
 
-          {/* Right Column: Spacer to frame the globe behind it */}
-          <div style={{ 
+          {/* Right Column: Vertical feature rail over the globe's quiet edge */}
+          <div className="sapio-hero-right-column" style={{ 
             flex: 1, 
             minWidth: '320px', 
             height: '420px', 
             display: 'flex', 
             alignItems: 'center', 
-            justifyContent: 'center',
+            justifyContent: 'flex-end',
             position: 'relative',
             pointerEvents: 'none'
           }}>
@@ -510,53 +613,36 @@ export default function Home({ setView }) {
               borderRadius: '50%',
               zIndex: 0
             }} />
-          </div>
-        </div>
 
-        {/* Three Spotlight Indicator Cards (floats slightly faster on scroll) */}
-        <div style={{ 
-          maxWidth: '1200px',
-          margin: '40px auto 0 auto',
-          transform: `translateY(${scrollY * -0.05}px)`,
-          transition: 'transform 0.08s ease-out',
-          position: 'relative',
-          zIndex: 5
-        }} ref={heroCardsRef}>
-          <div style={{ 
-            display: 'grid', 
-            gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', 
-            gap: '20px'
-          }}>
-            {/* Card 1: Knowledge Database */}
-            <div className="spotlight-card flex-row-center sapio-hero-feature-card" onMouseMove={handleMouseMove} onMouseLeave={handleMouseLeave} style={{ gap: '16px', padding: '20px', '--spotlight-color': 'rgba(52, 211, 153, 0.12)' }}>
-              <div style={{ background: 'rgba(52, 211, 153, 0.1)', padding: '12px', borderRadius: 'var(--border-radius-sm)', color: 'var(--primary)', display: 'flex', alignItems: 'center', justifyContent: 'center' }} className="icon-container">
-                <Brain size={24} />
+            <div ref={heroCardsRef} className="sapio-hero-feature-rail">
+              <div className="spotlight-card flex-row-center sapio-hero-feature-card" onMouseMove={handleMouseMove} onMouseLeave={handleMouseLeave} style={{ gap: '14px', padding: '16px', '--spotlight-color': 'rgba(52, 211, 153, 0.12)' }}>
+                <div style={{ background: 'rgba(52, 211, 153, 0.1)', padding: '11px', borderRadius: 'var(--border-radius-sm)', color: 'var(--primary)', display: 'flex', alignItems: 'center', justifyContent: 'center' }} className="icon-container">
+                  <Brain size={23} />
+                </div>
+                <div style={{ textAlign: 'left', position: 'relative', zIndex: 2 }}>
+                  <h4 style={{ fontSize: '15px', fontWeight: 600 }}>Knowledge Database</h4>
+                  <p style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Tailored institutional data</p>
+                </div>
               </div>
-              <div style={{ textAlign: 'left', position: 'relative', zIndex: 2 }}>
-                <h4 style={{ fontSize: '15px', fontWeight: 600 }}>Knowledge Database</h4>
-                <p style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Tailored institutional data</p>
-              </div>
-            </div>
 
-            {/* Card 2: 94% Match Score */}
-            <div className="spotlight-card flex-row-center sapio-hero-feature-card" onMouseMove={handleMouseMove} onMouseLeave={handleMouseLeave} style={{ gap: '16px', padding: '20px', '--spotlight-color': 'rgba(251, 146, 60, 0.12)' }}>
-              <div style={{ background: 'rgba(251, 146, 60, 0.1)', padding: '12px', borderRadius: 'var(--border-radius-sm)', color: 'var(--secondary)', display: 'flex', alignItems: 'center', justifyContent: 'center' }} className="icon-container">
-                <Award size={24} />
+              <div className="spotlight-card flex-row-center sapio-hero-feature-card" onMouseMove={handleMouseMove} onMouseLeave={handleMouseLeave} style={{ gap: '14px', padding: '16px', '--spotlight-color': 'rgba(251, 146, 60, 0.12)' }}>
+                <div style={{ background: 'rgba(251, 146, 60, 0.1)', padding: '11px', borderRadius: 'var(--border-radius-sm)', color: 'var(--secondary)', display: 'flex', alignItems: 'center', justifyContent: 'center' }} className="icon-container">
+                  <Award size={23} />
+                </div>
+                <div style={{ textAlign: 'left', position: 'relative', zIndex: 2 }}>
+                  <h4 style={{ fontSize: '15px', fontWeight: 600 }}>94% Match Score</h4>
+                  <p style={{ fontSize: '12px', color: 'var(--text-muted)' }}>High accuracy mapping</p>
+                </div>
               </div>
-              <div style={{ textAlign: 'left', position: 'relative', zIndex: 2 }}>
-                <h4 style={{ fontSize: '15px', fontWeight: 600 }}>94% Match Score</h4>
-                <p style={{ fontSize: '12px', color: 'var(--text-muted)' }}>High accuracy mapping</p>
-              </div>
-            </div>
 
-            {/* Card 3: Secure Entitlement */}
-            <div className="spotlight-card flex-row-center sapio-hero-feature-card" onMouseMove={handleMouseMove} onMouseLeave={handleMouseLeave} style={{ gap: '16px', padding: '20px', '--spotlight-color': 'rgba(248, 113, 113, 0.12)' }}>
-              <div style={{ background: 'rgba(248, 113, 113, 0.1)', padding: '12px', borderRadius: 'var(--border-radius-sm)', color: 'var(--accent)', display: 'flex', alignItems: 'center', justifyContent: 'center' }} className="icon-container">
-                <Shield size={24} />
-              </div>
-              <div style={{ textAlign: 'left', position: 'relative', zIndex: 2 }}>
-                <h4 style={{ fontSize: '15px', fontWeight: 600 }}>Secure Entitlement</h4>
-                <p style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Safe library & credentials</p>
+              <div className="spotlight-card flex-row-center sapio-hero-feature-card" onMouseMove={handleMouseMove} onMouseLeave={handleMouseLeave} style={{ gap: '14px', padding: '16px', '--spotlight-color': 'rgba(248, 113, 113, 0.12)' }}>
+                <div style={{ background: 'rgba(248, 113, 113, 0.1)', padding: '11px', borderRadius: 'var(--border-radius-sm)', color: 'var(--accent)', display: 'flex', alignItems: 'center', justifyContent: 'center' }} className="icon-container">
+                  <Shield size={23} />
+                </div>
+                <div style={{ textAlign: 'left', position: 'relative', zIndex: 2 }}>
+                  <h4 style={{ fontSize: '15px', fontWeight: 600 }}>Secure Entitlement</h4>
+                  <p style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Safe library & credentials</p>
+                </div>
               </div>
             </div>
           </div>
