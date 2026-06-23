@@ -484,7 +484,7 @@ export default function Home({ setView, isPageReady = true }) {
   const starOffsetY = (mouseCoords.y - winHeight / 2) * -0.06;
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+    <div className="sapio-home-page" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       {movingGlobeFrame && (
         <div
           ref={movingGlobeShellRef}

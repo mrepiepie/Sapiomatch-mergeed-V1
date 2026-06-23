@@ -2429,24 +2429,68 @@ a {
 /* Subtle screenshot-defined homepage section settling */
 html.sapio-home-snap {
   scroll-snap-type: y proximity;
-  scroll-padding-top: 80px;
+  scroll-padding-top: 0;
   scroll-behavior: smooth;
 }
 
 html.sapio-home-snap .sapio-snap-section {
   scroll-snap-align: start;
   scroll-snap-stop: normal;
+  position: relative;
+  border-top: 0 !important;
+  border-bottom: 0 !important;
 }
 
 html.sapio-home-snap .sapio-snap-section {
-  min-height: calc(100vh - 80px);
-  min-height: calc(100svh - 80px);
-  scroll-margin-top: 80px;
+  min-height: 100vh;
+  min-height: 100svh;
+  scroll-margin-top: 0;
+}
+
+html.sapio-home-snap .sapio-snap-section + .sapio-snap-section {
+  margin-top: 0;
+}
+
+html.sapio-home-snap .sapio-snap-section::before,
+html.sapio-home-snap .sapio-snap-section::after {
+  content: none !important;
+  display: none !important;
 }
 
 html.sapio-home-snap .sapio-snap-center {
   display: flex;
   align-items: center;
+}
+
+html.sapio-home-snap,
+html.sapio-home-snap body {
+  background:
+    radial-gradient(circle at 6% 22%, rgba(255, 255, 255, 0.18), transparent 18%),
+    radial-gradient(circle at 18% 48%, rgba(139, 92, 246, 0.16), transparent 34%),
+    radial-gradient(circle at 62% 18%, rgba(34, 211, 238, 0.08), transparent 32%),
+    linear-gradient(115deg, #0a0e22 0%, #151129 38%, #07101f 100%) !important;
+  background-attachment: fixed !important;
+}
+
+.sapio-home-page {
+  position: relative;
+  background: transparent !important;
+  isolation: isolate;
+}
+
+.sapio-home-page > section,
+html.sapio-home-snap .main-content section,
+html.sapio-home-snap .sapio-journey-section {
+  border-top: 0 !important;
+  border-bottom: 0 !important;
+}
+
+.sapio-home-page > section {
+  background-color: transparent !important;
+}
+
+.sapio-home-page > section:not(.sapio-home-hero-section):not(.sapio-globe-focus-section) {
+  background-image: none !important;
 }
 
 html.sapio-home-snap .sapio-section.sapio-snap-section {
@@ -2466,13 +2510,13 @@ html.sapio-home-snap .sapio-journey-header {
 
 @media (max-width: 700px) {
   html.sapio-home-snap {
-    scroll-padding-top: 72px;
+    scroll-padding-top: 0;
   }
 
   html.sapio-home-snap .sapio-snap-section {
-    min-height: calc(100vh - 72px);
-    min-height: calc(100svh - 72px);
-    scroll-margin-top: 72px;
+    min-height: 100vh;
+    min-height: 100svh;
+    scroll-margin-top: 0;
   }
 }
 
@@ -3770,7 +3814,7 @@ h6,
 .app-container > .main-content {
   position: relative;
   z-index: 1;
-  padding-top: 104px;
+  padding-top: 0;
 }
 
 .app-container > footer {
@@ -4159,6 +4203,11 @@ h6,
     radial-gradient(circle at 22% 72%, rgba(139, 92, 246, 0.12), transparent 34%),
     rgba(5, 8, 22, 0.32);
   overflow: clip;
+}
+
+html.sapio-home-snap .sapio-globe-focus-section {
+  border-top: 0 !important;
+  border-bottom: 0 !important;
 }
 
 .sapio-globe-focus-section::before {
@@ -5610,6 +5659,11 @@ h6,
     linear-gradient(180deg, rgba(5, 8, 22, 0.22), rgba(9, 13, 34, 0.62) 48%, rgba(5, 8, 22, 0.24)),
     linear-gradient(90deg, rgba(34, 211, 238, 0.035), transparent 34%, transparent 66%, rgba(139, 92, 246, 0.035));
   overflow: hidden;
+}
+
+html.sapio-home-snap .sapio-journey-section {
+  border-top: 0 !important;
+  border-bottom: 0 !important;
 }
 
 .sapio-journey-ambient {
