@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Brain, Sparkles, ArrowRight, Shield, Award, BookOpen, Clock, Play, Check } from 'lucide-react';
+import { Brain, Sparkles, ArrowRight, Shield, Award, Clock, Play, Check } from 'lucide-react';
 import gsap from 'gsap';
 import { TextPlugin } from 'gsap/TextPlugin';
 import SapioEarthGlobe from '../components/SapioEarthGlobe';
+import GuidedJourneyTimeline from '../components/GuidedJourneyTimeline';
 
 export default function Home({ setView, setExploreSearchTerm, onUpgradePremium }) {
   const handleProgramClick = (categorySearch) => {
@@ -69,25 +70,51 @@ export default function Home({ setView, setExploreSearchTerm, onUpgradePremium }
     const updateMovingGlobe = () => {
       const heroSlot = heroGlobeSlotRef.current;
       const focusSlot = focusGlobeSlotRef.current;
-      if (!heroSlot || !focusSlot) return;
+      const focusSection = globeFocusSectionRef.current;
+      if (!heroSlot || !focusSlot || !focusSection) return;
 
       const heroRect = heroSlot.getBoundingClientRect();
       const focusRect = focusSlot.getBoundingClientRect();
+      const focusSectionRect = focusSection.getBoundingClientRect();
       const scrollTop = window.scrollY || window.pageYOffset || 0;
       const heroPageTop = heroRect.top + scrollTop;
-      const focusPageTop = focusRect.top + scrollTop;
-      const startScroll = heroPageTop + heroRect.height * 0.18;
-      const endScroll = focusPageTop - window.innerHeight * 0.28;
-      const progress = clamp((scrollTop - startScroll) / Math.max(1, endScroll - startScroll), 0, 1);
-      const eased = smootherStep(progress);
+      const focusSectionPageTop = focusSectionRect.top + scrollTop;
+      const startScroll = heroPageTop + heroRect.height * 0.2;
+      const endScroll = focusSectionPageTop + window.innerHeight * 0.12;
+      const rawProgress = clamp((scrollTop - startScroll) / Math.max(1, endScroll - startScroll), 0, 1);
+      const dockMode = rawProgress <= 0.02 ? 'hero' : rawProgress >= 0.94 ? 'focus' : 'transition';
+      const eased = dockMode === 'hero' ? 0 : dockMode === 'focus' ? 1 : smootherStep(rawProgress);
 
-      const targetFrame = {
-        left: lerp(heroRect.left, focusRect.left, eased),
-        top: lerp(heroRect.top, focusRect.top, eased),
-        width: lerp(heroRect.width, focusRect.width, eased),
-        height: lerp(heroRect.height, focusRect.height, eased),
-        progress: eased
+      const heroFrame = {
+        left: heroRect.left,
+        top: heroRect.top,
+        width: heroRect.width,
+        height: heroRect.height,
+        progress: 0,
+        dockMode: 'hero'
       };
+
+      const focusFrame = {
+        left: focusRect.left,
+        top: focusRect.top,
+        width: focusRect.width,
+        height: focusRect.height,
+        progress: 1,
+        dockMode: 'focus'
+      };
+
+      const targetFrame = dockMode === 'hero'
+        ? heroFrame
+        : dockMode === 'focus'
+          ? focusFrame
+          : {
+              left: lerp(heroFrame.left, focusFrame.left, eased),
+              top: lerp(heroFrame.top, focusFrame.top, eased),
+              width: lerp(heroFrame.width, focusFrame.width, eased),
+              height: lerp(heroFrame.height, focusFrame.height, eased),
+              progress: eased,
+              dockMode: 'transition'
+            };
 
       targetGlobeFrameRef.current = targetFrame;
 
@@ -111,20 +138,22 @@ export default function Home({ setView, setExploreSearchTerm, onUpgradePremium }
       const currentFrame = currentGlobeFrameRef.current;
 
       if (targetFrame && currentFrame) {
-        const smoothing = targetFrame.progress > 0.96 || targetFrame.progress < 0.04 ? 0.2 : 0.115;
+        const isDockedTarget = targetFrame.dockMode === 'hero' || targetFrame.dockMode === 'focus';
+        const smoothing = isDockedTarget ? 0.22 : 0.105;
         const nextFrame = {
           left: lerp(currentFrame.left, targetFrame.left, smoothing),
           top: lerp(currentFrame.top, targetFrame.top, smoothing),
           width: lerp(currentFrame.width, targetFrame.width, smoothing),
           height: lerp(currentFrame.height, targetFrame.height, smoothing),
-          progress: lerp(currentFrame.progress, targetFrame.progress, smoothing)
+          progress: lerp(currentFrame.progress, targetFrame.progress, smoothing),
+          dockMode: targetFrame.dockMode
         };
 
         if (
-          Math.abs(nextFrame.left - targetFrame.left) < 0.35 &&
-          Math.abs(nextFrame.top - targetFrame.top) < 0.35 &&
-          Math.abs(nextFrame.width - targetFrame.width) < 0.35 &&
-          Math.abs(nextFrame.height - targetFrame.height) < 0.35
+          Math.abs(nextFrame.left - targetFrame.left) < (isDockedTarget ? 1.2 : 0.35) &&
+          Math.abs(nextFrame.top - targetFrame.top) < (isDockedTarget ? 1.2 : 0.35) &&
+          Math.abs(nextFrame.width - targetFrame.width) < (isDockedTarget ? 1.2 : 0.35) &&
+          Math.abs(nextFrame.height - targetFrame.height) < (isDockedTarget ? 1.2 : 0.35)
         ) {
           currentGlobeFrameRef.current = targetFrame;
           applyGlobeFrame(targetFrame);
@@ -379,7 +408,7 @@ export default function Home({ setView, setExploreSearchTerm, onUpgradePremium }
       )}
 
       {/* Hero Section with Parallax Background stars and 3D Globe */}
-      <section style={{ 
+      <section className="sapio-snap-section sapio-home-hero-section" style={{ 
         position: 'relative', 
         padding: '120px 24px 80px 24px', 
         background: 'radial-gradient(circle at top left, rgba(52, 211, 153, 0.08) 0%, transparent 50%), radial-gradient(circle at bottom right, rgba(52, 211, 153, 0.04) 0%, transparent 50%)',
@@ -542,7 +571,7 @@ export default function Home({ setView, setExploreSearchTerm, onUpgradePremium }
       </section>
 
       {/* Scroll-isolated interactive globe section */}
-      <section ref={globeFocusSectionRef} className="sapio-globe-focus-section">
+      <section ref={globeFocusSectionRef} className="sapio-globe-focus-section sapio-snap-section">
         <div className="sapio-globe-focus-copy">
           <span className="sapio-globe-focus-kicker">Interactive university map</span>
           <h2 className="sapio-globe-typewriter-heading" aria-label={globeTitleText}>
@@ -741,52 +770,10 @@ export default function Home({ setView, setExploreSearchTerm, onUpgradePremium }
       </section>
 
 
-      {/* How it Works Section */}
-      <section style={{ padding: '60px 24px', background: 'rgba(255, 255, 255, 0.01)', borderTop: '1px solid var(--card-border)' }}>
-        <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
-          <h2 style={{ textAlign: 'center', marginBottom: '40px', fontSize: '32px' }}>
-            How <span className="gradient-text">SapioMatch</span> Guides You
-          </h2>
-
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '30px' }}>
-            <div className="spotlight-card" onMouseMove={handleMouseMove} onMouseLeave={handleMouseLeave} style={{ position: 'relative', '--spotlight-color': 'rgba(43, 92, 70, 0.12)' }}>
-              <span style={{ position: 'absolute', top: '20px', right: '24px', fontSize: '48px', fontWeight: 800, color: 'rgba(43, 92, 70, 0.06)', fontFamily: 'var(--font-display)', zIndex: 2 }}>01</span>
-              <div style={{ background: 'rgba(43, 92, 70, 0.1)', padding: '10px', borderRadius: 'var(--border-radius-sm)', width: 'fit-content', color: 'var(--primary)', marginBottom: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }} className="icon-container">
-                <BookOpen size={20} />
-              </div>
-              <h3 style={{ fontSize: '18px', marginBottom: '10px', position: 'relative', zIndex: 2 }}>Tell Us Your Goals</h3>
-              <p style={{ fontSize: '14px', color: 'var(--text-muted)', position: 'relative', zIndex: 2 }}>
-                Upload your resume or chat with our humanized AI mascot. Share your career targets, budget, and learning format.
-              </p>
-            </div>
-
-            <div className="spotlight-card" onMouseMove={handleMouseMove} onMouseLeave={handleMouseLeave} style={{ position: 'relative', '--spotlight-color': 'rgba(180, 83, 9, 0.12)' }}>
-              <span style={{ position: 'absolute', top: '20px', right: '24px', fontSize: '48px', fontWeight: 800, color: 'rgba(180, 83, 9, 0.06)', fontFamily: 'var(--font-display)', zIndex: 2 }}>02</span>
-              <div style={{ background: 'rgba(180, 83, 9, 0.1)', padding: '10px', borderRadius: 'var(--border-radius-sm)', width: 'fit-content', color: 'var(--secondary)', marginBottom: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }} className="icon-container">
-                <Brain size={20} />
-              </div>
-              <h3 style={{ fontSize: '18px', marginBottom: '10px', position: 'relative', zIndex: 2 }}>AI Match Algorithm</h3>
-              <p style={{ fontSize: '14px', color: 'var(--text-muted)', position: 'relative', zIndex: 2 }}>
-                Our proprietary engine cross-references your profile with our verified knowledge base of global universities and courses.
-              </p>
-            </div>
-
-            <div className="spotlight-card" onMouseMove={handleMouseMove} onMouseLeave={handleMouseLeave} style={{ position: 'relative', '--spotlight-color': 'rgba(153, 27, 27, 0.12)' }}>
-              <span style={{ position: 'absolute', top: '20px', right: '24px', fontSize: '48px', fontWeight: 800, color: 'rgba(236, 72, 153, 0.06)', fontFamily: 'var(--font-display)', zIndex: 2 }}>03</span>
-              <div style={{ background: 'rgba(236, 72, 153, 0.1)', padding: '10px', borderRadius: 'var(--border-radius-sm)', width: 'fit-content', color: 'var(--accent)', marginBottom: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }} className="icon-container">
-                <Award size={20} />
-              </div>
-              <h3 style={{ fontSize: '18px', marginBottom: '10px', position: 'relative', zIndex: 2 }}>Apply & Connect</h3>
-              <p style={{ fontSize: '14px', color: 'var(--text-muted)', position: 'relative', zIndex: 2 }}>
-                Review matches side-by-side, check your match breakdown, generate your digital Student ID Passport, and apply directly.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
+      <GuidedJourneyTimeline />
 
       {/* Target Audiences Section */}
-      <section style={{ padding: '60px 24px', borderTop: '1px solid var(--card-border)' }}>
+      <section className="sapio-snap-section sapio-snap-center" style={{ padding: '60px 24px', borderTop: '1px solid var(--card-border)' }}>
         <div style={{ maxWidth: '1000px', margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '40px' }}>
           <div>
             <h2 style={{ fontSize: '30px', marginBottom: '16px' }}>Designed for Career Upgrades</h2>
