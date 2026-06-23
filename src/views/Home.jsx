@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Brain, Sparkles, ArrowRight, Shield, Award, Clock, Play, Check } from 'lucide-react';
+import { Brain, Sparkles, ArrowRight, Shield, Award, BookOpen, Clock, Play, Check } from 'lucide-react';
 import gsap from 'gsap';
 import { TextPlugin } from 'gsap/TextPlugin';
 import SapioEarthGlobe from '../components/SapioEarthGlobe';
