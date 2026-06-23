@@ -944,20 +944,16 @@ export default function App() {
 
   // Initial trigger for applying to a course (opens application form modal)
   const applyForCourse = (institution, courseName, requestAiRecommend = false) => {
-    if (!currentUser) {
-      alert("Please sign in or register to submit an application.");
-      setView('auth');
-      return;
-    }
-    
-    // Check duplicate
-    const isAlreadyApplied = appliedCourses.some(app => app.courseName === courseName && app.universityName === institution);
-    if (isAlreadyApplied) {
-      alert("You have already applied for this course.");
-      return;
+    // Check duplicate if logged in
+    if (currentUser) {
+      const isAlreadyApplied = appliedCourses.some(app => app.courseName === courseName && app.universityName === institution);
+      if (isAlreadyApplied) {
+        alert("You have already applied for this course.");
+        return;
+      }
     }
 
-    if (credits < 2) {
+    if ((currentUser ? currentUser.credits : credits) < 2) {
       alert("Insufficient credits! You need 2 credits to apply. Upgrade to Premium in your dashboard to get more.");
       return;
     }
@@ -965,8 +961,9 @@ export default function App() {
     setActiveApplyCourse({ institution, courseName, requestAiRecommend });
     setApplyForm(prev => ({
       ...prev,
-      email: currentUser.email,
-      contact: currentUser.contactNumber || '',
+      name: currentUser?.name || '',
+      email: currentUser?.email || '',
+      contact: currentUser?.contactNumber || '',
       cgpa: '',
       sop: '',
       counselorPreference: 'No Counselor',
@@ -980,13 +977,64 @@ export default function App() {
     e.preventDefault();
     if (!activeApplyCourse) return;
 
+    let targetUser = currentUser;
+
+    // Guest auto-provisioning
+    if (!targetUser) {
+      try {
+        const registerRes = await fetch('/api/auth/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: applyForm.name || 'Guest Candidate',
+            email: applyForm.email,
+            password: 'password',
+            contactNumber: applyForm.contact,
+            role: 'Student'
+          })
+        });
+
+        if (registerRes.ok) {
+          const registeredUser = await registerRes.json();
+          setCurrentUser(registeredUser);
+          targetUser = registeredUser;
+          alert(`Account auto-provisioned successfully for ${applyForm.email}! (Default password is "password").`);
+        } else {
+          // Attempt login if user already exists
+          const loginRes = await fetch('/api/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              email: applyForm.email,
+              password: 'password'
+            })
+          });
+
+          if (loginRes.ok) {
+            const loggedInUser = await loginRes.json();
+            setCurrentUser(loggedInUser);
+            targetUser = loggedInUser;
+          } else {
+            alert("An account with this email already exists. Please close this modal and sign in first.");
+            setShowApplyModal(false);
+            setView('auth');
+            return;
+          }
+        }
+      } catch (err) {
+        console.error("Auto-provision error:", err);
+        alert("Failed to auto-provision account.");
+        return;
+      }
+    }
+
     try {
       const res = await fetch('/api/applications', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          studentName: currentUser.name,
-          studentEmail: applyForm.email,
+          studentName: targetUser.name,
+          studentEmail: targetUser.email,
           studentContact: applyForm.contact,
           cgpa: applyForm.cgpa,
           sop: applyForm.sop,
@@ -1002,8 +1050,9 @@ export default function App() {
         
         // Update local credits
         setCredits(data.creditsRemaining);
-        if (currentUser) {
-          setCurrentUser(prev => ({ ...prev, credits: data.creditsRemaining }));
+        if (targetUser) {
+          targetUser.credits = data.creditsRemaining;
+          setCurrentUser({ ...targetUser });
         }
 
         // Close modal & refresh lists
@@ -1687,6 +1736,24 @@ export default function App() {
 
             <form onSubmit={handleApplyFormSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
               
+              {/* Full Name for Guest Mode */}
+              {!currentUser && (
+                <div>
+                  <label style={{ display: 'block', fontSize: '11px', color: 'var(--text-muted)', marginBottom: '6px' }}>Full Name</label>
+                  <div style={{ position: 'relative' }}>
+                    <input 
+                      type="text" 
+                      className="custom-input"
+                      placeholder="Enter your full name"
+                      value={applyForm.name || ''}
+                      onChange={(e) => setApplyForm(prev => ({ ...prev, name: e.target.value }))}
+                      required
+                    />
+                    <User size={14} style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+                  </div>
+                </div>
+              )}
+
               {/* Row 1: Email and Contact */}
               <div style={{ display: 'flex', gap: '16px' }}>
                 <div style={{ flex: 1 }}>
