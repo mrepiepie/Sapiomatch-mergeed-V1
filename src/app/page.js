@@ -436,6 +436,107 @@ const handleMockFetch = async (url, init) => {
     }
   }
 
+  // Route: /api/activity (GET)
+  if (url.includes('/api/activity')) {
+    if (method === 'GET') {
+      const users = db.users || [];
+      const applications = db.applications || [];
+      const contacts = db.contacts || [];
+      const aiInteractions = db.aiInteractions || [];
+
+      const userLogs = users.map(u => {
+        const ts = u.id.startsWith('usr_') && !['usr_1', 'usr_2', 'usr_3', 'usr_4'].includes(u.id)
+          ? parseInt(u.id.split('_')[1])
+          : new Date("2026-06-13").getTime();
+        return {
+          id: u.id,
+          type: 'auth',
+          text: u.role === 'Student'
+            ? `New student account registered: ${u.email}`
+            : `New university partner portal registered: ${u.universityName || u.name} (${u.email})`,
+          timestamp: ts
+        };
+      });
+
+      const appLogs = applications.map(a => {
+        const ts = a.id.startsWith('app_') && a.id !== 'app_1'
+          ? parseInt(a.id.split('_')[1])
+          : new Date(a.date || "2026-06-13").getTime();
+        return {
+          id: a.id,
+          type: 'application',
+          text: `${a.studentName} submitted application for ${a.courseName} at ${a.universityName}`,
+          timestamp: ts
+        };
+      });
+
+      const contactLogs = contacts.map(c => {
+        const ts = c.id.startsWith('con_') && c.id !== 'con_1'
+          ? parseInt(c.id.split('_')[1])
+          : new Date(c.date || "2026-06-13").getTime();
+        return {
+          id: c.id,
+          type: 'inquiry',
+          text: `Partnership inquiry received from ${c.fullName} (${c.inquiryType})`,
+          timestamp: ts
+        };
+      });
+
+      const aiLogs = aiInteractions.map(ai => {
+        const ts = ai.id.startsWith('ai_')
+          ? parseInt(ai.id.split('_')[1])
+          : new Date(ai.date || "2026-06-13").getTime();
+        return {
+          id: ai.id,
+          type: 'match',
+          text: `Gemini AI Chat: "${ai.prompt.substring(0, 60)}${ai.prompt.length > 60 ? '...' : ''}"`,
+          timestamp: ts
+        };
+      });
+
+      const allLogs = [...userLogs, ...appLogs, ...contactLogs, ...aiLogs];
+      allLogs.sort((a, b) => b.timestamp - a.timestamp);
+
+      const getTrafficValue = (hoursAgo) => {
+        const timeMs = Date.now() - hoursAgo * 3600 * 1000;
+        
+        const countInHour = 
+          users.filter(u => {
+            const ts = u.id.startsWith('usr_') && !['usr_1', 'usr_2', 'usr_3', 'usr_4'].includes(u.id) ? parseInt(u.id.split('_')[1]) : 0;
+            return ts > timeMs - 3600*1000 && ts <= timeMs;
+          }).length +
+          applications.filter(a => {
+            const ts = a.id.startsWith('app_') && a.id !== 'app_1' ? parseInt(a.id.split('_')[1]) : 0;
+            return ts > timeMs - 3600*1000 && ts <= timeMs;
+          }).length +
+          contacts.filter(c => {
+            const ts = c.id.startsWith('con_') && c.id !== 'con_1' ? parseInt(c.id.split('_')[1]) : 0;
+            return ts > timeMs - 3600*1000 && ts <= timeMs;
+          }).length +
+          aiInteractions.filter(ai => {
+            const ts = ai.id.startsWith('ai_') ? parseInt(ai.id.split('_')[1]) : 0;
+            return ts > timeMs - 3600*1000 && ts <= timeMs;
+          }).length;
+        
+        const date = new Date(timeMs);
+        const hour = date.getHours();
+        const timeFactor = Math.sin(((hour - 8) / 24) * 2 * Math.PI); // -1 to 1
+        const baseTraffic = Math.floor(130 + timeFactor * 45); // 85 to 175
+        
+        return Math.max(90, baseTraffic + countInHour * 15);
+      };
+
+      const trafficHistory = [6, 5, 4, 3, 2, 1, 0].map(h => getTrafficValue(h));
+      const liveVisitors = trafficHistory[6];
+
+      return makeResponse({
+        logs: allLogs,
+        liveVisitors,
+        trafficHistory
+      });
+    }
+  }
+
   return makeResponse({ error: 'Endpoint not mocked client-side.' }, 404);
 };
 
@@ -1127,6 +1228,25 @@ export default function App() {
       if (response.ok) {
         const data = await response.json();
         setChatMessages(prev => [...prev, { sender: 'ai', text: data.text }]);
+        
+        // Log AI interaction to client-side localStorage db
+        try {
+          const lDb = JSON.parse(localStorage.getItem('sapio_db') || '{}');
+          if (lDb) {
+            if (!lDb.aiInteractions) lDb.aiInteractions = [];
+            lDb.aiInteractions.push({
+              id: `ai_${Date.now()}`,
+              date: new Date().toISOString(),
+              prompt: userText,
+              response: data.text,
+              model: 'gemini'
+            });
+            localStorage.setItem('sapio_db', JSON.stringify(lDb));
+          }
+        } catch (dbErr) {
+          console.warn("Failed to log client-side AI interaction:", dbErr);
+        }
+
         if (data.action === 'connect_human' && !isHumanConnected) {
           setCounselorName('Connecting...');
           setTimeout(() => {
@@ -1146,6 +1266,25 @@ export default function App() {
 
     // Fallback to local AI Engine
     const localResult = generateAiResponse(userText, chatMessages);
+    
+    // Log local fallback AI interaction to client-side localStorage db
+    try {
+      const lDb = JSON.parse(localStorage.getItem('sapio_db') || '{}');
+      if (lDb) {
+        if (!lDb.aiInteractions) lDb.aiInteractions = [];
+        lDb.aiInteractions.push({
+          id: `ai_${Date.now()}`,
+          date: new Date().toISOString(),
+          prompt: userText,
+          response: localResult.text,
+          model: 'local-semantic-engine'
+        });
+        localStorage.setItem('sapio_db', JSON.stringify(lDb));
+      }
+    } catch (dbErr) {
+      console.warn("Failed to log client-side AI interaction:", dbErr);
+    }
+
     setTimeout(() => {
       setChatMessages(prev => [...prev, { sender: 'ai', text: localResult.text }]);
       if (localResult.action === 'connect_human' && !isHumanConnected) {

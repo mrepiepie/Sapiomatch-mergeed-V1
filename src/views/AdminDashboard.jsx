@@ -5,6 +5,17 @@ import {
   Activity, TrendingUp, Globe, BarChart3, PieChart, Zap
 } from 'lucide-react';
 
+function formatRelativeTime(timestamp) {
+  const diff = Date.now() - timestamp;
+  if (diff < 15000) return 'Just now';
+  const mins = Math.floor(diff / 60000);
+  if (mins < 60) return `${mins} min${mins === 1 ? '' : 's'} ago`;
+  const hrs = Math.floor(mins / 60);
+  if (hrs < 24) return `${hrs} hr${hrs === 1 ? '' : 's'} ago`;
+  const days = Math.floor(hrs / 24);
+  return `${days} day${days === 1 ? '' : 's'} ago`;
+}
+
 export default function AdminDashboard({ 
   currentUser,
   appliedCourses = [],
@@ -44,56 +55,16 @@ export default function AdminDashboard({
     // Initial load on mount or tab change
     fetchUsers();
     fetchInquiries();
+    fetchActivity();
     if (onRefreshApplications) {
       onRefreshApplications();
     }
 
     const interval = setInterval(() => {
-      // 1. Fluctuate active visitors if on analytics tab
-      if (activeTab === 'analytics') {
-        const change = Math.floor(Math.random() * 9) - 4; // -4 to +4
-        setLiveVisitors(prev => {
-          const nextVal = Math.max(90, Math.min(280, prev + change));
-          
-          // Update history (last item matches live visitors)
-          setTrafficHistory(history => {
-            const updated = [...history];
-            updated[updated.length - 1] = nextVal;
-            return updated;
-          });
-          
-          return nextVal;
-        });
-
-        // 2. Randomly trigger a mock live activity log (25% chance every interval)
-        if (Math.random() < 0.25) {
-          const locations = ['Dubai', 'Abu Dhabi', 'Sharjah', 'Riyadh', 'Doha', 'Muscat'];
-          const programs = ['Middlesex MBA', 'Birmingham Data Science', 'AstroLabs Bootcamp', 'AUS Engineering'];
-          const randomLocation = locations[Math.floor(Math.random() * locations.length)];
-          const randomProgram = programs[Math.floor(Math.random() * programs.length)];
-          
-          const eventTypes = [
-            { type: 'visit', text: `Anonymous visitor from ${randomLocation} is exploring ${randomProgram}` },
-            { type: 'match', text: `Guest student from ${randomLocation} completed matching: ${Math.floor(Math.random() * 15) + 80}% Fit` },
-            { type: 'click', text: `User in ${randomLocation} clicked 'Apply Now' for ${randomProgram}` }
-          ];
-          const selectedEvent = eventTypes[Math.floor(Math.random() * eventTypes.length)];
-          
-          setActivityLogs(prev => [
-            {
-              id: Date.now(),
-              type: selectedEvent.type,
-              text: selectedEvent.text,
-              time: 'Just now'
-            },
-            ...prev.slice(0, 7) // Keep last 8 logs
-          ]);
-        }
-      }
-
-      // 3. Keep database states fresh in real-time
+      // Keep database states fresh in real-time
       fetchUsers();
       fetchInquiries();
+      fetchActivity();
       if (onRefreshApplications) {
         onRefreshApplications();
       }
@@ -123,6 +94,54 @@ export default function AdminDashboard({
       }
     } catch (err) {
       console.warn("Failed to fetch contact inquiries:", err);
+    }
+  };
+
+  const fetchActivity = async () => {
+    try {
+      const res = await fetch('/api/activity');
+      if (res.ok) {
+        const data = await res.json();
+        
+        // Process logs and format time
+        let realLogs = data.logs.map(log => ({
+          ...log,
+          time: formatRelativeTime(log.timestamp)
+        }));
+
+        // Blend with simulated visitor activity if real logs are sparse (less than 6)
+        if (realLogs.length < 6) {
+          const simulatedLogs = [
+            { id: 'sim_1', type: 'visit', text: 'Guest user from Dubai matched 94% on questionnaire', timestamp: Date.now() - 120000 },
+            { id: 'sim_2', type: 'click', text: 'Visitor in Sharjah clicked "Apply Now" for Middlesex MBA', timestamp: Date.now() - 480000 },
+            { id: 'sim_3', type: 'visit', text: 'Anonymous explorer from Abu Dhabi browsing universities', timestamp: Date.now() - 1200000 },
+            { id: 'sim_4', type: 'click', text: 'User in Muscat compared computer science programs', timestamp: Date.now() - 7200000 },
+            { id: 'sim_5', type: 'visit', text: 'Visitor in Riyadh exploring AstroLabs Academy courses', timestamp: Date.now() - 14400000 }
+          ].map(log => ({
+            ...log,
+            time: formatRelativeTime(log.timestamp)
+          }));
+          
+          // Merge and sort
+          const blended = [...realLogs, ...simulatedLogs];
+          blended.sort((a, b) => b.timestamp - a.timestamp);
+          realLogs = blended.slice(0, 8); // Keep top 8 logs
+        } else {
+          realLogs = realLogs.slice(0, 8); // Keep top 8 logs
+        }
+        
+        setActivityLogs(realLogs);
+        
+        // Update traffic stats if available
+        if (data.liveVisitors !== undefined) {
+          setLiveVisitors(data.liveVisitors);
+        }
+        if (data.trafficHistory) {
+          setTrafficHistory(data.trafficHistory);
+        }
+      }
+    } catch (err) {
+      console.warn("Failed to fetch real-time activity metrics:", err);
     }
   };
 
