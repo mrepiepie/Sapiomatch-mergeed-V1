@@ -561,6 +561,24 @@ export default function Home({ setView, setExploreSearchTerm, onUpgradePremium }
 
       {/* Mission Summary / Core Vision Section & Degree Program Navigator */}
       <section style={{ padding: '60px 24px', borderTop: '1px solid var(--card-border)' }}>
+        <style dangerouslySetInnerHTML={{__html: `
+          .expandable-vision-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+          }
+          .expandable-vision-card:hover {
+            border-color: rgba(255, 255, 255, 0.15) !important;
+            background: rgba(255, 255, 255, 0.02) !important;
+          }
+          .expandable-vision-card:hover .detailed-text {
+            max-height: 250px !important;
+            opacity: 1 !important;
+            margin-top: 12px !important;
+          }
+          .expandable-vision-card:hover .chevron-indicator {
+            transform: rotate(180deg) !important;
+            color: white !important;
+          }
+        `}} />
         <div style={{ maxWidth: '1000px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '60px' }}>
           {/* Mission Summary */}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '40px', alignItems: 'start' }}>
@@ -577,25 +595,73 @@ export default function Home({ setView, setExploreSearchTerm, onUpgradePremium }
               </p>
             </div>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '32px', textAlign: 'left' }}>
-              <div>
-                <h4 style={{ fontSize: '17px', fontWeight: 600, color: 'white', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--primary)', boxShadow: '0 0 8px var(--primary-glow)' }} />
-                  100% Unbiased Compatibility Scoring
-                </h4>
-                <p style={{ color: 'var(--text-muted)', fontSize: '14px', lineHeight: '1.6' }}>
-                  Our proprietary match scoring engine works strictly in the interest of the candidate. Every compatibility rating is generated using forensic validation metrics, measuring your specific target region, learning formats, timeline preferences, and budgetary constraints directly against verified data templates updated by the partner institutions themselves. We accept no paid placements to boost rankings, ensuring that a 100% match represents true academic and environmental alignment.
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', textAlign: 'left' }}>
+              <div 
+                className="spotlight-card expandable-vision-card"
+                onMouseMove={handleMouseMove} 
+                onMouseLeave={handleMouseLeave}
+                style={{ 
+                  padding: '24px', 
+                  '--spotlight-color': 'rgba(16, 185, 129, 0.12)', 
+                  cursor: 'pointer',
+                  position: 'relative'
+                }}
+              >
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                  <h4 style={{ fontSize: '16px', fontWeight: 700, color: 'white', margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <Shield size={16} style={{ color: 'var(--primary)' }} />
+                    100% Unbiased Compatibility Scoring
+                  </h4>
+                  <span className="chevron-indicator" style={{ color: 'var(--primary)', fontSize: '16px', fontWeight: 'bold', transition: 'transform 0.4s ease' }}>↓</span>
+                </div>
+                <p style={{ color: 'var(--text-muted)', fontSize: '13.5px', margin: 0, lineHeight: '1.5' }}>
+                  Forensic validation scoring with zero paid placements.
                 </p>
+                <div className="detailed-text" style={{ 
+                  color: 'rgba(209, 213, 219, 0.8)', 
+                  fontSize: '13px', 
+                  lineHeight: '1.6', 
+                  maxHeight: '0px', 
+                  opacity: 0, 
+                  overflow: 'hidden', 
+                  transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)' 
+                }}>
+                  Our proprietary match scoring engine works strictly in the interest of the candidate. Every compatibility rating is generated using forensic validation metrics, measuring your specific target region, learning formats, timeline preferences, and budgetary constraints directly against verified data templates updated by the partner institutions themselves. We accept no paid placements to boost rankings, ensuring that a 100% match represents true academic and environmental alignment.
+                </div>
               </div>
 
-              <div>
-                <h4 style={{ fontSize: '17px', fontWeight: 600, color: 'white', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--secondary)', boxShadow: '0 0 8px var(--secondary-glow)' }} />
-                  Direct Admission Desk Communications
-                </h4>
-                <p style={{ color: 'var(--text-muted)', fontSize: '14px', lineHeight: '1.6' }}>
-                  We bridge the gap between candidates and university representatives. Instead of navigating confusing application forms or third-party recruiters, the SapioMatch portal lets you submit pre-screened packages directly to the partner admissions desk. This direct channel facilitates fast portfolio reviews, credentials provisioning, and automated email callbacks, placing you in control of your academic matching journey.
+              <div 
+                className="spotlight-card expandable-vision-card"
+                onMouseMove={handleMouseMove} 
+                onMouseLeave={handleMouseLeave}
+                style={{ 
+                  padding: '24px', 
+                  '--spotlight-color': 'rgba(251, 146, 60, 0.12)', 
+                  cursor: 'pointer',
+                  position: 'relative'
+                }}
+              >
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                  <h4 style={{ fontSize: '16px', fontWeight: 700, color: 'white', margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <BookOpen size={16} style={{ color: 'var(--secondary)' }} />
+                    Direct Admission Desk Communications
+                  </h4>
+                  <span className="chevron-indicator" style={{ color: 'var(--secondary)', fontSize: '16px', fontWeight: 'bold', transition: 'transform 0.4s ease' }}>↓</span>
+                </div>
+                <p style={{ color: 'var(--text-muted)', fontSize: '13.5px', margin: 0, lineHeight: '1.5' }}>
+                  Submit pre-screened packages directly to partner admissions desks.
                 </p>
+                <div className="detailed-text" style={{ 
+                  color: 'rgba(209, 213, 219, 0.8)', 
+                  fontSize: '13px', 
+                  lineHeight: '1.6', 
+                  maxHeight: '0px', 
+                  opacity: 0, 
+                  overflow: 'hidden', 
+                  transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)' 
+                }}>
+                  We bridge the gap between candidates and university representatives. Instead of navigating confusing application forms or third-party recruiters, the SapioMatch portal lets you submit pre-screened packages directly to the partner admissions desk. This direct channel facilitates fast portfolio reviews, credentials provisioning, and automated email callbacks, placing you in control of your academic matching journey.
+                </div>
               </div>
             </div>
           </div>
