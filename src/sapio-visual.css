@@ -6141,18 +6141,22 @@ html.sapio-home-snap .sapio-journey-section {
 .app-container > header.sapio-nav-island.is-open,
 .app-container > header.sapio-nav-island:hover,
 .app-container > header.sapio-nav-island:focus-within {
-  background: rgba(11, 15, 25, 0.98) !important; /* Deep dark high-contrast background */
+  background-color: color-mix(in srgb, var(--sapio-glass-tint) 11%, transparent) !important; /* Original transparent glass background */
   border: 1.5px solid rgba(139, 92, 246, 0.45) !important; /* Rich purple glowing border */
   box-shadow: 
     0 24px 60px rgba(0, 0, 0, 0.6),
     0 0 30px rgba(139, 92, 246, 0.25) !important;
 }
 
-/* Make all buttons inside actions list bold and clear */
+/* Make all buttons inside actions list, menu toggle, and navigation links bold and clear */
 .sapio-island-actions .btn-premium-outline,
 .sapio-island-actions .btn-premium,
-.sapio-island-actions .sapio-island-menu-btn {
-  font-weight: 700 !important;
+.sapio-island-actions .sapio-island-menu-btn,
+.sapio-nav-island nav .nav-link,
+.sapio-nav-island nav button,
+.sapio-nav-island nav .nav-link span,
+.sapio-nav-island nav button span {
+  font-weight: 800 !important; /* Extra bold text */
   font-family: var(--font-sans), system-ui, sans-serif !important;
   letter-spacing: 0.02em !important;
   text-shadow: 0 1px 2px rgba(0,0,0,0.5) !important;
