@@ -1595,7 +1595,7 @@ export default function App() {
           
           {/* Notification Center (Only visible when logged in) */}
           {currentUser && (
-            <div style={{ position: 'relative' }}>
+            <div style={{ position: 'relative', width: '100%' }}>
               <button 
                 onClick={() => {
                   setShowNotifications(!showNotifications);
@@ -1603,30 +1603,34 @@ export default function App() {
                     markAllNotificationsRead();
                   }
                 }}
-                className="btn-premium-outline"
+                className="btn-premium-outline btn-notification-bell"
                 style={{ 
-                  padding: '8px', 
-                  borderRadius: '50%', 
-                  position: 'relative', 
+                  padding: '8px 14px', 
+                  fontSize: '13px',
                   display: 'flex', 
                   alignItems: 'center', 
                   justifyContent: 'center',
-                  borderColor: unreadNotifCount > 0 ? 'var(--secondary)' : 'var(--card-border)'
+                  gap: '8px',
+                  position: 'relative',
+                  width: '100%'
                 }}
                 title="Notifications"
               >
-                <Bell size={16} style={{ color: unreadNotifCount > 0 ? 'var(--secondary)' : 'var(--text-muted)' }} />
+                <Bell size={16} strokeWidth={2.5} style={{ color: unreadNotifCount > 0 ? 'var(--secondary)' : 'var(--text-muted)' }} />
+                <span>Notifications</span>
                 {unreadNotifCount > 0 && (
                   <span style={{
-                    position: 'absolute',
-                    top: '-2px',
-                    right: '-2px',
-                    width: '8px',
-                    height: '8px',
-                    borderRadius: '50%',
                     background: 'var(--secondary)',
-                    boxShadow: '0 0 8px var(--secondary)'
-                  }} />
+                    color: '#0b0f19',
+                    fontSize: '10px',
+                    fontWeight: 800,
+                    padding: '1px 6px',
+                    borderRadius: '999px',
+                    marginLeft: 'auto',
+                    border: '1px solid #0b0f19'
+                  }}>
+                    {unreadNotifCount} New
+                  </span>
                 )}
               </button>
 
@@ -1711,60 +1715,46 @@ export default function App() {
 
           {/* Student ID Passport Badge (Only for Students) */}
           {currentUser && currentUser.role === 'Student' && (
-            <div 
+            <button 
               onClick={() => {
                 setView('user-dashboard');
                 setNavMenuOpen(false);
               }}
-              className="anim-glow"
+              className={`btn-premium-outline btn-passport-badge ${plan === 'Premium' ? 'premium-plan' : ''}`}
               style={{
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                width: '38px',
-                height: '38px',
-                borderRadius: '50%',
-                background: plan === 'Premium'
-                  ? 'linear-gradient(135deg, rgba(251, 146, 60, 0.2) 0%, rgba(217, 119, 6, 0.2) 100%)'
-                  : 'rgba(52, 211, 153, 0.1)',
-                border: plan === 'Premium'
-                  ? '1px solid var(--secondary)'
-                  : '1px solid rgba(52, 211, 153, 0.3)',
-                cursor: 'pointer',
-                color: plan === 'Premium' ? 'var(--secondary)' : 'var(--primary)',
-                boxShadow: plan === 'Premium' ? '0 0 12px rgba(251, 146, 60, 0.3)' : '0 0 10px rgba(52, 211, 153, 0.15)',
-                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                gap: '8px',
+                width: '100%',
+                padding: '8px 14px',
+                fontSize: '13px',
                 position: 'relative'
               }}
               title={`Digital Student Passport: ${plan} Plan (${credits} Credits)`}
             >
-              <GraduationCap size={18} style={{ color: plan === 'Premium' ? 'var(--secondary)' : 'var(--primary)' }} />
+              <GraduationCap size={16} strokeWidth={2.5} style={{ color: plan === 'Premium' ? 'var(--secondary)' : 'var(--primary)' }} />
+              <span>{plan} Passport</span>
               <span style={{
-                position: 'absolute',
-                top: '-4px',
-                right: '-4px',
                 background: plan === 'Premium' ? 'var(--secondary)' : 'var(--primary)',
                 color: '#0b0f19',
-                fontSize: '9px',
+                fontSize: '10px',
                 fontWeight: 800,
-                width: '18px',
-                height: '18px',
-                borderRadius: '50%',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
+                padding: '1px 6px',
+                borderRadius: '999px',
+                marginLeft: 'auto',
                 border: '1px solid #0b0f19'
               }}>
-                {credits}
+                {credits} Credits
               </span>
-            </div>
+            </button>
           )}
 
           {/* User auth details / login */}
           {currentUser ? (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', width: '100%' }}>
               <button 
-                className="btn-premium-outline"
+                className="btn-premium-outline btn-user-profile"
                 onClick={() => {
                   setView(currentUser.role === 'Admin' ? 'admin-dashboard' : (currentUser.role === 'University' ? 'institution-dashboard' : 'user-dashboard'));
                   setNavMenuOpen(false);
@@ -1779,13 +1769,13 @@ export default function App() {
                   alignItems: 'center'
                 }}
               >
-                <User size={14} style={{ flexShrink: 0 }} />
+                <User size={14} strokeWidth={2.5} style={{ flexShrink: 0 }} />
                 <span style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>
                   {currentUser.name} ({currentUser.role})
                 </span>
               </button>
               <button 
-                className="btn-premium-outline"
+                className="btn-premium-outline btn-signout"
                 onClick={() => {
                   handleSignOut();
                   setNavMenuOpen(false);
@@ -1794,15 +1784,13 @@ export default function App() {
                   padding: '8px 14px', 
                   fontSize: '13px', 
                   gap: '6px', 
-                  color: 'var(--accent)', 
-                  borderColor: 'rgba(153, 27, 27, 0.2)', 
                   width: '100%', 
                   justifyContent: 'center',
                   display: 'flex',
                   alignItems: 'center'
                 }}
               >
-                <LogOut size={14} style={{ flexShrink: 0 }} />
+                <LogOut size={14} strokeWidth={2.5} style={{ flexShrink: 0 }} />
                 <span>Sign Out</span>
               </button>
             </div>
@@ -1827,11 +1815,24 @@ export default function App() {
             aria-controls="sapio-island-menu"
             aria-label={navMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
             onClick={() => setNavMenuOpen((open) => !open)}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '10px',
+              width: '100%',
+              padding: '0 14px',
+              height: '42px',
+              minHeight: '42px'
+            }}
           >
-            <span className="sapio-menu-bars" aria-hidden="true">
+            <span className="sapio-menu-bars" aria-hidden="true" style={{ position: 'relative', left: 'auto', top: 'auto', margin: 0 }}>
               <span />
               <span />
               <span />
+            </span>
+            <span style={{ fontSize: '13px', fontWeight: 700 }}>
+              {navMenuOpen ? 'Close Menu' : 'Navigation Menu'}
             </span>
           </button>
 

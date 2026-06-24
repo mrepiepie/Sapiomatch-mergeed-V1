@@ -6136,3 +6136,102 @@ html.sapio-home-snap .sapio-journey-section {
     animation: none !important;
   }
 }
+
+/* Navigation Island Readability & Contrast Enhancements */
+.app-container > header.sapio-nav-island.is-open,
+.app-container > header.sapio-nav-island:hover,
+.app-container > header.sapio-nav-island:focus-within {
+  background: rgba(11, 15, 25, 0.98) !important; /* Deep dark high-contrast background */
+  border: 1.5px solid rgba(139, 92, 246, 0.45) !important; /* Rich purple glowing border */
+  box-shadow: 
+    0 24px 60px rgba(0, 0, 0, 0.6),
+    0 0 30px rgba(139, 92, 246, 0.25) !important;
+}
+
+/* Make all buttons inside actions list bold and clear */
+.sapio-island-actions .btn-premium-outline,
+.sapio-island-actions .btn-premium,
+.sapio-island-actions .sapio-island-menu-btn {
+  font-weight: 700 !important;
+  font-family: var(--font-sans), system-ui, sans-serif !important;
+  letter-spacing: 0.02em !important;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.5) !important;
+}
+
+/* User profile button styling */
+.sapio-island-actions .btn-user-profile {
+  background: rgba(255, 255, 255, 0.12) !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.3) !important;
+  color: #ffffff !important;
+}
+
+.sapio-island-actions .btn-user-profile:hover {
+  background: rgba(255, 255, 255, 0.2) !important;
+  border-color: rgba(255, 255, 255, 0.5) !important;
+}
+
+/* Sign out button styling */
+.sapio-island-actions .btn-signout {
+  background: rgba(239, 68, 68, 0.15) !important;
+  border: 1.5px solid rgba(239, 68, 68, 0.4) !important;
+  color: #fca5a5 !important; /* Brighter coral red for contrast */
+}
+
+.sapio-island-actions .btn-signout:hover {
+  background: rgba(239, 68, 68, 0.25) !important;
+  border-color: rgba(239, 68, 68, 0.6) !important;
+  color: #ffffff !important;
+}
+
+/* Notification Bell button styling */
+.sapio-island-actions .btn-notification-bell {
+  background: rgba(255, 255, 255, 0.12) !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.3) !important;
+  border-radius: 14px !important;
+  color: #ffffff !important;
+}
+
+.sapio-island-actions .btn-notification-bell:hover {
+  background: rgba(255, 255, 255, 0.2) !important;
+  border-color: rgba(255, 255, 255, 0.5) !important;
+}
+
+/* Passport Badge styling */
+.sapio-island-actions .btn-passport-badge {
+  background: rgba(52, 211, 153, 0.12) !important;
+  border: 1.5px solid rgba(52, 211, 153, 0.4) !important;
+  border-radius: 14px !important;
+  color: #a7f3d0 !important;
+}
+
+.sapio-island-actions .btn-passport-badge.premium-plan {
+  background: linear-gradient(135deg, rgba(251, 146, 60, 0.2) 0%, rgba(217, 119, 6, 0.2) 100%) !important;
+  border: 1.5px solid rgba(251, 146, 60, 0.5) !important;
+  color: #ffedd5 !important;
+}
+
+.sapio-island-actions .btn-passport-badge:hover {
+  background: rgba(52, 211, 153, 0.2) !important;
+  border-color: rgba(52, 211, 153, 0.6) !important;
+  color: #ffffff !important;
+}
+
+.sapio-island-actions .btn-passport-badge.premium-plan:hover {
+  background: linear-gradient(135deg, rgba(251, 146, 60, 0.3) 0%, rgba(217, 119, 6, 0.3) 100%) !important;
+  border-color: rgba(251, 146, 60, 0.7) !important;
+  color: #ffffff !important;
+}
+
+/* Burger menu button styling */
+.sapio-island-actions .sapio-island-menu-btn {
+  background: rgba(59, 130, 246, 0.15) !important;
+  border: 1.5px solid rgba(59, 130, 246, 0.4) !important;
+  border-radius: 14px !important;
+  color: #bfdbfe !important;
+}
+
+.sapio-island-actions .sapio-island-menu-btn:hover {
+  background: rgba(59, 130, 246, 0.25) !important;
+  border-color: rgba(59, 130, 246, 0.6) !important;
+  color: #ffffff !important;
+}
