@@ -84,20 +84,38 @@ const testimonials = [
   {
     name: "Umar Ibrohimov",
     meta: "Royal Holloway University (Foundation Year), Egham, UK - Tashkent, Uzbekistan",
-    image: "/imports/student_umar.png",
+    image: "/imports/testimonials/avatar-umar.jpg",
     quote: "I've been stressing about my major for months. The personality test broke down my preferences and suggested degrees I actually liked. The PDF report was easier than trying to explain everything myself."
   },
   {
     name: "A. M.",
-    initials: "AM",
     meta: "Almaty, Kazakhstan",
+    image: "/imports/testimonials/avatar-am.jpg",
     quote: "The university comparator is great because I could put my top choices side-by-side to see the real difference in fees, rankings, and requirements."
   },
   {
     name: "B. K.",
-    initials: "BK",
     meta: "Dubai, United Arab Emirates",
+    image: "/imports/testimonials/avatar-bk.jpg",
     quote: "I thought this would be another search engine, but it felt like having a consultant working in one session. I got my course list and could focus on IELTS instead of digging through university pages."
+  },
+  {
+    name: "Lina Foster",
+    meta: "Manchester, United Kingdom",
+    image: "/imports/testimonials/avatar-lina.jpg",
+    quote: "SapioMatch helped me see which universities fit both my budget and career plans. I stopped guessing and finally had a shortlist that made sense."
+  },
+  {
+    name: "Daniel Reed",
+    meta: "Toronto, Canada",
+    image: "/imports/testimonials/avatar-daniel.jpg",
+    quote: "The match breakdown made the decision feel less overwhelming. I could compare outcomes, costs, and course structure without opening twenty tabs."
+  },
+  {
+    name: "Maya Karim",
+    meta: "Dubai, United Arab Emirates",
+    image: "/imports/testimonials/avatar-maya.jpg",
+    quote: "I liked that it felt personal but still data-driven. The recommendations gave me options I had not considered and helped me apply with confidence."
   }
 ];
 
@@ -106,6 +124,8 @@ export default function SapioLegacySections({ setView }) {
   const [activeVisaTab, setActiveVisaTab] = useState("eligibility");
   const [visaReady, setVisaReady] = useState(false);
   const [activeTestimonial, setActiveTestimonial] = useState(0);
+  const [testimonialPaused, setTestimonialPaused] = useState(false);
+  const [testimonialInView, setTestimonialInView] = useState(false);
   const [stats, setStats] = useState({ universities: 0, programmes: 0, students: 0 });
   const choiceSectionRef = useRef(null);
   const testimonialSectionRef = useRef(null);
@@ -184,17 +204,29 @@ export default function SapioLegacySections({ setView }) {
     if (!section) return;
 
     let intervalId = 0;
+    let isVisible = false;
+    const startRotation = () => {
+      if (!isVisible || testimonialPaused || intervalId) return;
+      intervalId = window.setInterval(() => {
+        setActiveTestimonial((prev) => (prev + 3) % testimonials.length);
+      }, 3900);
+    };
+
+    const stopRotation = () => {
+      if (!intervalId) return;
+      window.clearInterval(intervalId);
+      intervalId = 0;
+    };
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         const visible = entry.isIntersecting && entry.intersectionRatio >= 0.24;
-        if (visible && !intervalId) {
-    intervalId = window.setInterval(() => {
-      setActiveTestimonial((prev) => (prev + 1) % testimonials.length);
-    }, 3000);
-        }
-        if (!visible && intervalId) {
-          window.clearInterval(intervalId);
-          intervalId = 0;
+        isVisible = visible;
+        setTestimonialInView(visible);
+        if (visible) {
+          startRotation();
+        } else {
+          stopRotation();
         }
       },
       { threshold: [0, 0.24], rootMargin: "-8% 0px -8% 0px" }
@@ -203,11 +235,11 @@ export default function SapioLegacySections({ setView }) {
     observer.observe(section);
     return () => {
       observer.disconnect();
-      if (intervalId) window.clearInterval(intervalId);
+      stopRotation();
     };
-  }, []);
+  }, [testimonialPaused]);
 
-  const visibleTestimonials = testimonials.map((_, offset) => testimonials[(activeTestimonial + offset) % testimonials.length]);
+  const visibleTestimonials = Array.from({ length: Math.min(3, testimonials.length) }, (_, offset) => testimonials[(activeTestimonial + offset) % testimonials.length]);
 
   const renderVisaPanel = () => {
     if (activeVisaTab === "study") {
@@ -506,14 +538,30 @@ export default function SapioLegacySections({ setView }) {
           <h2>Hear from Our Students</h2>
           <p>Real stories from students who found their path with SapioMatch AI</p>
         </div>
-        <div className="sapio-testimonial-stage">
+        <div
+          className={`sapio-testimonial-stage ${testimonialPaused ? "is-paused" : ""} ${testimonialInView ? "is-visible" : ""}`}
+          onMouseEnter={() => setTestimonialPaused(true)}
+          onMouseLeave={() => setTestimonialPaused(false)}
+          onFocus={() => setTestimonialPaused(true)}
+          onBlur={(event) => {
+            if (!event.currentTarget.contains(event.relatedTarget)) {
+              setTestimonialPaused(false);
+            }
+          }}
+        >
           {visibleTestimonials.map((item, index) => (
             <article key={`${item.name}-${activeTestimonial}-${index}`} className={`sapio-testimonial-card ${index === 0 ? "is-active" : ""}`}>
-              {item.image ? <img src={item.image} alt={item.name} /> : <div className="sapio-avatar">{item.initials}</div>}
+              <img src={item.image} alt={item.name} />
+              <section>
               <h3>{item.name}</h3>
               <p className="sapio-meta">{item.meta}</p>
               <span className="sapio-quote-mark">“</span>
-              <p>{item.quote}</p>
+              <p className="sapio-testimonial-quote">{item.quote}</p>
+              <div className="sapio-testimonial-actions">
+                <span className="sapio-testimonial-tag">Verified student</span>
+                <button type="button">Story</button>
+              </div>
+              </section>
             </article>
           ))}
         </div>

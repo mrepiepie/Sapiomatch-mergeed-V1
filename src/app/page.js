@@ -805,6 +805,18 @@ export default function App() {
   // Notifications state
   const [notifications, setNotifications] = useState([]);
   const [showNotifications, setShowNotifications] = useState(false);
+  const [navMenuOpen, setNavMenuOpen] = useState(false);
+
+  useEffect(() => {
+    const handleEscape = (event) => {
+      if (event.key === 'Escape') {
+        setNavMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('keydown', handleEscape);
+    return () => document.removeEventListener('keydown', handleEscape);
+  }, []);
 
   // Counselor chat slots & queries counts
   const [chatQueryCount, setChatQueryCount] = useState(0);
@@ -1363,6 +1375,7 @@ export default function App() {
             setView={setView} 
             setExploreSearchTerm={setExploreSearchTerm} 
             onUpgradePremium={() => setIsCheckoutOpen(true)} 
+            isPageReady={!loading}
           />
         );
       case 'public-explore':
@@ -1463,6 +1476,7 @@ export default function App() {
             setView={setView} 
             setExploreSearchTerm={setExploreSearchTerm} 
             onUpgradePremium={() => setIsCheckoutOpen(true)} 
+            isPageReady={!loading}
           />
         );
     }
@@ -1473,6 +1487,27 @@ export default function App() {
   return (
     <div className="app-container">
       <SapioVisualShell />
+      <svg className="sapio-liquid-glass-filter" aria-hidden="true" focusable="false">
+        <filter id="sapio-liquid-glass" x="0%" y="0%" width="100%" height="100%">
+          <feTurbulence type="fractalNoise" baseFrequency="0.007 0.011" numOctaves="2" seed="92" result="noise">
+            <animate
+              attributeName="baseFrequency"
+              dur="11s"
+              values="0.007 0.011;0.012 0.007;0.008 0.013;0.007 0.011"
+              repeatCount="indefinite"
+            />
+          </feTurbulence>
+          <feGaussianBlur in="noise" stdDeviation="0.02" result="blur" />
+          <feDisplacementMap in="SourceGraphic" in2="blur" scale="11" xChannelSelector="R" yChannelSelector="G">
+            <animate
+              attributeName="scale"
+              dur="9s"
+              values="8;13;10;8"
+              repeatCount="indefinite"
+            />
+          </feDisplacementMap>
+        </filter>
+      </svg>
 
       {/* Loading Overlay */}
       {loading && (
@@ -1499,7 +1534,7 @@ export default function App() {
       )}
 
       {/* Header / Navigation bar */}
-      <header style={{
+      <header className={`sapio-nav-island ${navMenuOpen ? 'is-open' : ''}`} style={{
         position: 'fixed',
         top: 0,
         left: 0,
@@ -1516,7 +1551,21 @@ export default function App() {
       }}>
         {/* Logo */}
         <div 
-          onClick={() => setView('public-home')} 
+          onClick={() => {
+            setView('public-home');
+            setNavMenuOpen(false);
+          }} 
+          role="button"
+          tabIndex={0}
+          onKeyDown={(event) => {
+            if (event.key === 'Enter' || event.key === ' ') {
+              event.preventDefault();
+              setView('public-home');
+              setNavMenuOpen(false);
+            }
+          }}
+          aria-label="Go to SapioMatch AI home"
+          className="sapio-island-brand"
           style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer' }}
         >
           <div style={{
@@ -1541,61 +1590,8 @@ export default function App() {
           </span>
         </div>
 
-        {/* Navigation links */}
-        <nav style={{ display: 'flex', gap: '30px', alignItems: 'center' }}>
-          <button onClick={() => setView('public-home')} className={`nav-link ${view === 'public-home' ? 'active' : ''}`}>
-            Home
-          </button>
-          <button onClick={() => setView('about')} className={`nav-link ${view === 'about' ? 'active' : ''}`}>
-            About Us
-          </button>
-          <button onClick={() => setView('contact')} className={`nav-link ${view === 'contact' ? 'active' : ''}`}>
-            Contact Us
-          </button>
-          <button onClick={() => setView('public-explore')} className={`nav-link ${(view === 'public-explore' || view === 'institution-detail') ? 'active' : ''}`}>
-            Explore Courses
-          </button>
-          <button onClick={() => setView('questionnaire')} className={`nav-link ${(view === 'questionnaire' || view === 'results') ? 'active' : ''}`}>
-            AI Matching
-          </button>
-          {currentUser && currentUser.role === 'Admin' && (
-            <button 
-              onClick={() => setView('admin-dashboard')} 
-              style={{ 
-                color: view === 'admin-dashboard' ? 'white' : 'var(--text-muted)',
-                fontWeight: 600,
-                fontSize: '13px',
-                cursor: 'pointer',
-                border: '1px solid var(--accent)',
-                padding: '4px 8px',
-                borderRadius: '4px',
-                background: 'rgba(153, 27, 27, 0.05)'
-              }}
-            >
-              Admin Controls
-            </button>
-          )}
-          {currentUser && currentUser.role === 'University' && (
-            <button 
-              onClick={() => setView('institution-dashboard')} 
-              style={{ 
-                color: view === 'institution-dashboard' ? 'white' : 'var(--text-muted)',
-                fontWeight: 600,
-                fontSize: '13px',
-                cursor: 'pointer',
-                border: '1px solid var(--secondary)',
-                padding: '4px 8px',
-                borderRadius: '4px',
-                background: 'rgba(180, 83, 9, 0.05)'
-              }}
-            >
-              University Panel
-            </button>
-          )}
-        </nav>
-
         {/* Right Nav Action */}
-        <div style={{ display: 'flex', gap: '12px', alignItems: 'center', position: 'relative' }}>
+        <div className="sapio-island-actions" style={{ display: 'flex', gap: '12px', alignItems: 'center', position: 'relative' }}>
           
           {/* Notification Center (Only visible when logged in) */}
           {currentUser && (
@@ -1717,7 +1713,10 @@ export default function App() {
           {/* Student ID Passport Badge (Only for Students) */}
           {currentUser && currentUser.role === 'Student' && (
             <div 
-              onClick={() => setView('user-dashboard')}
+              onClick={() => {
+                setView('user-dashboard');
+                setNavMenuOpen(false);
+              }}
               className="anim-glow"
               style={{
                 display: 'flex',
@@ -1767,7 +1766,10 @@ export default function App() {
             <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
               <button 
                 className="btn-premium-outline"
-                onClick={() => setView(currentUser.role === 'Admin' ? 'admin-dashboard' : (currentUser.role === 'University' ? 'institution-dashboard' : 'user-dashboard'))}
+                onClick={() => {
+                  setView(currentUser.role === 'Admin' ? 'admin-dashboard' : (currentUser.role === 'University' ? 'institution-dashboard' : 'user-dashboard'));
+                  setNavMenuOpen(false);
+                }}
                 style={{ padding: '8px 14px', fontSize: '13px', gap: '6px' }}
               >
                 <User size={14} />
@@ -1775,7 +1777,10 @@ export default function App() {
               </button>
               <button 
                 className="btn-premium-outline"
-                onClick={handleSignOut}
+                onClick={() => {
+                  handleSignOut();
+                  setNavMenuOpen(false);
+                }}
                 style={{ padding: '8px 14px', fontSize: '13px', color: 'var(--accent)', borderColor: 'rgba(153, 27, 27, 0.2)' }}
               >
                 <LogOut size={14} />
@@ -1784,17 +1789,91 @@ export default function App() {
           ) : (
             <button 
               className="btn-premium-outline"
-              onClick={() => setView('auth')}
+              onClick={() => {
+                setView('auth');
+                setNavMenuOpen(false);
+              }}
               style={{ padding: '8px 14px', fontSize: '13px', gap: '6px' }}
             >
               <LogIn size={14} />
               Sign In
             </button>
           )}
+
+          <button
+            type="button"
+            className="sapio-island-menu-btn"
+            aria-expanded={navMenuOpen}
+            aria-controls="sapio-island-menu"
+            aria-label={navMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
+            onClick={() => setNavMenuOpen((open) => !open)}
+          >
+            <span className="sapio-menu-bars" aria-hidden="true">
+              <span />
+              <span />
+              <span />
+            </span>
+          </button>
+
+          {/* Navigation links */}
+          <nav id="sapio-island-menu" aria-hidden={!navMenuOpen} style={{ display: 'flex', gap: '30px', alignItems: 'center' }}>
+            <button onClick={() => { setView('public-home'); setNavMenuOpen(false); }} className={`nav-link ${view === 'public-home' ? 'active' : ''}`}>
+              <span>Home</span><span className="sapio-menu-num">01</span>
+            </button>
+            <button onClick={() => { setView('about'); setNavMenuOpen(false); }} className={`nav-link ${view === 'about' ? 'active' : ''}`}>
+              <span>About Us</span><span className="sapio-menu-num">02</span>
+            </button>
+            <button onClick={() => { setView('contact'); setNavMenuOpen(false); }} className={`nav-link ${view === 'contact' ? 'active' : ''}`}>
+              <span>Contact Us</span><span className="sapio-menu-num">03</span>
+            </button>
+            <button onClick={() => { setView('public-explore'); setNavMenuOpen(false); }} className={`nav-link ${(view === 'public-explore' || view === 'institution-detail') ? 'active' : ''}`}>
+              <span>Explore Courses</span><span className="sapio-menu-num">04</span>
+            </button>
+            <button onClick={() => { setView('questionnaire'); setNavMenuOpen(false); }} className={`nav-link ${(view === 'questionnaire' || view === 'results') ? 'active' : ''}`}>
+              <span>AI Matching</span><span className="sapio-menu-num">05</span>
+            </button>
+            {currentUser && currentUser.role === 'Admin' && (
+              <button
+                onClick={() => { setView('admin-dashboard'); setNavMenuOpen(false); }}
+                style={{
+                  color: view === 'admin-dashboard' ? 'white' : 'var(--text-muted)',
+                  fontWeight: 600,
+                  fontSize: '13px',
+                  cursor: 'pointer',
+                  border: '1px solid var(--accent)',
+                  padding: '4px 8px',
+                  borderRadius: '4px',
+                  background: 'rgba(153, 27, 27, 0.05)'
+                }}
+              >
+                Admin Controls
+              </button>
+            )}
+            {currentUser && currentUser.role === 'University' && (
+              <button
+                onClick={() => { setView('institution-dashboard'); setNavMenuOpen(false); }}
+                style={{
+                  color: view === 'institution-dashboard' ? 'white' : 'var(--text-muted)',
+                  fontWeight: 600,
+                  fontSize: '13px',
+                  cursor: 'pointer',
+                  border: '1px solid var(--secondary)',
+                  padding: '4px 8px',
+                  borderRadius: '4px',
+                  background: 'rgba(180, 83, 9, 0.05)'
+                }}
+              >
+                University Panel
+              </button>
+            )}
+          </nav>
           
           <button 
             className="btn-premium"
-            onClick={() => setView('questionnaire')}
+            onClick={() => {
+              setView('questionnaire');
+              setNavMenuOpen(false);
+            }}
             style={{ padding: '8px 14px', fontSize: '13px' }}
           >
             Match Now
@@ -1802,6 +1881,13 @@ export default function App() {
           </button>
         </div>
       </header>
+
+      <button
+        type="button"
+        className={`sapio-island-backdrop ${navMenuOpen ? 'is-open' : ''}`}
+        aria-label="Close navigation menu"
+        onClick={() => setNavMenuOpen(false)}
+      />
 
       {/* Main Viewport */}
       <main className="main-content">
