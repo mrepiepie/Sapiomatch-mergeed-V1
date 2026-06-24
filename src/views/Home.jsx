@@ -4,6 +4,7 @@ import gsap from 'gsap';
 import { TextPlugin } from 'gsap/TextPlugin';
 import SapioEarthGlobe from '../components/SapioEarthGlobe';
 import GuidedJourneyTimeline from '../components/GuidedJourneyTimeline';
+import SapioLegacySections from '../components/SapioLegacySections';
 
 export default function Home({ setView, setExploreSearchTerm, onUpgradePremium }) {
   const handleProgramClick = (categorySearch) => {
@@ -771,6 +772,8 @@ export default function Home({ setView, setExploreSearchTerm, onUpgradePremium }
 
 
       <GuidedJourneyTimeline />
+
+      <SapioLegacySections setView={setView} />
 
       {/* Target Audiences Section */}
       <section className="sapio-snap-section sapio-snap-center" style={{ padding: '60px 24px', borderTop: '1px solid var(--card-border)' }}>

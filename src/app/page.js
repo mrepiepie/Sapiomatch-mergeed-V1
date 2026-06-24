@@ -1359,14 +1359,11 @@ export default function App() {
     switch (view) {
       case 'public-home':
         return (
-          <>
-            <Home 
-              setView={setView} 
-              setExploreSearchTerm={setExploreSearchTerm} 
-              onUpgradePremium={() => setIsCheckoutOpen(true)} 
-            />
-            <SapioLegacySections setView={setView} />
-          </>
+          <Home 
+            setView={setView} 
+            setExploreSearchTerm={setExploreSearchTerm} 
+            onUpgradePremium={() => setIsCheckoutOpen(true)} 
+          />
         );
       case 'public-explore':
         return (
@@ -1462,14 +1459,11 @@ export default function App() {
         return <Contact setView={setView} alert={alert} />;
       default:
         return (
-          <>
-            <Home 
-              setView={setView} 
-              setExploreSearchTerm={setExploreSearchTerm} 
-              onUpgradePremium={() => setIsCheckoutOpen(true)} 
-            />
-            <SapioLegacySections setView={setView} />
-          </>
+          <Home 
+            setView={setView} 
+            setExploreSearchTerm={setExploreSearchTerm} 
+            onUpgradePremium={() => setIsCheckoutOpen(true)} 
+          />
         );
     }
   };
