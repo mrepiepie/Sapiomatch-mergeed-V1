@@ -122,7 +122,11 @@ const handleMockFetch = async (url, init) => {
           status: "New",
           date: "2026-06-15"
         }
-      ]
+      ],
+      catalog: {
+        countries: ["United States", "United Kingdom", "Canada", "Australia", "Germany", "United Arab Emirates"],
+        subjects: ["Computer Science", "Business Administration", "Data Science", "Law & Public Policy", "Healthcare & Sciences", "Engineering"]
+      }
     }));
   }
 
@@ -395,6 +399,26 @@ const handleMockFetch = async (url, init) => {
     }
   }
 
+  // Route: /api/catalog (GET or POST)
+  if (url.includes('/api/catalog')) {
+    if (!db.catalog) {
+      db.catalog = {
+        countries: ["United States", "United Kingdom", "Canada", "Australia", "Germany", "United Arab Emirates"],
+        subjects: ["Computer Science", "Business Administration", "Data Science", "Law & Public Policy", "Healthcare & Sciences", "Engineering"]
+      };
+      saveDb(db);
+    }
+    if (method === 'GET') {
+      return makeResponse(db.catalog);
+    }
+    if (method === 'POST') {
+      const { countries, subjects } = body || {};
+      db.catalog = { countries, subjects };
+      saveDb(db);
+      return makeResponse({ success: true, catalog: db.catalog });
+    }
+  }
+
   // Route: /api/contact (GET, POST, or DELETE)
   if (url.includes('/api/contact')) {
     const urlObj = new URL(url, typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000');
@@ -573,7 +597,47 @@ export default function App() {
     return () => window.removeEventListener('sapio_gmail_alert', handleGmailAlert);
   }, []);
 
-  const [view, setView] = useState('public-home');
+  const [view, setViewInternal] = useState('public-home');
+
+  const setView = (newView) => {
+    setViewInternal(newView);
+    if (typeof window !== 'undefined') {
+      if (window.location.hash !== `#${newView}`) {
+        window.history.pushState({ view: newView }, '', `#${newView}`);
+      }
+    }
+  };
+
+  useEffect(() => {
+    const handlePopState = (event) => {
+      if (event.state && event.state.view) {
+        setViewInternal(event.state.view);
+      } else if (window.location.hash) {
+        const hashView = window.location.hash.replace('#', '');
+        if (hashView) setViewInternal(hashView);
+      } else {
+        setViewInternal('public-home');
+      }
+    };
+
+    window.addEventListener('popstate', handlePopState);
+
+    if (typeof window !== 'undefined') {
+      if (window.location.hash) {
+        const hashView = window.location.hash.replace('#', '');
+        if (hashView) {
+          setViewInternal(hashView);
+          window.history.replaceState({ view: hashView }, '', `#${hashView}`);
+        }
+      } else {
+        window.history.replaceState({ view: 'public-home' }, '', '#public-home');
+      }
+    }
+
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, []);
 
   useEffect(() => {
     const root = document.documentElement;

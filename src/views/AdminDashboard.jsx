@@ -50,12 +50,89 @@ export default function AdminDashboard({
   const [newUserRole, setNewUserRole] = useState('Student');
   const [newUserPassword, setNewUserPassword] = useState('password');
 
+  // Catalog edit states
+  const [catalogCountries, setCatalogCountries] = useState([]);
+  const [catalogSubjects, setCatalogSubjects] = useState([]);
+  const [newCountryName, setNewCountryName] = useState('');
+  const [newSubjectName, setNewSubjectName] = useState('');
+
+  const fetchCatalog = async () => {
+    try {
+      const res = await fetch('/api/catalog');
+      if (res.ok) {
+        const data = await res.json();
+        setCatalogCountries(data.countries || []);
+        setCatalogSubjects(data.subjects || []);
+      }
+    } catch (err) {
+      console.warn("Failed to fetch catalog database:", err);
+    }
+  };
+
+  const handleSaveCatalog = async (updatedCountries, updatedSubjects) => {
+    try {
+      const res = await fetch('/api/catalog', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ countries: updatedCountries, subjects: updatedSubjects })
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setCatalogCountries(data.catalog.countries || []);
+        setCatalogSubjects(data.catalog.subjects || []);
+      }
+    } catch (err) {
+      console.warn("Failed to save catalog:", err);
+    }
+  };
+
+  const handleAddCountry = (e) => {
+    e.preventDefault();
+    const val = newCountryName.trim();
+    if (!val) return;
+    if (catalogCountries.includes(val)) {
+      alert("Country already exists in catalog.");
+      return;
+    }
+    const updated = [...catalogCountries, val];
+    handleSaveCatalog(updated, catalogSubjects);
+    setNewCountryName('');
+  };
+
+  const handleDeleteCountry = (countryToDelete) => {
+    if (window.confirm(`Are you sure you want to remove "${countryToDelete}" from the study catalog?`)) {
+      const updated = catalogCountries.filter(c => c !== countryToDelete);
+      handleSaveCatalog(updated, catalogSubjects);
+    }
+  };
+
+  const handleAddSubject = (e) => {
+    e.preventDefault();
+    const val = newSubjectName.trim();
+    if (!val) return;
+    if (catalogSubjects.includes(val)) {
+      alert("Subject already exists in catalog.");
+      return;
+    }
+    const updated = [...catalogSubjects, val];
+    handleSaveCatalog(catalogCountries, updated);
+    setNewSubjectName('');
+  };
+
+  const handleDeleteSubject = (subjectToDelete) => {
+    if (window.confirm(`Are you sure you want to remove "${subjectToDelete}" from the study catalog?`)) {
+      const updated = catalogSubjects.filter(s => s !== subjectToDelete);
+      handleSaveCatalog(catalogCountries, updated);
+    }
+  };
+
   // Live simulation of traffic fluctuations, dynamic logging, and database polling
   useEffect(() => {
     // Initial load on mount or tab change
     fetchUsers();
     fetchInquiries();
     fetchActivity();
+    fetchCatalog();
     if (onRefreshApplications) {
       onRefreshApplications();
     }
@@ -65,6 +142,7 @@ export default function AdminDashboard({
       fetchUsers();
       fetchInquiries();
       fetchActivity();
+      fetchCatalog();
       if (onRefreshApplications) {
         onRefreshApplications();
       }
@@ -289,7 +367,8 @@ export default function AdminDashboard({
             { id: 'inquiries', label: 'Contact Inquiries' },
             { id: 'adduniversity', label: 'Enroll University Portal' },
             { id: 'users', label: 'User Database' },
-            { id: 'adduser', label: 'Add Student/Admin Profile' }
+            { id: 'adduser', label: 'Add Student/Admin Profile' },
+            { id: 'catalog', label: 'Manage Search Catalog' }
           ].map(tab => (
             <button
               key={tab.id}
@@ -964,6 +1043,101 @@ export default function AdminDashboard({
                 Create New User
               </button>
             </form>
+          )}
+
+          {/* Manage Catalog Tab */}
+          {activeTab === 'catalog' && (
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(450px, 1fr))', gap: '24px' }}>
+              
+              {/* Countries Card */}
+              <div className="glass-card" style={{ padding: '24px' }}>
+                <h3 style={{ fontSize: '18px', color: 'white', fontWeight: 700, marginBottom: '20px', fontFamily: 'var(--font-display)', borderBottom: '1px solid var(--card-border)', paddingBottom: '12px' }}>
+                  Manage Countries of Study
+                </h3>
+                
+                {/* Add Country Form */}
+                <form onSubmit={handleAddCountry} style={{ display: 'flex', gap: '10px', marginBottom: '20px' }}>
+                  <input
+                    type="text"
+                    className="custom-input"
+                    placeholder="Add a new country (e.g. France)..."
+                    value={newCountryName}
+                    onChange={(e) => setNewCountryName(e.target.value)}
+                    style={{ flexGrow: 1 }}
+                  />
+                  <button type="submit" className="btn-premium" style={{ padding: '0 16px', fontSize: '13px', flexShrink: 0 }}>
+                    Add
+                  </button>
+                </form>
+
+                {/* Countries List */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', maxHeight: '350px', overflowY: 'auto' }}>
+                  {catalogCountries.length === 0 ? (
+                    <div style={{ color: 'var(--text-muted)', fontSize: '13.5px', fontStyle: 'italic', padding: '10px 0' }}>No countries in the catalog.</div>
+                  ) : (
+                    catalogCountries.map((country, idx) => (
+                      <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 14px', background: 'rgba(255, 255, 255, 0.02)', border: '1px solid var(--card-border)', borderRadius: '6px' }}>
+                        <span style={{ fontSize: '14px', fontWeight: 600, color: 'white' }}>{country}</span>
+                        <button
+                          type="button"
+                          className="btn-premium-outline"
+                          onClick={() => handleDeleteCountry(country)}
+                          style={{ padding: '4px 8px', borderColor: 'rgba(248, 113, 113, 0.2)', color: 'var(--accent)' }}
+                          title="Delete country"
+                        >
+                          <Trash2 size={13} />
+                        </button>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </div>
+
+              {/* Subjects/Courses Card */}
+              <div className="glass-card" style={{ padding: '24px' }}>
+                <h3 style={{ fontSize: '18px', color: 'white', fontWeight: 700, marginBottom: '20px', fontFamily: 'var(--font-display)', borderBottom: '1px solid var(--card-border)', paddingBottom: '12px' }}>
+                  Manage Subjects of Study
+                </h3>
+                
+                {/* Add Subject Form */}
+                <form onSubmit={handleAddSubject} style={{ display: 'flex', gap: '10px', marginBottom: '20px' }}>
+                  <input
+                    type="text"
+                    className="custom-input"
+                    placeholder="Add a new subject (e.g. Medicine)..."
+                    value={newSubjectName}
+                    onChange={(e) => setNewSubjectName(e.target.value)}
+                    style={{ flexGrow: 1 }}
+                  />
+                  <button type="submit" className="btn-premium" style={{ padding: '0 16px', fontSize: '13px', flexShrink: 0 }}>
+                    Add
+                  </button>
+                </form>
+
+                {/* Subjects List */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', maxHeight: '350px', overflowY: 'auto' }}>
+                  {catalogSubjects.length === 0 ? (
+                    <div style={{ color: 'var(--text-muted)', fontSize: '13.5px', fontStyle: 'italic', padding: '10px 0' }}>No subjects in the catalog.</div>
+                  ) : (
+                    catalogSubjects.map((subject, idx) => (
+                      <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 14px', background: 'rgba(255, 255, 255, 0.02)', border: '1px solid var(--card-border)', borderRadius: '6px' }}>
+                        <span style={{ fontSize: '14px', fontWeight: 600, color: 'white' }}>{subject}</span>
+                        <button
+                          type="button"
+                          className="btn-premium-outline"
+                          onClick={() => handleDeleteSubject(subject)}
+                          style={{ padding: '4px 8px', borderColor: 'rgba(248, 113, 113, 0.2)', color: 'var(--accent)' }}
+                          title="Delete subject"
+                        >
+                          <Trash2 size={13} />
+                        </button>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </div>
+
+            </div>
           )}
 
         </div>

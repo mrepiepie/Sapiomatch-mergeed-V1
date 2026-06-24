@@ -146,7 +146,79 @@ export default function SapioLegacySections({ setView }) {
     { id: "credibility", label: "Credibility", icon: Info }
   ];
 
-  const goToMatching = () => setView("questionnaire");
+  const [countriesList, setCountriesList] = useState(["United States", "United Kingdom", "Canada", "Australia", "Germany", "United Arab Emirates"]);
+  const [subjectsList, setSubjectsList] = useState(["Computer Science", "Business Administration", "Data Science", "Law & Public Policy", "Healthcare & Sciences", "Engineering"]);
+  
+  const [showCountryDropdown, setShowCountryDropdown] = useState(false);
+  const [showSubjectDropdown, setShowSubjectDropdown] = useState(false);
+
+  const [selectedCountry, setSelectedCountry] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('sapio_selected_country') || "Country of study";
+    }
+    return "Country of study";
+  });
+
+  const [selectedSubject, setSelectedSubject] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('sapio_selected_subject') || "Subject of study";
+    }
+    return "Subject of study";
+  });
+
+  const countryDropdownRef = useRef(null);
+  const subjectDropdownRef = useRef(null);
+
+  useEffect(() => {
+    fetch('/api/catalog')
+      .then(res => res.json())
+      .then(data => {
+        if (data && data.countries) {
+          setCountriesList(data.countries);
+        }
+        if (data && data.subjects) {
+          setSubjectsList(data.subjects);
+        }
+      })
+      .catch(err => console.warn("Failed to load catalog:", err));
+  }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (countryDropdownRef.current && !countryDropdownRef.current.contains(event.target)) {
+        setShowCountryDropdown(false);
+      }
+      if (subjectDropdownRef.current && !subjectDropdownRef.current.contains(event.target)) {
+        setShowSubjectDropdown(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const handleSelectCountry = (country) => {
+    setSelectedCountry(country);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('sapio_selected_country', country);
+    }
+    setShowCountryDropdown(false);
+  };
+
+  const handleSelectSubject = (subject) => {
+    setSelectedSubject(subject);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('sapio_selected_subject', subject);
+    }
+    setShowSubjectDropdown(false);
+  };
+
+  const goToMatching = () => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('sapio_selected_country', selectedCountry);
+      localStorage.setItem('sapio_selected_subject', selectedSubject);
+    }
+    setView("questionnaire");
+  };
   const goToExplore = () => setView("public-explore");
   const goToAuth = () => setView("auth");
 
@@ -344,8 +416,119 @@ export default function SapioLegacySections({ setView }) {
           <h2>Find your university now</h2>
           <p>Browse our catalog of universities and programs worldwide.</p>
           <div className="sapio-select-stack">
-            <button type="button" onClick={goToExplore}>Country of study <span>⌄</span></button>
-            <button type="button" onClick={goToExplore}>Subject of study <span>⌄</span></button>
+            <div style={{ position: 'relative' }} ref={countryDropdownRef}>
+              <button 
+                type="button" 
+                onClick={() => {
+                  setShowCountryDropdown(!showCountryDropdown);
+                  setShowSubjectDropdown(false);
+                }}
+                style={{ width: '100%', outline: 'none' }}
+              >
+                {selectedCountry} <span>⌄</span>
+              </button>
+              {showCountryDropdown && (
+                <div className="glass-card" style={{
+                  position: 'absolute',
+                  top: '55px',
+                  left: 0,
+                  width: '100%',
+                  maxHeight: '220px',
+                  overflowY: 'auto',
+                  background: 'rgba(11, 15, 30, 0.96)',
+                  border: '1px solid rgba(255, 255, 255, 0.22)',
+                  borderRadius: '12px',
+                  boxShadow: '0 16px 36px rgba(0, 0, 0, 0.5)',
+                  zIndex: 9999,
+                  padding: '6px',
+                  textAlign: 'left'
+                }}>
+                  {countriesList.map((country, idx) => (
+                    <div
+                      key={idx}
+                      onClick={() => handleSelectCountry(country)}
+                      style={{
+                        padding: '10px 14px',
+                        cursor: 'pointer',
+                        borderRadius: '6px',
+                        fontSize: '14px',
+                        color: selectedCountry === country ? 'var(--secondary)' : '#cbd5e1',
+                        fontWeight: selectedCountry === country ? 700 : 500,
+                        background: selectedCountry === country ? 'rgba(251, 146, 60, 0.08)' : 'transparent',
+                        transition: 'all 0.15s ease'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)';
+                        e.currentTarget.style.color = '#ffffff';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.background = selectedCountry === country ? 'rgba(251, 146, 60, 0.08)' : 'transparent';
+                        e.currentTarget.style.color = selectedCountry === country ? 'var(--secondary)' : '#cbd5e1';
+                      }}
+                    >
+                      {country}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <div style={{ position: 'relative' }} ref={subjectDropdownRef}>
+              <button 
+                type="button" 
+                onClick={() => {
+                  setShowSubjectDropdown(!showSubjectDropdown);
+                  setShowCountryDropdown(false);
+                }}
+                style={{ width: '100%', outline: 'none' }}
+              >
+                {selectedSubject} <span>⌄</span>
+              </button>
+              {showSubjectDropdown && (
+                <div className="glass-card" style={{
+                  position: 'absolute',
+                  top: '55px',
+                  left: 0,
+                  width: '100%',
+                  maxHeight: '220px',
+                  overflowY: 'auto',
+                  background: 'rgba(11, 15, 30, 0.96)',
+                  border: '1px solid rgba(255, 255, 255, 0.22)',
+                  borderRadius: '12px',
+                  boxShadow: '0 16px 36px rgba(0, 0, 0, 0.5)',
+                  zIndex: 9999,
+                  padding: '6px',
+                  textAlign: 'left'
+                }}>
+                  {subjectsList.map((subject, idx) => (
+                    <div
+                      key={idx}
+                      onClick={() => handleSelectSubject(subject)}
+                      style={{
+                        padding: '10px 14px',
+                        cursor: 'pointer',
+                        borderRadius: '6px',
+                        fontSize: '14px',
+                        color: selectedSubject === subject ? 'var(--secondary)' : '#cbd5e1',
+                        fontWeight: selectedSubject === subject ? 700 : 500,
+                        background: selectedSubject === subject ? 'rgba(251, 146, 60, 0.08)' : 'transparent',
+                        transition: 'all 0.15s ease'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)';
+                        e.currentTarget.style.color = '#ffffff';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.background = selectedSubject === subject ? 'rgba(251, 146, 60, 0.08)' : 'transparent';
+                        e.currentTarget.style.color = selectedSubject === subject ? 'var(--secondary)' : '#cbd5e1';
+                      }}
+                    >
+                      {subject}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
           <button className="btn-premium sapio-wide-cta" onClick={goToMatching}>
             Start matching

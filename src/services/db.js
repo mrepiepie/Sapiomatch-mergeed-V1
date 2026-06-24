@@ -126,7 +126,11 @@ function getInitialData() {
         date: "2026-06-15"
       }
     ],
-    aiInteractions: []
+    aiInteractions: [],
+    catalog: {
+      countries: ["United States", "United Kingdom", "Canada", "Australia", "Germany", "United Arab Emirates"],
+      subjects: ["Computer Science", "Business Administration", "Data Science", "Law & Public Policy", "Healthcare & Sciences", "Engineering"]
+    }
   };
 }
 
@@ -342,5 +346,24 @@ export const db = {
     data.aiInteractions.push(newInteraction);
     writeData(data);
     return newInteraction;
+  },
+
+  // --- CATALOG ---
+  getCatalog: () => {
+    const data = readData();
+    if (!data.catalog) {
+      data.catalog = {
+        countries: ["United States", "United Kingdom", "Canada", "Australia", "Germany", "United Arab Emirates"],
+        subjects: ["Computer Science", "Business Administration", "Data Science", "Law & Public Policy", "Healthcare & Sciences", "Engineering"]
+      };
+      writeData(data);
+    }
+    return data.catalog;
+  },
+  updateCatalog: (catalog) => {
+    const data = readData();
+    data.catalog = catalog;
+    writeData(data);
+    return data.catalog;
   }
 };

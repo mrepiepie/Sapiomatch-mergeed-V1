@@ -2,6 +2,42 @@ import React, { useState, useEffect } from 'react';
 import { mockQuestions } from '../mockData';
 import { UploadCloud, ChevronRight, FileText, Check, Sparkles, Award, Settings, Plus, Trash2, Edit, RotateCcw, Eye, ArrowLeft } from 'lucide-react';
 
+const mapSubjectToOption = (selectedSubject, options) => {
+  if (!selectedSubject || !options || options.length === 0) return '';
+  const cleanSelected = selectedSubject.toLowerCase().trim();
+  
+  // 1. Direct exact or partial match
+  const exactMatch = options.find(opt => opt.toLowerCase().trim() === cleanSelected);
+  if (exactMatch) return exactMatch;
+  
+  const partialMatch = options.find(opt => {
+    const cleanOpt = opt.toLowerCase().trim();
+    return cleanOpt.includes(cleanSelected) || cleanSelected.includes(cleanOpt);
+  });
+  if (partialMatch) return partialMatch;
+
+  // 2. Keyword mapping
+  if (cleanSelected.includes('computer') || cleanSelected.includes('science') || cleanSelected.includes('data') || cleanSelected.includes('engineering') || cleanSelected.includes('tech') || cleanSelected.includes('ai')) {
+    const techOpt = options.find(opt => opt.toLowerCase().includes('tech') || opt.toLowerCase().includes('ai') || opt.toLowerCase().includes('science'));
+    if (techOpt) return techOpt;
+  }
+  if (cleanSelected.includes('business') || cleanSelected.includes('admin') || cleanSelected.includes('management') || cleanSelected.includes('strategy') || cleanSelected.includes('marketing') || cleanSelected.includes('finance')) {
+    const bizOpt = options.find(opt => opt.toLowerCase().includes('business') || opt.toLowerCase().includes('management') || opt.toLowerCase().includes('admin'));
+    if (bizOpt) return bizOpt;
+  }
+  if (cleanSelected.includes('law') || cleanSelected.includes('policy') || cleanSelected.includes('governance') || cleanSelected.includes('public')) {
+    const lawOpt = options.find(opt => opt.toLowerCase().includes('law') || opt.toLowerCase().includes('policy') || opt.toLowerCase().includes('public'));
+    if (lawOpt) return lawOpt;
+  }
+  if (cleanSelected.includes('health') || cleanSelected.includes('medicine') || cleanSelected.includes('clinical') || cleanSelected.includes('nursing')) {
+    const healthOpt = options.find(opt => opt.toLowerCase().includes('health') || opt.toLowerCase().includes('science') || opt.toLowerCase().includes('medicine'));
+    if (healthOpt) return healthOpt;
+  }
+
+  // 3. Fallback to first option
+  return options[0];
+};
+
 export default function Questionnaire({ setView, answers, setAnswers, completedQuiz, setCompletedQuiz, currentUser, questions, setQuestions }) {
   const activeQuestions = questions || mockQuestions;
   const [currentStep, setCurrentStep] = useState(0); // 0 = welcome/start
@@ -19,6 +55,22 @@ export default function Questionnaire({ setView, answers, setAnswers, completedQ
       setView('institution-dashboard');
     }
   }, [currentUser, setView]);
+
+  // Pre-fill study field from home page selection on mount
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const storedSubject = localStorage.getItem('sapio_selected_subject');
+      if (storedSubject && storedSubject !== 'Subject of study') {
+        const fieldQuestion = activeQuestions.find(q => q.key === 'field');
+        if (fieldQuestion && fieldQuestion.options) {
+          const prefilled = mapSubjectToOption(storedSubject, fieldQuestion.options);
+          if (prefilled) {
+            setAnswers(prev => ({ ...prev, field: prefilled }));
+          }
+        }
+      }
+    }
+  }, [activeQuestions, setAnswers]);
 
   const [isAdminPreview, setIsAdminPreview] = useState(false);
   const [editingQuestion, setEditingQuestion] = useState(null);
@@ -149,12 +201,23 @@ export default function Questionnaire({ setView, answers, setAnswers, completedQ
   };
 
   const handleStart = () => {
+    let prefilledField = '';
+    if (typeof window !== 'undefined') {
+      const storedSubject = localStorage.getItem('sapio_selected_subject');
+      if (storedSubject && storedSubject !== 'Subject of study') {
+        const fieldQuestion = activeQuestions.find(q => q.key === 'field');
+        if (fieldQuestion && fieldQuestion.options) {
+          prefilledField = mapSubjectToOption(storedSubject, fieldQuestion.options);
+        }
+      }
+    }
+
     // Reset answers back to empty when a new test begins
     setAnswers(prev => ({
       ...prev,
       age: '',
       education: '',
-      field: '',
+      field: prefilledField,
       goal: '',
       format: '',
       budget: '',
@@ -167,6 +230,14 @@ export default function Questionnaire({ setView, answers, setAnswers, completedQ
     setStatusText("Initializing matchmaking engines...");
     setCurrentStep(1);
     setAiState('idle');
+  };
+
+  const handleBack = () => {
+    if (currentStep > 1) {
+      setCurrentStep(prev => prev - 1);
+    } else {
+      setCurrentStep(0);
+    }
   };
 
   const handleOptionSelect = (option) => {
@@ -760,6 +831,11 @@ export default function Questionnaire({ setView, answers, setAnswers, completedQ
                 <ChevronRight size={18} />
               </button>
               
+              <button className="btn-premium-outline" onClick={() => setView('public-home')} style={{ justifyContent: 'center', padding: '12px 24px', gap: '8px' }}>
+                <ArrowLeft size={16} />
+                Back to Home
+              </button>
+              
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px', margin: '8px 0' }}>
                 <hr style={{ flex: 1, borderColor: 'var(--card-border)', opacity: 0.15 }} />
                 <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>OR</span>
@@ -914,7 +990,24 @@ export default function Questionnaire({ setView, answers, setAnswers, completedQ
               {/* Progress Header & Bar inside card */}
               <div style={{ marginBottom: '32px', borderBottom: '1px solid var(--card-border)', paddingBottom: '20px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '13px', color: 'var(--text-muted)', marginBottom: '8px' }}>
-                  <span>Consultation Progress</span>
+                  <button 
+                    onClick={handleBack} 
+                    className="btn-premium-outline"
+                    style={{ 
+                      padding: '4px 10px', 
+                      fontSize: '11px', 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      gap: '4px',
+                      height: 'auto',
+                      border: '1px solid rgba(255,255,255,0.1)',
+                      background: 'transparent',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    <ArrowLeft size={12} />
+                    Back
+                  </button>
                   <span style={{ color: 'var(--secondary)', fontWeight: 600 }}>Step {currentStep} of {activeQuestions.length}</span>
                 </div>
                 <div style={{ width: '100%', height: '6px', background: 'rgba(255, 255, 255, 0.05)', borderRadius: '3px', overflow: 'hidden' }}>
@@ -967,39 +1060,44 @@ export default function Questionnaire({ setView, answers, setAnswers, completedQ
                         width: '100%', 
                         maxWidth: '550px' 
                       }}>
-                        {activeQuestions[currentStep - 1].options.map((opt, idx) => (
-                          <button
-                            key={idx}
-                            onClick={() => handleOptionSelect(opt)}
-                            className="btn-premium-outline"
-                            style={{
-                              padding: '16px 20px',
-                              fontSize: '14px',
-                              fontWeight: 500,
-                              justifyContent: 'center',
-                              background: 'rgba(255, 255, 255, 0.01)',
-                              borderColor: 'var(--card-border)',
-                              borderRadius: '8px',
-                              color: 'var(--text-primary)',
-                              transition: 'all 0.2s ease',
-                              textAlign: 'center'
-                            }}
-                            onMouseEnter={(e) => {
-                              e.currentTarget.style.borderColor = 'var(--secondary)';
-                              e.currentTarget.style.background = 'rgba(180, 83, 9, 0.04)';
-                              e.currentTarget.style.boxShadow = '0 0 10px rgba(180, 83, 9, 0.15)';
-                              e.currentTarget.style.transform = 'translateY(-2px)';
-                            }}
-                            onMouseLeave={(e) => {
-                              e.currentTarget.style.borderColor = 'var(--card-border)';
-                              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.01)';
-                              e.currentTarget.style.boxShadow = 'none';
-                              e.currentTarget.style.transform = 'translateY(0)';
-                            }}
-                          >
-                            {opt}
-                          </button>
-                        ))}
+                        {activeQuestions[currentStep - 1].options.map((opt, idx) => {
+                          const key = getAnswerKey(currentStep);
+                          const isSelected = answers[key] === opt;
+                          return (
+                            <button
+                              key={idx}
+                              onClick={() => handleOptionSelect(opt)}
+                              className={`btn-premium-outline ${isSelected ? 'active-selection' : ''}`}
+                              style={{
+                                padding: '16px 20px',
+                                fontSize: '14px',
+                                fontWeight: 500,
+                                justifyContent: 'center',
+                                background: isSelected ? 'rgba(180, 83, 9, 0.08)' : 'rgba(255, 255, 255, 0.01)',
+                                borderColor: isSelected ? 'var(--secondary)' : 'var(--card-border)',
+                                borderRadius: '8px',
+                                color: isSelected ? 'var(--secondary)' : 'var(--text-primary)',
+                                transition: 'all 0.2s ease',
+                                textAlign: 'center',
+                                boxShadow: isSelected ? '0 0 10px rgba(180, 83, 9, 0.15)' : 'none'
+                              }}
+                              onMouseEnter={(e) => {
+                                e.currentTarget.style.borderColor = 'var(--secondary)';
+                                e.currentTarget.style.background = 'rgba(180, 83, 9, 0.04)';
+                                e.currentTarget.style.boxShadow = '0 0 10px rgba(180, 83, 9, 0.15)';
+                                e.currentTarget.style.transform = 'translateY(-2px)';
+                              }}
+                              onMouseLeave={(e) => {
+                                e.currentTarget.style.borderColor = isSelected ? 'var(--secondary)' : 'var(--card-border)';
+                                e.currentTarget.style.background = isSelected ? 'rgba(180, 83, 9, 0.08)' : 'rgba(255, 255, 255, 0.01)';
+                                e.currentTarget.style.boxShadow = isSelected ? '0 0 10px rgba(180, 83, 9, 0.15)' : 'none';
+                                e.currentTarget.style.transform = 'translateY(0)';
+                              }}
+                            >
+                              {opt}
+                            </button>
+                          );
+                        })}
                       </div>
                     </div>
                   )

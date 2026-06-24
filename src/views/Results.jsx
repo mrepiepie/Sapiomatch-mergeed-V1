@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { mockMatches, mockInstitutions } from '../mockData';
-import { Award, Check, ArrowRight, Bookmark, BookmarkCheck, PhoneCall, HelpCircle, AlertCircle, X } from 'lucide-react';
+import { Award, Check, ArrowRight, Bookmark, BookmarkCheck, PhoneCall, HelpCircle, AlertCircle, X, ArrowLeft } from 'lucide-react';
 
 export default function Results({ setView, answers, bookmarks = [], toggleBookmark, applyForCourse, appliedCourses = [], alert, currentUser }) {
   const [compareList, setCompareList] = useState([]);
@@ -57,6 +57,18 @@ export default function Results({ setView, answers, bookmarks = [], toggleBookma
   return (
     <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '40px 24px' }} className="page-fade-enter">
       
+      {/* Back to Home Button */}
+      <div style={{ marginBottom: '24px', display: 'flex', justifyContent: 'flex-start' }}>
+        <button 
+          className="btn-premium-outline" 
+          onClick={() => setView('public-home')} 
+          style={{ padding: '8px 16px', display: 'inline-flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}
+        >
+          <ArrowLeft size={16} />
+          Back to Home
+        </button>
+      </div>
+
       {/* Guest Mode Active Banner */}
       {!currentUser && (
         <div 
