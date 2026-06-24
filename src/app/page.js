@@ -1619,16 +1619,7 @@ export default function App() {
                 <Bell size={16} strokeWidth={2.5} style={{ color: unreadNotifCount > 0 ? 'var(--secondary)' : 'var(--text-muted)' }} />
                 <span>Notifications</span>
                 {unreadNotifCount > 0 && (
-                  <span style={{
-                    background: 'var(--secondary)',
-                    color: '#0b0f19',
-                    fontSize: '10px',
-                    fontWeight: 800,
-                    padding: '1px 6px',
-                    borderRadius: '999px',
-                    marginLeft: 'auto',
-                    border: '1px solid #0b0f19'
-                  }}>
+                  <span className="notif-badge-pill">
                     {unreadNotifCount} New
                   </span>
                 )}
@@ -1735,16 +1726,7 @@ export default function App() {
             >
               <GraduationCap size={16} strokeWidth={2.5} style={{ color: plan === 'Premium' ? 'var(--secondary)' : 'var(--primary)' }} />
               <span>{plan} Passport</span>
-              <span style={{
-                background: plan === 'Premium' ? 'var(--secondary)' : 'var(--primary)',
-                color: '#0b0f19',
-                fontSize: '10px',
-                fontWeight: 800,
-                padding: '1px 6px',
-                borderRadius: '999px',
-                marginLeft: 'auto',
-                border: '1px solid #0b0f19'
-              }}>
+              <span className={`passport-credits-pill ${plan === 'Premium' ? 'premium' : ''}`}>
                 {credits} Credits
               </span>
             </button>
