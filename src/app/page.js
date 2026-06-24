@@ -1633,19 +1633,18 @@ export default function App() {
               {/* Dropdown panel */}
               {showNotifications && (
                 <div className="glass-card" style={{
-                  position: 'absolute',
-                  right: 0,
-                  top: '48px',
-                  width: '320px',
-                  maxHeight: '380px',
+                  position: 'relative',
+                  width: '100%',
+                  marginTop: '8px',
+                  maxHeight: '280px',
                   overflowY: 'auto',
                   zIndex: 1000,
-                  padding: '16px',
+                  padding: '12px',
                   border: '1px solid var(--card-border)',
                   animation: 'fadeIn 0.2s ease-out',
                   display: 'flex',
                   flexDirection: 'column',
-                  gap: '12px'
+                  gap: '10px'
                 }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--card-border)', paddingBottom: '8px' }}>
                     <span style={{ fontSize: '13px', fontWeight: 700, color: 'white' }}>Inbox Notifications</span>
@@ -1763,17 +1762,27 @@ export default function App() {
 
           {/* User auth details / login */}
           {currentUser ? (
-            <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', width: '100%' }}>
               <button 
                 className="btn-premium-outline"
                 onClick={() => {
                   setView(currentUser.role === 'Admin' ? 'admin-dashboard' : (currentUser.role === 'University' ? 'institution-dashboard' : 'user-dashboard'));
                   setNavMenuOpen(false);
                 }}
-                style={{ padding: '8px 14px', fontSize: '13px', gap: '6px' }}
+                style={{ 
+                  padding: '8px 14px', 
+                  fontSize: '13px', 
+                  gap: '6px', 
+                  width: '100%', 
+                  justifyContent: 'center',
+                  display: 'flex',
+                  alignItems: 'center'
+                }}
               >
-                <User size={14} />
-                {currentUser.name} ({currentUser.role})
+                <User size={14} style={{ flexShrink: 0 }} />
+                <span style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>
+                  {currentUser.name} ({currentUser.role})
+                </span>
               </button>
               <button 
                 className="btn-premium-outline"
@@ -1781,9 +1790,20 @@ export default function App() {
                   handleSignOut();
                   setNavMenuOpen(false);
                 }}
-                style={{ padding: '8px 14px', fontSize: '13px', color: 'var(--accent)', borderColor: 'rgba(153, 27, 27, 0.2)' }}
+                style={{ 
+                  padding: '8px 14px', 
+                  fontSize: '13px', 
+                  gap: '6px', 
+                  color: 'var(--accent)', 
+                  borderColor: 'rgba(153, 27, 27, 0.2)', 
+                  width: '100%', 
+                  justifyContent: 'center',
+                  display: 'flex',
+                  alignItems: 'center'
+                }}
               >
-                <LogOut size={14} />
+                <LogOut size={14} style={{ flexShrink: 0 }} />
+                <span>Sign Out</span>
               </button>
             </div>
           ) : (
