@@ -6138,6 +6138,11 @@ html.sapio-home-snap .sapio-journey-section {
 }
 
 /* Navigation Island Readability & Contrast Enhancements */
+.app-container > header.sapio-nav-island {
+  left: auto !important;
+  right: 18px !important; /* Anchor to the top-right corner of the screen */
+}
+
 .app-container > header.sapio-nav-island.is-open,
 .app-container > header.sapio-nav-island:hover,
 .app-container > header.sapio-nav-island:focus-within {
@@ -6160,6 +6165,7 @@ html.sapio-home-snap .sapio-journey-section {
   font-family: var(--font-sans), system-ui, sans-serif !important;
   letter-spacing: 0.01em !important;
   text-shadow: none !important; /* Remove heavy text-shadow to make it clean */
+  color: #ffffff !important; /* White for all texts */
 }
 
 /* Reset heavy glass shadows/refractions that cause "black marks" */
@@ -6170,29 +6176,34 @@ html.sapio-home-snap .sapio-journey-section {
   border-radius: 12px !important;
 }
 
-/* User profile button styling */
-.sapio-island-actions .btn-user-profile {
+/* Set all SVG icons and menu bar toggle spans to Sky Blue color */
+.sapio-island-actions .btn-premium-outline svg,
+.sapio-island-actions .btn-premium svg,
+.sapio-island-actions .sapio-island-menu-btn svg,
+.sapio-island-actions .btn-passport-badge svg,
+.sapio-island-actions .btn-notification-bell svg,
+.sapio-island-actions .btn-user-profile svg,
+.sapio-island-actions .btn-signout svg {
+  color: #38bdf8 !important; /* One dark-themed nice color (Sky Blue) for all icons */
+}
+
+/* Burger menu bars spans color */
+.sapio-island-actions .sapio-menu-bars span {
+  background: #38bdf8 !important;
+}
+
+/* User profile & Sign out button styling */
+.sapio-island-actions .btn-user-profile,
+.sapio-island-actions .btn-signout {
   background: rgba(255, 255, 255, 0.04) !important;
   border: 1px solid rgba(255, 255, 255, 0.1) !important;
-  color: #f8fafc !important;
+  color: #ffffff !important;
 }
 
-.sapio-island-actions .btn-user-profile:hover {
+.sapio-island-actions .btn-user-profile:hover,
+.sapio-island-actions .btn-signout:hover {
   background: rgba(255, 255, 255, 0.09) !important;
   border-color: rgba(255, 255, 255, 0.2) !important;
-}
-
-/* Sign out button styling */
-.sapio-island-actions .btn-signout {
-  background: rgba(239, 68, 68, 0.04) !important;
-  border: 1px solid rgba(239, 68, 68, 0.2) !important;
-  color: #f87171 !important; /* Soft coral red */
-}
-
-.sapio-island-actions .btn-signout:hover {
-  background: rgba(239, 68, 68, 0.09) !important;
-  border-color: rgba(239, 68, 68, 0.35) !important;
-  color: #fca5a5 !important;
 }
 
 /* Notification Bell button styling */
@@ -6200,7 +6211,7 @@ html.sapio-home-snap .sapio-journey-section {
   background: rgba(255, 255, 255, 0.04) !important;
   border: 1px solid rgba(255, 255, 255, 0.1) !important;
   border-radius: 12px !important;
-  color: #f8fafc !important;
+  color: #ffffff !important;
 }
 
 .sapio-island-actions .btn-notification-bell:hover {
@@ -6213,13 +6224,13 @@ html.sapio-home-snap .sapio-journey-section {
   background: rgba(52, 211, 153, 0.04) !important;
   border: 1px solid rgba(52, 211, 153, 0.2) !important;
   border-radius: 12px !important;
-  color: #a7f3d0 !important;
+  color: #ffffff !important;
 }
 
 .sapio-island-actions .btn-passport-badge.premium-plan {
   background: rgba(251, 146, 60, 0.04) !important;
   border: 1px solid rgba(251, 146, 60, 0.2) !important;
-  color: #ffedd5 !important;
+  color: #ffffff !important;
 }
 
 .sapio-island-actions .btn-passport-badge:hover {
@@ -6237,7 +6248,7 @@ html.sapio-home-snap .sapio-journey-section {
   background: rgba(59, 130, 246, 0.04) !important;
   border: 1px solid rgba(59, 130, 246, 0.2) !important;
   border-radius: 12px !important;
-  color: #bfdbfe !important;
+  color: #ffffff !important;
 }
 
 .sapio-island-actions .sapio-island-menu-btn:hover {
@@ -6246,11 +6257,11 @@ html.sapio-home-snap .sapio-journey-section {
   color: #ffffff !important;
 }
 
-/* Minimalist Pill Badges (replacing harsh solid colors) */
+/* Minimalist Pill Badges (replacing harsh solid colors) with white text */
 .notif-badge-pill {
-  background: rgba(245, 158, 11, 0.1) !important;
-  color: #fbbf24 !important; /* Soft golden text */
-  border: 1px solid rgba(245, 158, 11, 0.25) !important;
+  background: rgba(56, 189, 248, 0.15) !important; /* Sky Blue background */
+  color: #ffffff !important; /* White text */
+  border: 1px solid rgba(56, 189, 248, 0.35) !important;
   font-size: 10px !important;
   font-weight: 700 !important;
   padding: 2px 8px !important;
@@ -6260,9 +6271,9 @@ html.sapio-home-snap .sapio-journey-section {
 }
 
 .passport-credits-pill {
-  background: rgba(52, 211, 153, 0.1) !important;
-  color: #34d399 !important; /* Soft emerald text */
-  border: 1px solid rgba(52, 211, 153, 0.25) !important;
+  background: rgba(52, 211, 153, 0.15) !important; /* Emerald green background */
+  color: #ffffff !important; /* White text */
+  border: 1px solid rgba(52, 211, 153, 0.35) !important;
   font-size: 10px !important;
   font-weight: 700 !important;
   padding: 2px 8px !important;
@@ -6272,7 +6283,6 @@ html.sapio-home-snap .sapio-journey-section {
 }
 
 .passport-credits-pill.premium {
-  background: rgba(251, 146, 60, 0.1) !important;
-  color: #fb923c !important; /* Soft orange text */
-  border: 1px solid rgba(251, 146, 60, 0.25) !important;
+  background: rgba(251, 146, 60, 0.15) !important; /* Orange background */
+  border: 1px solid rgba(251, 146, 60, 0.35) !important;
 }
