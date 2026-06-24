@@ -12,6 +12,7 @@ import AdminDashboard from '../views/AdminDashboard';
 import Auth from '../views/Auth';
 import About from '../views/About';
 import Contact from '../views/Contact';
+import CareerTools from '../views/CareerTools';
 import RoleSwitcher from '../components/RoleSwitcher';
 import SapioVisualShell from '../components/SapioVisualShell';
 import CheckoutModal from '../components/CheckoutModal';
@@ -1101,9 +1102,13 @@ export default function App() {
             institutions={institutions}
           />
         );
+      case 'career-tools':
+        return (
+          <CareerTools setView={setView} />
+        );
       case 'questionnaire':
         return (
-          <Questionnaire 
+          <Questionnaire
             setView={setView} 
             answers={answers} 
             setAnswers={setAnswers} 
@@ -1273,6 +1278,9 @@ export default function App() {
           </button>
           <button onClick={() => setView('questionnaire')} className={`nav-link ${(view === 'questionnaire' || view === 'results') ? 'active' : ''}`}>
             AI Matching
+          </button>
+          <button onClick={() => setView('career-tools')} className={`nav-link ${view === 'career-tools' ? 'active' : ''}`}>
+            Career Tools
           </button>
           {currentUser && currentUser.role === 'Admin' && (
             <button 
