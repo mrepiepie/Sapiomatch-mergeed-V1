@@ -1487,27 +1487,7 @@ export default function App() {
   return (
     <div className="app-container">
       <SapioVisualShell />
-      <svg className="sapio-liquid-glass-filter" aria-hidden="true" focusable="false">
-        <filter id="sapio-liquid-glass" x="0%" y="0%" width="100%" height="100%">
-          <feTurbulence type="fractalNoise" baseFrequency="0.007 0.011" numOctaves="2" seed="92" result="noise">
-            <animate
-              attributeName="baseFrequency"
-              dur="11s"
-              values="0.007 0.011;0.012 0.007;0.008 0.013;0.007 0.011"
-              repeatCount="indefinite"
-            />
-          </feTurbulence>
-          <feGaussianBlur in="noise" stdDeviation="0.02" result="blur" />
-          <feDisplacementMap in="SourceGraphic" in2="blur" scale="11" xChannelSelector="R" yChannelSelector="G">
-            <animate
-              attributeName="scale"
-              dur="9s"
-              values="8;13;10;8"
-              repeatCount="indefinite"
-            />
-          </feDisplacementMap>
-        </filter>
-      </svg>
+
 
       {/* Loading Overlay */}
       {loading && (
