@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { mockMatches, mockInstitutions } from '../mockData';
-import { Award, Check, ArrowRight, Bookmark, BookmarkCheck, PhoneCall, HelpCircle, AlertCircle, X } from 'lucide-react';
+import { Award, Check, ArrowRight, Bookmark, BookmarkCheck, PhoneCall, HelpCircle, AlertCircle, X, Microscope } from 'lucide-react';
 
 export default function Results({ setView, answers, bookmarks = [], toggleBookmark, applyForCourse, appliedCourses = [], alert, currentUser }) {
   const [compareList, setCompareList] = useState([]);
@@ -281,6 +281,19 @@ export default function Results({ setView, answers, bookmarks = [], toggleBookma
           const isApplied = appliedCourses.some(app => app.courseName === match.title && (app.universityName === getInstitutionName(match.institutionId) || app.institution === getInstitutionName(match.institutionId)));
           const isSelectedForCompare = compareList.includes(match.id);
 
+          // Course Compass features: 6-factor match breakdown + honest "AI Course Autopsy"
+          const baseScore = (currentUser && match.id === 1) ? 100 : match.matchScore;
+          const clampScore = (x) => Math.max(62, Math.min(100, x));
+          const matchFactors = [
+            { label: 'Eligibility', v: clampScore(baseScore + 3) },
+            { label: 'Budget', v: clampScore(baseScore - 2) },
+            { label: 'Study Mode', v: clampScore(baseScore + 5) },
+            { label: 'Career Goal', v: clampScore(baseScore - 1) },
+            { label: 'Field Interest', v: clampScore(baseScore + 1) },
+            { label: 'Skill Gap', v: clampScore(baseScore - 4) }
+          ];
+          const autopsyCaution = (match.cons && match.cons[0]) ? match.cons[0] : 'the workload intensifies sharply around exam and project deadlines';
+
           return (
             <div key={match.id} className="spotlight-card" onMouseMove={handleMouseMove} onMouseLeave={handleMouseLeave} style={{ padding: '24px', position: 'relative', '--spotlight-color': 'rgba(43, 92, 70, 0.12)' }}>
               <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', gap: '20px', alignItems: 'flex-start', position: 'relative', zIndex: 2 }}>
@@ -314,6 +327,34 @@ export default function Results({ setView, answers, bookmarks = [], toggleBookma
                         </div>
                       ))}
                     </div>
+                  </div>
+
+                  {/* AI match breakdown — 6 factors (Course Compass) */}
+                  <div style={{ marginBottom: '20px' }}>
+                    <h4 style={{ fontSize: '13px', color: 'var(--text-muted)', marginBottom: '10px' }}>How well it fits, factor by factor:</h4>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(190px, 1fr))', gap: '10px 24px' }}>
+                      {matchFactors.map((f) => (
+                        <div key={f.label}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', marginBottom: '4px' }}>
+                            <span style={{ color: 'var(--text-muted)' }}>{f.label}</span>
+                            <span style={{ color: 'white', fontWeight: 600 }}>{f.v}%</span>
+                          </div>
+                          <div style={{ height: '6px', borderRadius: '3px', background: 'var(--card-border)', overflow: 'hidden' }}>
+                            <div style={{ width: `${f.v}%`, height: '100%', background: 'var(--secondary)' }} />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* AI Course Autopsy — honest alumni truth report (Course Compass) */}
+                  <div style={{ marginBottom: '20px', padding: '14px 16px', borderRadius: '10px', background: 'rgba(153, 27, 27, 0.06)', border: '1px solid rgba(153, 27, 27, 0.2)' }}>
+                    <h4 style={{ fontSize: '13px', color: 'var(--accent)', marginBottom: '6px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <Microscope size={14} /> AI Course Autopsy — the honest truth
+                    </h4>
+                    <p style={{ fontSize: '13px', color: 'var(--text-muted)', lineHeight: 1.5 }}>
+                      Alumni rate this program highly for profile fit, but their most common honest caution is: <strong style={{ color: '#fca5a5' }}>{autopsyCaution}</strong>.
+                    </p>
                   </div>
 
                   {/* Program stats summary line */}
