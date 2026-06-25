@@ -13,6 +13,7 @@ import Auth from '../views/Auth';
 import About from '../views/About';
 import Contact from '../views/Contact';
 import CareerTools from '../views/CareerTools';
+import WritingEnhancer from '../views/WritingEnhancer';
 import RoleSwitcher from '../components/RoleSwitcher';
 import SapioVisualShell from '../components/SapioVisualShell';
 import CheckoutModal from '../components/CheckoutModal';
@@ -1106,6 +1107,10 @@ export default function App() {
         return (
           <CareerTools setView={setView} />
         );
+      case 'writing-enhancer':
+        return (
+          <WritingEnhancer setView={setView} />
+        );
       case 'questionnaire':
         return (
           <Questionnaire
@@ -1281,6 +1286,9 @@ export default function App() {
           </button>
           <button onClick={() => setView('career-tools')} className={`nav-link ${view === 'career-tools' ? 'active' : ''}`}>
             Career Tools
+          </button>
+          <button onClick={() => setView('writing-enhancer')} className={`nav-link ${view === 'writing-enhancer' ? 'active' : ''}`}>
+            Writing Enhancer
           </button>
           {currentUser && currentUser.role === 'Admin' && (
             <button 
