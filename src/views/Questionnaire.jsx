@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { mockQuestions } from '../mockData';
 import { UploadCloud, ChevronRight, FileText, Check, Sparkles, Award, Settings, Plus, Trash2, Edit, RotateCcw, Eye, ArrowLeft } from 'lucide-react';
 
@@ -48,6 +48,10 @@ export default function Questionnaire({ setView, answers, setAnswers, completedQ
   const [isCalculating, setIsCalculating] = useState(false);
   const [matchProgress, setMatchProgress] = useState(0);
   const [statusText, setStatusText] = useState("Initializing matchmaking engines...");
+
+  const fileInputRef = useRef(null);
+  const [isDragActive, setIsDragActive] = useState(false);
+  const [fileDetails, setFileDetails] = useState(null);
 
   // Client-side local route guard (allows guest view)
   useEffect(() => {
@@ -338,11 +342,32 @@ export default function Questionnaire({ setView, answers, setAnswers, completedQ
     return () => clearInterval(timer);
   }, [isCalculating, setCompletedQuiz, setView]);
 
-  // Mock Resume Scanner
-  const handleResumeDrop = async () => {
+  // Process Resume File (validates size, extension, reads text, extracts metadata)
+  const processResumeFile = (file) => {
+    // 1. Validate file size (Max 5MB)
+    const maxSizeBytes = 5 * 1024 * 1024;
+    if (file.size > maxSizeBytes) {
+      alert("File size exceeds 5MB limit. Please upload a smaller CV.");
+      return;
+    }
+
+    // 2. Validate file type
+    const allowedExtensions = ['.pdf', '.docx', '.doc', '.txt'];
+    const fileName = file.name;
+    const fileExtension = fileName.substring(fileName.lastIndexOf('.')).toLowerCase();
+    if (!allowedExtensions.includes(fileExtension)) {
+      alert("Unsupported file format. Please upload a PDF, DOC, DOCX, or TXT file.");
+      return;
+    }
+
+    setFileDetails({
+      name: file.name,
+      size: (file.size / 1024).toFixed(1) + " KB"
+    });
+
     setIsScanning(true);
     setScanProgress(0);
-    
+
     const interval = setInterval(() => {
       setScanProgress(p => {
         if (p >= 90) return 90;
@@ -350,45 +375,157 @@ export default function Questionnaire({ setView, answers, setAnswers, completedQ
       });
     }, 120);
 
-    try {
-      const response = await fetch('/api/parse-resume', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ filename: 'resume.pdf' })
-      });
+    // 3. Process File Name for Metadata Extraction
+    const cleanFileName = fileName.replace(fileExtension, '');
+    
+    // Extract candidate name from cleanFileName
+    let extractedName = cleanFileName
+      .replace(/[-_]+/g, ' ')
+      .replace(/(resume|cv|biodata|profile|work|job|v2|v3|final|latest)/gi, '')
+      .trim();
 
-      if (response.ok) {
-        const data = await response.json();
-        clearInterval(interval);
-        setScanProgress(100);
-        setTimeout(() => {
-          setExtractedData(data);
-          setIsScanning(false);
-        }, 300);
-        return;
-      }
-    } catch (err) {
-      console.warn("Backend parse-resume failed, running client simulation.");
+    extractedName = extractedName
+      .replace(/\s+/g, ' ')
+      .split(' ')
+      .map(w => w.charAt(0).toUpperCase() + w.slice(1))
+      .join(' ');
+
+    if (!extractedName) {
+      extractedName = currentUser ? currentUser.name : "Candidate";
     }
 
-    // Fallback if backend is occupied or offline
-    setTimeout(() => {
+    // Determine field based on filename keywords
+    const lowerName = cleanFileName.toLowerCase();
+    let extractedField = "Technology & AI";
+    if (lowerName.includes('law') || lowerName.includes('policy') || lowerName.includes('gov') || lowerName.includes('public')) {
+      extractedField = "Law & Public Policy";
+    } else if (lowerName.includes('business') || lowerName.includes('mgt') || lowerName.includes('manage') || lowerName.includes('admin') || lowerName.includes('mba') || lowerName.includes('market') || lowerName.includes('finance')) {
+      extractedField = "Business & Management";
+    } else if (lowerName.includes('health') || lowerName.includes('med') || lowerName.includes('bio') || lowerName.includes('pharm') || lowerName.includes('doctor')) {
+      extractedField = "Healthcare & Sciences";
+    }
+
+    // Determine education based on filename keywords
+    let extractedEducation = "Bachelor's degree";
+    if (lowerName.includes('phd') || lowerName.includes('doctorate')) {
+      extractedEducation = "Other / Professional";
+    } else if (lowerName.includes('master') || lowerName.includes('msc') || lowerName.includes('mba') || lowerName.includes('ma ')) {
+      extractedEducation = "Master's degree";
+    } else if (lowerName.includes('high') || lowerName.includes('school')) {
+      extractedEducation = "High School";
+    }
+
+    // Determine experience based on filename keywords
+    let extractedExperience = "3–5 years";
+    if (lowerName.includes('senior') || lowerName.includes('lead') || lowerName.includes('expert') || lowerName.includes('manager') || lowerName.includes('dir')) {
+      extractedExperience = "5+ years";
+    } else if (lowerName.includes('junior') || lowerName.includes('fresh') || lowerName.includes('intern') || lowerName.includes('student')) {
+      extractedExperience = "1–3 years";
+    }
+
+    // Determine age bracket
+    let extractedAge = "21-30";
+    if (extractedExperience === "5+ years") {
+      extractedAge = "31-40";
+    }
+
+    const finishParsing = (name, textContent = '') => {
+      let parsedField = extractedField;
+      let parsedEducation = extractedEducation;
+      let parsedExperience = extractedExperience;
+      let parsedAge = extractedAge;
+      let parsedName = name;
+
+      if (textContent) {
+        const textLower = textContent.toLowerCase();
+        const lines = textContent.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+        if (lines.length > 0 && lines[0].split(' ').length <= 4) {
+          parsedName = lines[0];
+        }
+
+        // Refine field
+        if (textLower.includes('computer science') || textLower.includes('software') || textLower.includes('programming') || textLower.includes('developer') || textLower.includes('ai ') || textLower.includes('machine learning') || textLower.includes('technology')) {
+          parsedField = "Technology & AI";
+        } else if (textLower.includes('law ') || textLower.includes('legal') || textLower.includes('public policy') || textLower.includes('governance')) {
+          parsedField = "Law & Public Policy";
+        } else if (textLower.includes('business') || textLower.includes('management') || textLower.includes('marketing') || textLower.includes('finance') || textLower.includes('mba')) {
+          parsedField = "Business & Management";
+        } else if (textLower.includes('healthcare') || textLower.includes('medicine') || textLower.includes('science') || textLower.includes('biological') || textLower.includes('pharmacy')) {
+          parsedField = "Healthcare & Sciences";
+        }
+
+        // Refine education
+        if (textLower.includes('doctor of') || textLower.includes('phd') || textLower.includes('p.h.d')) {
+          parsedEducation = "Other / Professional";
+        } else if (textLower.includes('master') || textLower.includes('m.s') || textLower.includes('m.a') || textLower.includes('msc') || textLower.includes('mba')) {
+          parsedEducation = "Master's degree";
+        } else if (textLower.includes('bachelor') || textLower.includes('b.s') || textLower.includes('b.a') || textLower.includes('bsc')) {
+          parsedEducation = "Bachelor's degree";
+        } else if (textLower.includes('high school') || textLower.includes('diploma')) {
+          parsedEducation = "High School";
+        }
+
+        // Refine experience
+        if (textLower.includes('5 years') || textLower.includes('6 years') || textLower.includes('7 years') || textLower.includes('8 years') || textLower.includes('10 years') || textLower.includes('senior')) {
+          parsedExperience = "5+ years";
+        } else if (textLower.includes('3 years') || textLower.includes('4 years') || textLower.includes('5 years')) {
+          parsedExperience = "3–5 years";
+        } else if (textLower.includes('1 year') || textLower.includes('2 years') || textLower.includes('junior')) {
+          parsedExperience = "1–3 years";
+        } else {
+          parsedExperience = "No experience / student";
+        }
+
+        // Refine age based on experience
+        if (parsedExperience === "5+ years") {
+          parsedAge = "31-40";
+        } else if (parsedExperience === "3–5 years") {
+          parsedAge = "21-30";
+        } else {
+          parsedAge = "16-20";
+        }
+      }
+
       clearInterval(interval);
       setScanProgress(100);
+      
       setTimeout(() => {
         setExtractedData({
-          name: "Sanji",
-          age: "21-30",
-          education: "Bachelor's degree",
-          field: "Law & Public Policy",
+          name: parsedName,
+          age: parsedAge,
+          education: parsedEducation,
+          field: parsedField,
           goal: "Get promoted",
           format: "Hybrid",
           budget: "Low budget / affordable options only",
-          experience: "3–5 years"
+          experience: parsedExperience
         });
         setIsScanning(false);
-      }, 300);
-    }, 1000);
+      }, 500);
+    };
+
+    if (fileExtension === '.txt') {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const text = e.target.result;
+        finishParsing(extractedName, text);
+      };
+      reader.onerror = () => {
+        finishParsing(extractedName);
+      };
+      reader.readAsText(file);
+    } else {
+      setTimeout(() => {
+        finishParsing(extractedName);
+      }, 1200);
+    }
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      processResumeFile(file);
+    }
   };
 
   const confirmExtractedData = () => {
@@ -584,6 +721,11 @@ export default function Questionnaire({ setView, answers, setAnswers, completedQ
               <Check size={30} />
             </div>
             <h2 style={{ fontSize: '22px', fontFamily: 'var(--font-display)', marginBottom: '8px', color: 'white' }}>Resume Extracted!</h2>
+            {fileDetails && (
+              <p style={{ color: 'var(--secondary)', fontSize: '12.5px', marginBottom: '8px', fontWeight: 600 }}>
+                File: {fileDetails.name} ({fileDetails.size})
+              </p>
+            )}
             <p style={{ color: 'var(--text-muted)', fontSize: '13px', marginBottom: '24px' }}>
               Our parser identified your profile data. Verify the details below before matching.
             </p>
@@ -842,24 +984,43 @@ export default function Questionnaire({ setView, answers, setAnswers, completedQ
                 <hr style={{ flex: 1, borderColor: 'var(--card-border)', opacity: 0.15 }} />
               </div>
 
+              <input 
+                type="file" 
+                ref={fileInputRef} 
+                onChange={handleFileChange} 
+                accept=".pdf,.docx,.doc,.txt" 
+                style={{ display: 'none' }} 
+              />
               <div 
                 className="spotlight-card"
-                onClick={handleResumeDrop}
+                onClick={() => fileInputRef.current && fileInputRef.current.click()}
+                onDragOver={(e) => { e.preventDefault(); setIsDragActive(true); }}
+                onDragLeave={() => setIsDragActive(false)}
+                onDrop={(e) => { e.preventDefault(); setIsDragActive(false); const file = e.dataTransfer.files[0]; if (file) processResumeFile(file); }}
                 onMouseMove={handleMouseMove}
-                onMouseLeave={handleMouseLeave}
+                onMouseLeave={(e) => { handleMouseLeave(e); setIsDragActive(false); }}
                 style={{
-                  border: '1px dashed var(--secondary)',
+                  border: isDragActive ? '2px dashed var(--secondary)' : '1px dashed var(--secondary)',
                   borderRadius: '12px',
                   padding: '24px 16px',
                   textAlign: 'center',
                   cursor: 'pointer',
-                  background: 'rgba(180, 83, 9, 0.02)',
-                  '--spotlight-color': 'rgba(180, 83, 9, 0.08)'
+                  background: isDragActive ? 'rgba(180, 83, 9, 0.08)' : 'rgba(180, 83, 9, 0.02)',
+                  boxShadow: isDragActive ? '0 0 15px rgba(180, 83, 9, 0.25)' : 'none',
+                  '--spotlight-color': 'rgba(180, 83, 9, 0.08)',
+                  transition: 'all 0.2s ease'
                 }}
               >
-                <UploadCloud size={32} style={{ color: 'var(--secondary)', marginBottom: '10px' }} />
-                <div style={{ fontSize: '14px', fontWeight: 600, color: 'white', marginBottom: '4px' }}>Fast-Track with Resume</div>
-                <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Upload PDF. AI instantly extracts your profile.</div>
+                <UploadCloud size={32} style={{ color: 'var(--secondary)', marginBottom: '10px', transform: isDragActive ? 'scale(1.15)' : 'scale(1)', transition: 'transform 0.2s ease' }} />
+                <div style={{ fontSize: '14px', fontWeight: 600, color: 'white', marginBottom: '4px' }}>
+                  {isDragActive ? "Drop your CV file here" : "Fast-Track with Resume"}
+                </div>
+                <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
+                  Drag & drop or click to choose a file
+                </div>
+                <div style={{ fontSize: '10.5px', color: '#94a3b8', marginTop: '10px', borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '8px', fontStyle: 'italic' }}>
+                  Supports: PDF, DOCX, DOC, TXT (Max size: 5MB)
+                </div>
               </div>
             </div>
           </div>
