@@ -375,9 +375,29 @@ export default function Questionnaire({ setView, answers, setAnswers, completedQ
       });
     }, 120);
 
-    // 3. Process File Name for Metadata Extraction
+    // 3. Process File Name for Metadata Extraction & Legitimacy Verification
     const cleanFileName = fileName.replace(fileExtension, '');
+    const lowerName = cleanFileName.toLowerCase();
     
+    // Check if filename contains obvious non-resume keywords (e.g. recipe, shopping_list, todo)
+    const isObviousNonResume = 
+      lowerName.includes('recipe') || 
+      lowerName.includes('shopping') || 
+      lowerName.includes('list') || 
+      lowerName.includes('todo') || 
+      lowerName.includes('notes') || 
+      lowerName.includes('draft') ||
+      lowerName.includes('test');
+
+    if (fileExtension !== '.txt' && isObviousNonResume) {
+      setTimeout(() => {
+        clearInterval(interval);
+        setIsScanning(false);
+        alert("Upload Failed: The uploaded document does not appear to be a legitimate CV/resume. Please upload a valid document containing your professional history.");
+      }, 1200);
+      return;
+    }
+
     // Extract candidate name from cleanFileName
     let extractedName = cleanFileName
       .replace(/[-_]+/g, ' ')
@@ -395,7 +415,6 @@ export default function Questionnaire({ setView, answers, setAnswers, completedQ
     }
 
     // Determine field based on filename keywords
-    const lowerName = cleanFileName.toLowerCase();
     let extractedField = "Technology & AI";
     if (lowerName.includes('law') || lowerName.includes('policy') || lowerName.includes('gov') || lowerName.includes('public')) {
       extractedField = "Law & Public Policy";
@@ -438,6 +457,17 @@ export default function Questionnaire({ setView, answers, setAnswers, completedQ
 
       if (textContent) {
         const textLower = textContent.toLowerCase();
+
+        // Validation: Verify if text content contains standard CV sections or keywords
+        const cvKeywords = ['education', 'experience', 'skills', 'work', 'projects', 'employment', 'cv', 'resume', 'contact', 'profile', 'objective', 'summary', 'certifications', 'history'];
+        const matchedKeywords = cvKeywords.filter(keyword => textLower.includes(keyword));
+        if (matchedKeywords.length < 2) {
+          clearInterval(interval);
+          setIsScanning(false);
+          alert("Upload Failed: The uploaded document does not appear to be a legitimate CV/resume. Standard sections like Education, Experience, or Skills were not found. Please upload a valid document.");
+          return;
+        }
+
         const lines = textContent.split('\n').map(l => l.trim()).filter(l => l.length > 0);
         if (lines.length > 0 && lines[0].split(' ').length <= 4) {
           parsedName = lines[0];
