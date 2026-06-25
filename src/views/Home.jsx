@@ -22,13 +22,21 @@ export default function Home({ setView, setExploreSearchTerm, onUpgradePremium }
         setMouseCoords({ x: e.clientX, y: e.clientY });
       }
     };
+    const handleResize = () => {
+      setWinWidth(window.innerWidth);
+      setWinHeight(window.innerHeight);
+    };
+
+    handleResize(); // sync to the real viewport once, after mount
 
     window.addEventListener('scroll', handleScroll, { passive: true });
     window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('resize', handleResize);
 
     return () => {
       window.removeEventListener('scroll', handleScroll);
       window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('resize', handleResize);
     };
   }, []);
 
@@ -52,9 +60,11 @@ export default function Home({ setView, setExploreSearchTerm, onUpgradePremium }
     e.currentTarget.style.setProperty('--tilt-y', '0px');
   };
 
-  // Parallax offsets for background stars and hero text (guarded against Next.js SSR window checks)
-  const winWidth = typeof window !== 'undefined' ? window.innerWidth : 1080;
-  const winHeight = typeof window !== 'undefined' ? window.innerHeight : 600;
+  // Parallax offsets for background stars and hero text.
+  // Start with SSR-safe defaults so the server render and the first client render match
+  // (this prevents a React hydration mismatch); the real viewport is synced after mount.
+  const [winWidth, setWinWidth] = useState(1080);
+  const [winHeight, setWinHeight] = useState(600);
 
   const starOffsetX = (mouseCoords.x - winWidth / 2) * -0.06;
   const starOffsetY = (mouseCoords.y - winHeight / 2) * -0.06;
