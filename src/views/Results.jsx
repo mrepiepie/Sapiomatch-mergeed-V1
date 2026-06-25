@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { mockMatches, mockInstitutions } from '../mockData';
 import { Award, Check, ArrowRight, Bookmark, BookmarkCheck, PhoneCall, HelpCircle, AlertCircle, X, Microscope, ShieldCheck } from 'lucide-react';
+import LeadModal from '../components/LeadModal';
 
 export default function Results({ setView, answers, bookmarks = [], toggleBookmark, applyForCourse, appliedCourses = [], alert, currentUser }) {
   const [compareList, setCompareList] = useState([]);
   const [showCompareModal, setShowCompareModal] = useState(false);
   const [stressJob, setStressJob] = useState(false);
   const [stressRent, setStressRent] = useState(false);
+  const [leadCourse, setLeadCourse] = useState(null);
   const stressActive = stressJob || stressRent;
   const feeNum = (f) => { const n = (f || '').replace(/[^0-9]/g, ''); return n ? parseInt(n, 10) : Infinity; };
 
@@ -456,7 +458,7 @@ export default function Results({ setView, answers, bookmarks = [], toggleBookma
                   </button>
                   <button 
                     className="btn-premium-outline"
-                    onClick={() => alert("Connecting you with an educational advisor. A call has been requested.")}
+                    onClick={() => setLeadCourse(match.title)}
                     style={{ padding: '8px 16px', fontSize: '13px' }}
                   >
                     <PhoneCall size={16} />
@@ -474,6 +476,8 @@ export default function Results({ setView, answers, bookmarks = [], toggleBookma
           );
         })}
       </div>
+
+      <LeadModal open={!!leadCourse} courseTitle={leadCourse} onClose={() => setLeadCourse(null)} />
     </div>
   );
 }
