@@ -3323,6 +3323,22 @@ h1, h2 { letter-spacing: -0.015em; }
 /* Themed text selection */
 ::selection { background: rgba(139, 92, 246, 0.38); color: #ffffff; }
 
+/* Dark dropdown options — native <select> menus match the theme (no white flash) */
+select,
+.custom-select { color: #f8fafc; }
+select option,
+.custom-select option,
+select optgroup,
+.custom-select optgroup {
+  background-color: #0b1020;
+  color: #f8fafc;
+}
+select option:checked,
+.custom-select option:checked {
+  background-color: #1a2547;
+  color: #ffffff;
+}
+
 .sapio-home-globe {
   width: 100%;
   height: 100%;
