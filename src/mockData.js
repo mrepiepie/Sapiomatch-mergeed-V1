@@ -160,6 +160,168 @@ export const mockInstitutions = [
       "Immediate learning start with no enrollment filters",
       "Constant sales and discounts (often up to 90% off)"
     ]
+  },
+  {
+    id: "university-of-lincoln",
+    name: "University of Lincoln",
+    type: "University",
+    location: "Lincoln, United Kingdom",
+    reputation: "4.4 / 5",
+    satisfaction: "87%",
+    practicality: "84%",
+    recognition: "Global",
+    fee: "AED 45,000 - AED 65,000",
+    feeNum: 55000,
+    duration: "1 - 3 Years",
+    mode: "On-Campus / Hybrid",
+    tagline: "A modern UK university known for strong industry links and award-winning teaching across business and tech.",
+    about: "The University of Lincoln combines research-driven teaching with close employer partnerships, making it a strong choice for learners who want a recognised UK degree with practical, career-focused outcomes.",
+    courses: [
+      { name: "MBA Master of Business Administration", duration: "1 Year", mode: "On-Campus", fee: "AED 60,000" },
+      { name: "MSc Computer Science", duration: "1 Year", mode: "Hybrid", fee: "AED 58,000" },
+      { name: "MA International Relations", duration: "1 Year", mode: "On-Campus", fee: "AED 52,000" }
+    ],
+    whySuit: [
+      "Award-winning teaching and strong student satisfaction",
+      "Close partnerships with employers and placement support",
+      "Recognised UK qualification with global mobility",
+      "Scholarships available for international students"
+    ]
+  },
+  {
+    id: "university-of-bolton",
+    name: "University of Bolton",
+    type: "University",
+    location: "Bolton, United Kingdom",
+    reputation: "4.2 / 5",
+    satisfaction: "85%",
+    practicality: "88%",
+    recognition: "Global",
+    fee: "AED 38,000 - AED 55,000",
+    feeNum: 46000,
+    duration: "1 - 3 Years",
+    mode: "On-Campus / Hybrid",
+    tagline: "A career-focused UK university offering practical, affordable degrees with small class sizes.",
+    about: "The University of Bolton is known for hands-on, applied teaching and some of the most affordable UK tuition fees, making it well suited to learners who want a recognised degree with strong personal support.",
+    courses: [
+      { name: "MBA (Healthcare / Project Management)", duration: "1.5 Years", mode: "Hybrid", fee: "AED 50,000" },
+      { name: "MSc Software Engineering", duration: "1 Year", mode: "On-Campus", fee: "AED 48,000" },
+      { name: "LLM International Law", duration: "1 Year", mode: "On-Campus", fee: "AED 44,000" }
+    ],
+    whySuit: [
+      "Among the most affordable UK degree options",
+      "Small class sizes with close tutor support",
+      "Strong focus on employability and practical skills",
+      "Flexible intakes throughout the year"
+    ]
+  },
+  {
+    id: "university-of-bradford",
+    name: "University of Bradford",
+    type: "University",
+    location: "Bradford, United Kingdom",
+    reputation: "4.4 / 5",
+    satisfaction: "86%",
+    practicality: "85%",
+    recognition: "Global",
+    fee: "AED 48,000 - AED 70,000",
+    feeNum: 59000,
+    duration: "1 - 4 Years",
+    mode: "On-Campus / Hybrid",
+    tagline: "A research-led UK university with a strong reputation in management, peace studies, and pharmacy.",
+    about: "The University of Bradford is recognised for triple-accredited business education and impactful research, suiting ambitious learners who want a globally respected qualification with a strong ethical and sustainability focus.",
+    courses: [
+      { name: "MBA (Triple Accredited)", duration: "1 Year", mode: "Hybrid", fee: "AED 68,000" },
+      { name: "MSc Data Analytics", duration: "1 Year", mode: "On-Campus", fee: "AED 60,000" },
+      { name: "MA Peace, Conflict & Development", duration: "1 Year", mode: "On-Campus", fee: "AED 52,000" }
+    ],
+    whySuit: [
+      "Triple-accredited, globally respected business school",
+      "Strong research output and academic reputation",
+      "Distinctive programs in peace studies and pharmacy",
+      "Good post-study career and networking support"
+    ]
+  },
+  {
+    id: "university-of-wolverhampton",
+    name: "University of Wolverhampton",
+    type: "University",
+    location: "Wolverhampton, United Kingdom",
+    reputation: "4.1 / 5",
+    satisfaction: "84%",
+    practicality: "87%",
+    recognition: "Global",
+    fee: "AED 35,000 - AED 52,000",
+    feeNum: 43000,
+    duration: "1 - 3 Years",
+    mode: "On-Campus / Online",
+    tagline: "An inclusive UK university offering flexible, affordable degrees with a strong widening-participation ethos.",
+    about: "The University of Wolverhampton focuses on accessible, opportunity-driven education with flexible delivery, making it a practical choice for working professionals and first-generation learners seeking a UK qualification.",
+    courses: [
+      { name: "MBA Master of Business Administration", duration: "1.5 Years", mode: "Online", fee: "AED 48,000" },
+      { name: "MSc Cyber Security", duration: "1 Year", mode: "Hybrid", fee: "AED 46,000" },
+      { name: "MA Education", duration: "1 Year", mode: "Online", fee: "AED 40,000" }
+    ],
+    whySuit: [
+      "Affordable tuition with flexible online options",
+      "Strong widening-participation and student support",
+      "Practical, career-oriented course design",
+      "Multiple start dates and pathways"
+    ]
+  },
+  {
+    id: "nadia-global",
+    name: "NADIA Global",
+    type: "Online Platform",
+    location: "Dubai, UAE",
+    reputation: "4.3 / 5",
+    satisfaction: "90%",
+    practicality: "94%",
+    recognition: "Regional Skills",
+    fee: "AED 2,500 - AED 12,000",
+    feeNum: 6000,
+    duration: "1 - 6 Months",
+    mode: "Hybrid / Online",
+    tagline: "A long-established UAE training institute offering job-ready professional certifications and short courses.",
+    about: "NADIA Global has trained professionals across the Gulf for decades, focusing on practical, employer-aligned certifications in HR, accounting, administration, and soft skills, with strong recruitment links.",
+    courses: [
+      { name: "Certified HR Professional (CHRP)", duration: "3 Months", mode: "Hybrid", fee: "AED 8,500" },
+      { name: "Professional Accounting & Tax (UAE)", duration: "2 Months", mode: "Online", fee: "AED 5,500" },
+      { name: "Executive Office Administration", duration: "6 Weeks", mode: "Hybrid", fee: "AED 3,200" }
+    ],
+    whySuit: [
+      "Fast, job-ready certifications in months, not years",
+      "Strong recruitment and placement network in the UAE",
+      "Affordable, flexible short-course formats",
+      "Practical curricula aligned to regional employers"
+    ]
+  },
+  {
+    id: "college-de-paris",
+    name: "College de Paris",
+    type: "University",
+    location: "Paris, France (Online)",
+    reputation: "4.2 / 5",
+    satisfaction: "85%",
+    practicality: "86%",
+    recognition: "European",
+    fee: "AED 30,000 - AED 48,000",
+    feeNum: 38000,
+    duration: "1 - 2 Years",
+    mode: "Online / Hybrid",
+    tagline: "A French higher-education group offering internationally-recognised business and management degrees online.",
+    about: "College de Paris provides European-accredited business and management programs with flexible online delivery, suiting professionals who want a recognised international qualification without relocating.",
+    courses: [
+      { name: "Master in International Business", duration: "1.5 Years", mode: "Online", fee: "AED 44,000" },
+      { name: "MBA Strategy & Leadership", duration: "1 Year", mode: "Hybrid", fee: "AED 42,000" },
+      { name: "MSc Luxury & Brand Management", duration: "1 Year", mode: "Online", fee: "AED 40,000" }
+    ],
+    whySuit: [
+      "European-accredited, internationally recognised",
+      "Flexible online study from anywhere",
+      "Distinctive specialisms (luxury, brand, strategy)",
+      "Pathways to European academic partners"
+    ]
   }
 ];
 
