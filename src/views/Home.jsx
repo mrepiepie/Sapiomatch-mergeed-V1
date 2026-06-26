@@ -248,6 +248,23 @@ export default function Home({ setView, setExploreSearchTerm, onUpgradePremium }
       </section>
 
 
+      {/* Trust / Stats Strip */}
+      <section style={{ padding: '0 24px', position: 'relative', marginTop: '8px', zIndex: 6 }}>
+        <div className="glass-card" style={{ maxWidth: '1100px', margin: '0 auto', padding: '30px 28px', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '24px', textAlign: 'center' }}>
+          {[
+            { num: '500+', label: 'Partner Institutions' },
+            { num: '5,000+', label: 'Programs Matched' },
+            { num: '98%', label: 'Match Accuracy' },
+            { num: '50+', label: 'Countries Covered' }
+          ].map((stat, i) => (
+            <div key={i} style={{ position: 'relative', zIndex: 2 }}>
+              <div className="gradient-text" style={{ fontSize: 'clamp(1.9rem, 4vw, 2.5rem)', fontWeight: 800, fontFamily: 'var(--font-display)', lineHeight: 1 }}>{stat.num}</div>
+              <div style={{ fontSize: '13px', color: 'var(--text-muted)', marginTop: '8px', fontWeight: 500 }}>{stat.label}</div>
+            </div>
+          ))}
+        </div>
+      </section>
+
       {/* Mission Summary & Degree Program Navigator Section */}
       <section style={{ padding: '60px 24px', position: 'relative', borderTop: '1px solid var(--card-border)' }}>
         <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
