@@ -3276,6 +3276,53 @@ h6,
   background: linear-gradient(90deg, var(--primary), var(--accent), var(--secondary));
 }
 
+/* ============================================================
+   Global design polish pass — uplifts every page at once
+   ============================================================ */
+.spotlight-card,
+.btn-premium,
+.btn-premium-outline,
+.custom-input,
+.custom-select {
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.3s ease, background 0.3s ease;
+}
+
+/* Content cards gain depth: lift + glow on hover */
+.spotlight-card:hover {
+  transform: translateY(-5px);
+  border-color: rgba(34, 211, 238, 0.4);
+  box-shadow: 0 34px 92px rgba(0, 0, 0, 0.5), 0 0 44px rgba(34, 211, 238, 0.16);
+}
+
+/* Buttons feel tactile */
+.btn-premium:hover,
+.btn-premium-outline:hover { transform: translateY(-2px); }
+.btn-premium:active,
+.btn-premium-outline:active { transform: translateY(0); }
+
+/* Gradient text gets a soft luminous glow */
+.gradient-text { filter: drop-shadow(0 2px 16px rgba(139, 92, 246, 0.22)); }
+
+/* Crisper display headings */
+h1, h2 { letter-spacing: -0.015em; }
+
+/* Sleek themed scrollbar */
+::-webkit-scrollbar { width: 11px; height: 11px; }
+::-webkit-scrollbar-track { background: rgba(5, 8, 22, 0.55); }
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, rgba(139, 92, 246, 0.55), rgba(59, 130, 246, 0.55));
+  border-radius: 999px;
+  border: 2px solid rgba(5, 8, 22, 0.65);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, rgba(139, 92, 246, 0.85), rgba(34, 211, 238, 0.7));
+}
+
+/* Themed text selection */
+::selection { background: rgba(139, 92, 246, 0.38); color: #ffffff; }
+
 .sapio-home-globe {
   width: 100%;
   height: 100%;

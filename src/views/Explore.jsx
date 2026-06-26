@@ -288,6 +288,18 @@ export default function Explore({
         </div>
       </div>
 
+      {/* Results count */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '20px', color: 'var(--text-muted)', fontSize: '13.5px', flexWrap: 'wrap' }}>
+        <span style={{ color: 'white', fontWeight: 700, fontFamily: 'var(--font-display)', fontSize: '15px' }}>{filtered.length}</span>
+        institution{filtered.length === 1 ? '' : 's'} found
+        {filtered.length !== institutions.length && (
+          <>
+            <span style={{ opacity: 0.5 }}>·</span>
+            <button onClick={() => { setTypeFilter('All'); setBudgetFilter('All'); setDeliveryFilter('All'); setSearchTerm(''); }} style={{ background: 'none', border: 'none', color: 'var(--accent)', cursor: 'pointer', fontSize: '13.5px', padding: 0, fontWeight: 600 }}>Clear filters</button>
+          </>
+        )}
+      </div>
+
       {/* Grid listing */}
       {filtered.length > 0 ? (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))', gap: '24px' }}>
