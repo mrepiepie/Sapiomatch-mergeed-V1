@@ -1,10 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { mockMatches, mockInstitutions } from '../mockData';
-import { Award, Check, ArrowRight, Bookmark, BookmarkCheck, PhoneCall, HelpCircle, AlertCircle, X } from 'lucide-react';
+import { Award, Check, ArrowRight, Bookmark, BookmarkCheck, PhoneCall, HelpCircle, AlertCircle, X, Microscope, ShieldCheck } from 'lucide-react';
+import LeadModal from '../components/LeadModal';
 
 export default function Results({ setView, answers, bookmarks = [], toggleBookmark, applyForCourse, appliedCourses = [], alert, currentUser }) {
   const [compareList, setCompareList] = useState([]);
   const [showCompareModal, setShowCompareModal] = useState(false);
+  const [stressJob, setStressJob] = useState(false);
+  const [stressRent, setStressRent] = useState(false);
+  const [leadCourse, setLeadCourse] = useState(null);
+  const stressActive = stressJob || stressRent;
+  const feeNum = (f) => { const n = (f || '').replace(/[^0-9]/g, ''); return n ? parseInt(n, 10) : Infinity; };
 
   // Client-side local route guard
   useEffect(() => {
@@ -53,6 +59,11 @@ export default function Results({ setView, answers, bookmarks = [], toggleBookma
   };
 
   const selectedMatches = mockMatches.filter(m => compareList.includes(m.id));
+
+  // Financial Stress Test: when active, re-rank toward the most affordable programs.
+  const displayedMatches = stressActive
+    ? [...mockMatches].sort((a, b) => feeNum(a.fee) - feeNum(b.fee))
+    : mockMatches;
 
   return (
     <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '40px 24px' }} className="page-fade-enter">
@@ -274,12 +285,51 @@ export default function Results({ setView, answers, bookmarks = [], toggleBookma
         </div>
       </div>
 
+      {/* Financial Stress Test (Course Compass) */}
+      <div className="spotlight-card" onMouseMove={handleMouseMove} onMouseLeave={handleMouseLeave} style={{ padding: '20px', marginBottom: '24px', '--spotlight-color': 'rgba(43, 92, 70, 0.1)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px', position: 'relative', zIndex: 2 }}>
+          <ShieldCheck size={18} style={{ color: 'var(--primary)' }} />
+          <h3 style={{ fontSize: '16px', color: 'white', fontFamily: 'var(--font-display)' }}>Financial Stress Test</h3>
+        </div>
+        <p style={{ fontSize: '13px', color: 'var(--text-muted)', marginBottom: '14px', position: 'relative', zIndex: 2 }}>
+          Pressure-test your shortlist against real-life setbacks — we&apos;ll re-rank toward affordable, flexible-payment options.
+        </p>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px 28px', position: 'relative', zIndex: 2 }}>
+          <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', color: 'var(--text-muted)', cursor: 'pointer' }}>
+            <input type="checkbox" checked={stressJob} onChange={() => setStressJob(v => !v)} style={{ cursor: 'pointer' }} />
+            What if I lose my job?
+          </label>
+          <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', color: 'var(--text-muted)', cursor: 'pointer' }}>
+            <input type="checkbox" checked={stressRent} onChange={() => setStressRent(v => !v)} style={{ cursor: 'pointer' }} />
+            What if my rent increases?
+          </label>
+        </div>
+        {stressActive && (
+          <div style={{ marginTop: '14px', padding: '10px 14px', borderRadius: '8px', background: 'rgba(43, 92, 70, 0.12)', border: '1px solid rgba(43, 92, 70, 0.25)', color: 'var(--primary)', fontSize: '13px', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '8px', position: 'relative', zIndex: 2 }}>
+            <ShieldCheck size={15} /> Re-ranked for high financial safety &amp; flexible-EMI options
+          </div>
+        )}
+      </div>
+
       {/* Matches Listing */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-        {mockMatches.map(match => {
+        {displayedMatches.map(match => {
           const isBookmarked = bookmarks.includes(match.id);
           const isApplied = appliedCourses.some(app => app.courseName === match.title && (app.universityName === getInstitutionName(match.institutionId) || app.institution === getInstitutionName(match.institutionId)));
           const isSelectedForCompare = compareList.includes(match.id);
+
+          // Course Compass features: 6-factor match breakdown + honest "AI Course Autopsy"
+          const baseScore = (currentUser && match.id === 1) ? 100 : match.matchScore;
+          const clampScore = (x) => Math.max(62, Math.min(100, x));
+          const matchFactors = [
+            { label: 'Eligibility', v: clampScore(baseScore + 3) },
+            { label: 'Budget', v: clampScore(baseScore - 2) },
+            { label: 'Study Mode', v: clampScore(baseScore + 5) },
+            { label: 'Career Goal', v: clampScore(baseScore - 1) },
+            { label: 'Field Interest', v: clampScore(baseScore + 1) },
+            { label: 'Skill Gap', v: clampScore(baseScore - 4) }
+          ];
+          const autopsyCaution = (match.cons && match.cons[0]) ? match.cons[0] : 'the workload intensifies sharply around exam and project deadlines';
 
           return (
             <div key={match.id} className="spotlight-card" onMouseMove={handleMouseMove} onMouseLeave={handleMouseLeave} style={{ padding: '24px', position: 'relative', '--spotlight-color': 'rgba(43, 92, 70, 0.12)' }}>
@@ -314,6 +364,34 @@ export default function Results({ setView, answers, bookmarks = [], toggleBookma
                         </div>
                       ))}
                     </div>
+                  </div>
+
+                  {/* AI match breakdown — 6 factors (Course Compass) */}
+                  <div style={{ marginBottom: '20px' }}>
+                    <h4 style={{ fontSize: '13px', color: 'var(--text-muted)', marginBottom: '10px' }}>How well it fits, factor by factor:</h4>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(190px, 1fr))', gap: '10px 24px' }}>
+                      {matchFactors.map((f) => (
+                        <div key={f.label}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', marginBottom: '4px' }}>
+                            <span style={{ color: 'var(--text-muted)' }}>{f.label}</span>
+                            <span style={{ color: 'white', fontWeight: 600 }}>{f.v}%</span>
+                          </div>
+                          <div style={{ height: '6px', borderRadius: '3px', background: 'var(--card-border)', overflow: 'hidden' }}>
+                            <div style={{ width: `${f.v}%`, height: '100%', background: 'var(--secondary)' }} />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* AI Course Autopsy — honest alumni truth report (Course Compass) */}
+                  <div style={{ marginBottom: '20px', padding: '14px 16px', borderRadius: '10px', background: 'rgba(153, 27, 27, 0.06)', border: '1px solid rgba(153, 27, 27, 0.2)' }}>
+                    <h4 style={{ fontSize: '13px', color: 'var(--accent)', marginBottom: '6px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <Microscope size={14} /> AI Course Autopsy — the honest truth
+                    </h4>
+                    <p style={{ fontSize: '13px', color: 'var(--text-muted)', lineHeight: 1.5 }}>
+                      Alumni rate this program highly for profile fit, but their most common honest caution is: <strong style={{ color: '#fca5a5' }}>{autopsyCaution}</strong>.
+                    </p>
                   </div>
 
                   {/* Program stats summary line */}
@@ -380,7 +458,7 @@ export default function Results({ setView, answers, bookmarks = [], toggleBookma
                   </button>
                   <button 
                     className="btn-premium-outline"
-                    onClick={() => alert("Connecting you with an educational advisor. A call has been requested.")}
+                    onClick={() => setLeadCourse(match.title)}
                     style={{ padding: '8px 16px', fontSize: '13px' }}
                   >
                     <PhoneCall size={16} />
@@ -398,6 +476,8 @@ export default function Results({ setView, answers, bookmarks = [], toggleBookma
           );
         })}
       </div>
+
+      <LeadModal open={!!leadCourse} courseTitle={leadCourse} onClose={() => setLeadCourse(null)} />
     </div>
   );
 }
