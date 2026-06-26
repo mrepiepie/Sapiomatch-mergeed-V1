@@ -1,10 +1,85 @@
 "use client";
 
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import {
   Map, FileText, Search, Calculator, PiggyBank, BookOpen,
-  X, Sparkles, ArrowRight, CheckCircle, AlertTriangle, TrendingUp, Wand2
+  X, Sparkles, ArrowRight, CheckCircle, AlertTriangle, TrendingUp
 } from 'lucide-react';
+
+const ROADMAPS = {
+  "Management / Leadership": [
+    { phase: "Assess your profile", detail: "Complete the AI matching assessment to baseline your strengths", dur: "Week 1" },
+    { phase: "Foundation", detail: "Executive Diploma in Business Management or a Hybrid BBA", dur: "3-9 months" },
+    { phase: "Core skills", detail: "Strategy, people management, and financial literacy", dur: "3-6 months" },
+    { phase: "Certification", detail: "PMP / Agile, or an MBA leadership module", dur: "3-12 months" },
+    { phase: "Target role", detail: "Team Lead to Manager to Senior Manager", dur: "12-24 months" }
+  ],
+  "Data & Analytics": [
+    { phase: "Assess your profile", detail: "Baseline your maths and tools comfort via the assessment", dur: "Week 1" },
+    { phase: "Foundation", detail: "Data analytics bootcamp (Excel, SQL, statistics)", dur: "2-4 months" },
+    { phase: "Core skills", detail: "Python, data visualisation, and dashboarding", dur: "3-6 months" },
+    { phase: "Certification", detail: "Google/IBM Data Analytics, or an MSc Data Science module", dur: "3-9 months" },
+    { phase: "Target role", detail: "Data Analyst to Senior Analyst to Data Scientist", dur: "12-24 months" }
+  ],
+  "Tech / Software": [
+    { phase: "Assess your profile", detail: "Identify your starting point with the assessment", dur: "Week 1" },
+    { phase: "Foundation", detail: "Full-stack coding bootcamp (HTML, JS, one framework)", dur: "3-4 months" },
+    { phase: "Core skills", detail: "APIs, databases, version control, and testing", dur: "3-6 months" },
+    { phase: "Certification", detail: "Cloud (AWS/Azure), or an MSc Computer Science module", dur: "3-9 months" },
+    { phase: "Target role", detail: "Junior Developer to Developer to Senior Engineer", dur: "12-24 months" }
+  ],
+  "Finance": [
+    { phase: "Assess your profile", detail: "Map your numeracy and goals via the assessment", dur: "Week 1" },
+    { phase: "Foundation", detail: "Professional Accounting & Tax, or a Finance diploma", dur: "2-6 months" },
+    { phase: "Core skills", detail: "Financial modelling, forecasting, and Excel mastery", dur: "3-6 months" },
+    { phase: "Certification", detail: "CFA Level I / ACCA module, or an MBA Finance track", dur: "6-18 months" },
+    { phase: "Target role", detail: "Analyst to Finance Manager to Controller", dur: "12-36 months" }
+  ]
+};
+
+const SKILL_MAP = {
+  "Team Manager": { have: ["Communication", "Teamwork", "Time management"], gaps: ["Strategic management", "Data-driven decision making", "Financial forecasting"] },
+  "Data Analyst": { have: ["Excel", "Reporting", "Attention to detail"], gaps: ["SQL & databases", "Python", "Data visualisation (Power BI / Tableau)"] },
+  "Product Manager": { have: ["Communication", "Organisation", "Customer empathy"], gaps: ["Roadmapping & prioritisation", "Basic analytics", "Stakeholder management"] },
+  "Software Engineer": { have: ["Problem solving", "Logic", "Curiosity"], gaps: ["A core language (JS / Python)", "Data structures & algorithms", "Version control (Git)"] }
+};
+
+const FUNDING = [
+  { label: "Merit scholarship - up to 30% off", tiers: ["low", "mid", "high"], note: "Awarded on strong academic results or test scores." },
+  { label: "Interest-free 12-month EMI", tiers: ["low", "mid", "high"], note: "Split tuition into monthly payments with no interest." },
+  { label: "Early-bird discount - 10%", tiers: ["mid", "high"], note: "Enrol before the intake deadline to lock in a discount." },
+  { label: "Employer sponsorship pathway", tiers: ["mid", "high"], note: "We can help prepare a sponsorship case for your employer." },
+  { label: "Need-based aid (partial)", tiers: ["low"], note: "Income-assessed support for eligible learners." },
+  { label: "Free / low-cost platform courses", tiers: ["low"], note: "Coursera & Udemy options starting under AED 1,000." }
+];
+
+const LIBRARY = {
+  "Business & Management": [
+    { title: "Good to Great - Jim Collins", note: "Why some companies make the leap" },
+    { title: "The Lean Startup - Eric Ries", note: "Build-measure-learn for new ventures" },
+    { title: "HBR's 10 Must Reads on Leadership", note: "Core leadership essays" },
+    { title: "Coursera: Strategic Leadership specialisation", note: "Structured online track" }
+  ],
+  "Technology & AI": [
+    { title: "Automate the Boring Stuff with Python", note: "Practical beginner programming" },
+    { title: "Designing Data-Intensive Applications", note: "How modern data systems work" },
+    { title: "AI for Everyone - Andrew Ng (Coursera)", note: "Non-technical AI foundations" },
+    { title: "The Pragmatic Programmer", note: "Timeless software craft" }
+  ],
+  "Law & Public Policy": [
+    { title: "Thinking, Fast and Slow - Kahneman", note: "Judgement & decision-making" },
+    { title: "The Rule of Law - Tom Bingham", note: "Foundations of legal systems" },
+    { title: "Coursera: International Law in Action", note: "How global law works in practice" },
+    { title: "Policy Paradox - Deborah Stone", note: "The art of political decision-making" }
+  ],
+  "Career & Soft Skills": [
+    { title: "Atomic Habits - James Clear", note: "Build systems that stick" },
+    { title: "Never Split the Difference - Chris Voss", note: "Practical negotiation skills" },
+    { title: "Deep Work - Cal Newport", note: "Focus in a distracted world" },
+    { title: "LinkedIn Learning: Communication Foundations", note: "Workplace communication" }
+  ]
+};
 
 export default function CareerTools({ setView }) {
   const [openTool, setOpenTool] = useState(null);
@@ -17,6 +92,17 @@ export default function CareerTools({ setView }) {
 
   // Resume Analyzer state
   const [resumeAnalyzed, setResumeAnalyzed] = useState(false);
+
+  // Roadmap / Skill-gap / Scholarship / Library tool state
+  const [roadmapGoal, setRoadmapGoal] = useState('Management / Leadership');
+  const [roadmapShown, setRoadmapShown] = useState(false);
+  const [skillRole, setSkillRole] = useState('Team Manager');
+  const [skillShown, setSkillShown] = useState(false);
+  const [budget, setBudget] = useState('AED 20k - 50k');
+  const [budgetShown, setBudgetShown] = useState(false);
+  const [libTopic, setLibTopic] = useState('Business & Management');
+  const [libShown, setLibShown] = useState(false);
+  const budgetTier = budget.includes('< ') ? 'low' : budget.includes('50k+') ? 'high' : 'mid';
 
   const handleMouseMove = (e) => {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -97,6 +183,10 @@ export default function CareerTools({ setView }) {
     setOpenTool(null);
     setResumeAnalyzed(false);
     setRoiResult(null);
+    setRoadmapShown(false);
+    setSkillShown(false);
+    setBudgetShown(false);
+    setLibShown(false);
   };
 
   const inputStyle = {
@@ -192,7 +282,7 @@ export default function CareerTools({ setView }) {
       </section>
 
       {/* Modal */}
-      {activeTool && (
+      {activeTool && typeof document !== 'undefined' && createPortal((
         <div
           onClick={closeModal}
           style={{
@@ -326,26 +416,129 @@ export default function CareerTools({ setView }) {
               </div>
             )}
 
-            {/* Informational tools (roadmap, skillgap, scholarship, library) */}
-            {!['roi', 'resume'].includes(openTool) && (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
-                <p style={{ color: 'var(--text-muted)', fontSize: '15px', lineHeight: 1.65 }}>{activeTool.desc}</p>
-                <div style={{ padding: '18px', borderRadius: '10px', background: activeTool.bg, border: `1px solid ${activeTool.border}` }}>
-                  <p style={{ color: 'white', fontSize: '14px', fontWeight: 600, marginBottom: '6px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <Wand2 size={16} style={{ color: activeTool.color }} /> Personalised for you
-                  </p>
-                  <p style={{ color: 'var(--text-muted)', fontSize: '13.5px', lineHeight: 1.6 }}>
-                    Complete your AI matching profile and we&apos;ll tailor this tool to your goals, budget, and background.
-                  </p>
+            {/* Career Roadmap Generator */}
+            {openTool === 'roadmap' && (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                <p style={{ color: 'var(--text-muted)', fontSize: '14px', lineHeight: 1.6 }}>Pick a direction and we&apos;ll map a step-by-step path of courses, skills, and roles.</p>
+                <div>
+                  <label style={labelStyle}>Your target direction</label>
+                  <select style={inputStyle} value={roadmapGoal} onChange={(e) => { setRoadmapGoal(e.target.value); setRoadmapShown(false); }}>
+                    {Object.keys(ROADMAPS).map((g) => <option key={g} value={g}>{g}</option>)}
+                  </select>
                 </div>
-                <button className="btn-premium" onClick={() => { closeModal(); setView('questionnaire'); }} style={{ padding: '12px 22px', fontSize: '14px', alignSelf: 'flex-start' }}>
-                  Start AI Matching <ArrowRight size={15} />
+                <button className="btn-premium" onClick={() => setRoadmapShown(true)} style={{ padding: '12px', fontSize: '14px', justifyContent: 'center' }}>
+                  <Map size={16} /> Generate My Roadmap
                 </button>
+                {roadmapShown && (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '4px' }}>
+                    {ROADMAPS[roadmapGoal].map((s, i) => (
+                      <div key={i} style={{ display: 'flex', gap: '12px', padding: '12px 14px', borderRadius: '10px', background: 'rgba(43, 92, 70, 0.06)', border: '1px solid rgba(43, 92, 70, 0.18)' }}>
+                        <div style={{ flexShrink: 0, width: '24px', height: '24px', borderRadius: '50%', background: 'var(--primary)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', fontWeight: 700 }}>{i + 1}</div>
+                        <div style={{ flexGrow: 1 }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', gap: '12px', flexWrap: 'wrap' }}>
+                            <strong style={{ color: 'white', fontSize: '14px' }}>{s.phase}</strong>
+                            <span style={{ color: 'var(--secondary)', fontSize: '12px', fontWeight: 600 }}>{s.dur}</span>
+                          </div>
+                          <p style={{ color: 'var(--text-muted)', fontSize: '13px', lineHeight: 1.45, marginTop: '2px' }}>{s.detail}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Skill-Gap Detection */}
+            {openTool === 'skillgap' && (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                <p style={{ color: 'var(--text-muted)', fontSize: '14px', lineHeight: 1.6 }}>Choose a target role to see your likely strengths and the skills to build next.</p>
+                <div>
+                  <label style={labelStyle}>Target role</label>
+                  <select style={inputStyle} value={skillRole} onChange={(e) => { setSkillRole(e.target.value); setSkillShown(false); }}>
+                    {Object.keys(SKILL_MAP).map((r) => <option key={r} value={r}>{r}</option>)}
+                  </select>
+                </div>
+                <button className="btn-premium" onClick={() => setSkillShown(true)} style={{ padding: '12px', fontSize: '14px', justifyContent: 'center' }}>
+                  <Search size={16} /> Find My Skill Gaps
+                </button>
+                {skillShown && (
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '14px', marginTop: '4px' }}>
+                    <div style={{ padding: '16px', borderRadius: '10px', background: 'rgba(43, 92, 70, 0.08)', border: '1px solid rgba(43, 92, 70, 0.2)' }}>
+                      <h4 style={{ color: 'var(--primary)', fontSize: '13px', marginBottom: '10px', display: 'flex', alignItems: 'center', gap: '6px' }}><CheckCircle size={15} /> Likely strengths</h4>
+                      <ul style={{ listStyle: 'none', padding: 0, margin: 0, color: 'var(--text-muted)', fontSize: '13px', lineHeight: 1.9 }}>
+                        {SKILL_MAP[skillRole].have.map((s, i) => <li key={i}>✓ {s}</li>)}
+                      </ul>
+                    </div>
+                    <div style={{ padding: '16px', borderRadius: '10px', background: 'rgba(153, 27, 27, 0.08)', border: '1px solid rgba(153, 27, 27, 0.2)' }}>
+                      <h4 style={{ color: 'var(--accent)', fontSize: '13px', marginBottom: '10px', display: 'flex', alignItems: 'center', gap: '6px' }}><AlertTriangle size={15} /> Skills to build</h4>
+                      <ul style={{ listStyle: 'none', padding: 0, margin: 0, color: 'var(--text-muted)', fontSize: '13px', lineHeight: 1.9 }}>
+                        {SKILL_MAP[skillRole].gaps.map((s, i) => <li key={i}>✕ {s}</li>)}
+                      </ul>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Scholarship & EMI Finder */}
+            {openTool === 'scholarship' && (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                <p style={{ color: 'var(--text-muted)', fontSize: '14px', lineHeight: 1.6 }}>Tell us your budget and we&apos;ll surface scholarships and flexible-payment options that fit.</p>
+                <div>
+                  <label style={labelStyle}>Your budget</label>
+                  <select style={inputStyle} value={budget} onChange={(e) => { setBudget(e.target.value); setBudgetShown(false); }}>
+                    <option value="< AED 20k">{"< AED 20k"}</option>
+                    <option value="AED 20k - 50k">AED 20k - 50k</option>
+                    <option value="AED 50k+">AED 50k+</option>
+                  </select>
+                </div>
+                <button className="btn-premium" onClick={() => setBudgetShown(true)} style={{ padding: '12px', fontSize: '14px', justifyContent: 'center' }}>
+                  <PiggyBank size={16} /> Find Budget Options
+                </button>
+                {budgetShown && (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '4px' }}>
+                    {FUNDING.filter((f) => f.tiers.includes(budgetTier)).map((f, i) => (
+                      <div key={i} style={{ padding: '12px 14px', borderRadius: '10px', background: 'rgba(180, 83, 9, 0.06)', border: '1px solid rgba(180, 83, 9, 0.2)' }}>
+                        <strong style={{ color: 'white', fontSize: '13.5px' }}>{f.label}</strong>
+                        <p style={{ color: 'var(--text-muted)', fontSize: '12.5px', lineHeight: 1.4, marginTop: '2px' }}>{f.note}</p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Online Library */}
+            {openTool === 'library' && (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                <p style={{ color: 'var(--text-muted)', fontSize: '14px', lineHeight: 1.6 }}>Pick a subject and we&apos;ll recommend books and resources to learn before or during your course.</p>
+                <div>
+                  <label style={labelStyle}>Subject area</label>
+                  <select style={inputStyle} value={libTopic} onChange={(e) => { setLibTopic(e.target.value); setLibShown(false); }}>
+                    {Object.keys(LIBRARY).map((t) => <option key={t} value={t}>{t}</option>)}
+                  </select>
+                </div>
+                <button className="btn-premium" onClick={() => setLibShown(true)} style={{ padding: '12px', fontSize: '14px', justifyContent: 'center' }}>
+                  <BookOpen size={16} /> Explore Library
+                </button>
+                {libShown && (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '4px' }}>
+                    {LIBRARY[libTopic].map((b, i) => (
+                      <div key={i} style={{ display: 'flex', gap: '12px', padding: '12px 14px', borderRadius: '10px', background: 'rgba(255,255,255,0.02)', border: '1px solid var(--card-border)' }}>
+                        <BookOpen size={16} style={{ color: 'var(--secondary)', flexShrink: 0, marginTop: '2px' }} />
+                        <div style={{ flexGrow: 1 }}>
+                          <strong style={{ color: 'white', fontSize: '13.5px' }}>{b.title}</strong>
+                          <p style={{ color: 'var(--text-muted)', fontSize: '12.5px', lineHeight: 1.4, marginTop: '2px' }}>{b.note}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             )}
           </div>
         </div>
-      )}
+      ), document.body)}
 
       {/* CTA */}
       <section style={{ padding: '20px 24px 60px 24px', textAlign: 'center' }}>
