@@ -172,17 +172,26 @@ export default function InstitutionDetail({ instId, setView, applyForCourse, app
         <div style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
           {/* Stats */}
           <div className="glass-card">
-            <h3 style={{ fontSize: '18px', marginBottom: '16px' }}>Key Metrics</h3>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span style={{ fontSize: '13px', color: 'var(--text-muted)' }}>Satisfaction</span>
-                <span style={{ fontSize: '16px', fontWeight: 700, color: 'var(--secondary)' }}>{inst.satisfaction}</span>
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span style={{ fontSize: '13px', color: 'var(--text-muted)' }}>Practicality</span>
-                <span style={{ fontSize: '16px', fontWeight: 700, color: 'var(--accent)' }}>{inst.practicality}</span>
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <h3 style={{ fontSize: '18px', marginBottom: '18px' }}>Key Metrics</h3>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
+              {[
+                { label: 'Satisfaction', value: inst.satisfaction, color: 'var(--secondary)' },
+                { label: 'Practicality', value: inst.practicality, color: 'var(--accent)' }
+              ].map((m) => {
+                const pct = parseInt((m.value || '0').replace(/[^0-9]/g, ''), 10) || 0;
+                return (
+                  <div key={m.label}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+                      <span style={{ fontSize: '13px', color: 'var(--text-muted)' }}>{m.label}</span>
+                      <span style={{ fontSize: '15px', fontWeight: 700, color: m.color }}>{m.value}</span>
+                    </div>
+                    <div style={{ height: '6px', borderRadius: '3px', background: 'var(--card-border)', overflow: 'hidden' }}>
+                      <div style={{ width: `${pct}%`, height: '100%', background: m.color, borderRadius: '3px' }} />
+                    </div>
+                  </div>
+                );
+              })}
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '6px', borderTop: '1px solid var(--card-border)' }}>
                 <span style={{ fontSize: '13px', color: 'var(--text-muted)' }}>Recognition Level</span>
                 <span style={{ fontSize: '14px', fontWeight: 600 }}>{inst.recognition}</span>
               </div>
