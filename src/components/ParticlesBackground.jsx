@@ -2,11 +2,11 @@ import { useEffect, useRef } from "react";
 
 const DEFAULT_CONFIG = {
   particles: {
-    number: { value: 120 },
-    color: { value: "#676fdf" },
-    opacity: { value: 1, random: true, anim: { enable: true, speed: 1, opacity_min: 0 } },
-    size: { value: 3, random: true },
-    move: { enable: true, speed: 3.5, direction: "bottom", random: true, out_mode: "out" }
+    number: { value: 35 },
+    color: { value: "rgba(0, 229, 201, 0.15)" },
+    opacity: { value: 0.6, random: true, anim: { enable: true, speed: 0.5, opacity_min: 0 } },
+    size: { value: 1.8, random: true },
+    move: { enable: true, speed: 0.6, direction: "bottom", random: true, out_mode: "out" }
   },
   interactivity: {
     events: { onhover: { enable: true, mode: "repulse" }, onclick: { enable: true, mode: "push" }, resize: true },

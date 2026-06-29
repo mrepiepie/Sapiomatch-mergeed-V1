@@ -1,27 +1,27 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap');
 
 :root {
-  /* Premium Minimalist Deep Earth Dark Theme */
-  --bg-color: #0b0e0c;           /* Deep Forest Night black-green */
+  /* Premium Minimalist Deep Abyssal Teal-Black Theme */
+  --bg-color: #020706;           /* Abyssal dark green-teal black */
   --bg-gradient: none;
-  --card-bg: #121714;            /* Dark Moss Slate cards */
-  --card-border: #1d2520;        /* Soft dark moss border */
-  --card-hover-border: #34d399;  /* Glowing Mint/Emerald green */
+  --card-bg: #07100e;            /* Deep polished slate/teal card bg */
+  --card-border: #0d1e1a;        /* Soft refined dark border */
+  --card-hover-border: #00e5c9;  /* Electric glowing teal */
   
-  --text-primary: #f3f4f6;       /* Warm off-white */
-  --text-muted: #9ca3af;          /* Slate gray */
-  --text-dark: #0b0e0c;          /* Dark forest for light badges */
+  --text-primary: #f1f5f9;       /* Warm slate white */
+  --text-muted: #94a3b8;          /* Muted slate gray */
+  --text-dark: #020706;
   --text-heading: #ffffff;       /* Pure white headings */
-  --text-lift-soft: 0 1px 2px rgba(0, 0, 0, 0.45), 0 0 18px rgba(255, 255, 255, 0.08);
-  --text-lift-strong: 0 2px 8px rgba(0, 0, 0, 0.55), 0 0 28px rgba(255, 255, 255, 0.12);
-  --text-lift-primary: 0 2px 8px rgba(0, 0, 0, 0.55), 0 0 22px rgba(52, 211, 153, 0.32);
-  --text-lift-secondary: 0 2px 8px rgba(0, 0, 0, 0.55), 0 0 22px rgba(251, 146, 60, 0.32);
+  --text-lift-soft: none;
+  --text-lift-strong: none;
+  --text-lift-primary: none;
+  --text-lift-secondary: none;
   
-  --primary: #34d399;            /* Glowing Emerald / Mint Green */
-  --primary-glow: rgba(52, 211, 153, 0.15);
-  --secondary: #fb923c;          /* Terracotta Clay / Amber Orange */
-  --secondary-glow: rgba(251, 146, 60, 0.15);
-  --accent: #f87171;             /* Soft Brick Red */
+  --primary: #00e5c9;            /* Premium electric teal/cyan */
+  --primary-glow: rgba(0, 229, 201, 0.08);
+  --secondary: #0ea5e9;          /* Minimalist clean sky blue (replaces orange) */
+  --secondary-glow: rgba(14, 165, 233, 0.08);
+  --accent: #10b981;             /* Clean emerald green */
   
   --header-bg: rgba(11, 14, 12, 0.9);
   --footer-bg: #0e120f;
@@ -72,7 +72,7 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 600;
   color: var(--text-heading);
   line-height: 1.2;
-  text-shadow: var(--text-lift-strong);
+  text-shadow: none;
 }
 
 p,
@@ -80,7 +80,7 @@ li,
 span,
 label,
 small {
-  text-shadow: var(--text-lift-soft);
+  text-shadow: none;
 }
 
 a {

@@ -1,33 +1,33 @@
 /* SapioMatch AI Custom Styling System */
 
 :root {
-  --background: #050816;
-  --foreground: #F8FAFC;
-  --card: rgba(18, 26, 51, 0.72);
-  --card-border: rgba(139, 92, 246, 0.2);
-  --primary: #3B82F6;
-  --secondary: #8B5CF6;
-  --accent: #22D3EE;
-  --muted: rgba(18, 26, 51, 0.5);
-  --muted-foreground: #D8E1F0;
-  --border: rgba(139, 92, 246, 0.25);
+  --background: #020706;
+  --foreground: #f1f5f9;
+  --card: rgba(7, 16, 14, 0.78);
+  --card-border: rgba(0, 229, 201, 0.15);
+  --primary: #00e5c9;
+  --secondary: #0ea5e9;
+  --accent: #10b981;
+  --muted: rgba(7, 16, 14, 0.5);
+  --muted-foreground: #94a3b8;
+  --border: rgba(0, 229, 201, 0.18);
   --radius: 16px;
   --radius-sm: 8px;
   --radius-lg: 24px;
   --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  --font-display: 'Space Grotesk', sans-serif;
+  --font-display: 'Inter', sans-serif;
   --font-body: 'Inter', sans-serif;
-  --sapio-text-lift-soft: 0 1px 2px rgba(0, 0, 0, 0.48), 0 0 18px rgba(255, 255, 255, 0.08);
-  --sapio-text-lift-strong: 0 2px 8px rgba(0, 0, 0, 0.6), 0 0 30px rgba(255, 255, 255, 0.13);
-  --sapio-text-lift-blue: 0 2px 8px rgba(0, 0, 0, 0.58), 0 0 24px rgba(59, 130, 246, 0.36);
-  --sapio-text-lift-purple: 0 2px 8px rgba(0, 0, 0, 0.58), 0 0 24px rgba(139, 92, 246, 0.38);
-  --sapio-text-lift-cyan: 0 2px 8px rgba(0, 0, 0, 0.58), 0 0 24px rgba(34, 211, 238, 0.34);
+  --sapio-text-lift-soft: none;
+  --sapio-text-lift-strong: none;
+  --sapio-text-lift-blue: none;
+  --sapio-text-lift-purple: none;
+  --sapio-text-lift-cyan: none;
   
   /* Color-coding Accents */
-  --uni-color: #3B82F6;
-  --academy-color: #8B5CF6;
-  --online-color: #22D3EE;
-  --local-color: #10B981;
+  --uni-color: #0ea5e9;
+  --academy-color: #10b981;
+  --online-color: #00e5c9;
+  --local-color: #00e5c9;
 }
 
 /* 1. Resets & Base Styles */
@@ -54,7 +54,7 @@ h3,
 h4,
 h5,
 h6 {
-  text-shadow: var(--sapio-text-lift-strong);
+  text-shadow: none;
 }
 
 p,
@@ -65,7 +65,7 @@ small,
 .btn,
 .badge,
 .sapio-globe-focus-instructions {
-  text-shadow: var(--sapio-text-lift-soft);
+  text-shadow: none;
 }
 
 #root {
