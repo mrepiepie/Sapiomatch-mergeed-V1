@@ -1414,7 +1414,12 @@ export default function App() {
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: userText, history: chatMessages, apiKey: geminiApiKey })
+        body: JSON.stringify({ 
+          message: userText, 
+          history: chatMessages, 
+          apiKey: geminiApiKey,
+          studentProfile: answers
+        })
       });
 
       if (response.ok) {

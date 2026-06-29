@@ -129,7 +129,7 @@ export default function Explore({
         const matchesLoc = inst.location.toLowerCase().includes(nlp.location.toLowerCase());
         if (!matchesLoc) matchesSearch = false;
       }
-    } else {
+    } else if (searchTerm && typeof searchTerm === 'string') {
       matchesSearch = inst.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
                       inst.tagline.toLowerCase().includes(searchTerm.toLowerCase()) ||
                       inst.courses.some(c => c.name.toLowerCase().includes(searchTerm.toLowerCase()));

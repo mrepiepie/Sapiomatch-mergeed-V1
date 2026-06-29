@@ -4,7 +4,7 @@ import { mockInstitutions } from '../mockData.js';
  * Parses a user message and returns a conversational, friendly, and topic-focused response.
  * Simulates a real ChatGPT agent by mapping prompts to semantic templates and dynamic databases.
  */
-export function generateAiResponse(message, history = []) {
+export function generateAiResponse(message, history = [], studentProfile = null) {
   const query = message.trim().toLowerCase();
 
   // Helper: Extract all course records from mock database
@@ -61,10 +61,16 @@ export function generateAiResponse(message, history = []) {
   const matchedGreeting = greetingWords.some(g => query === g || query.startsWith(g + ' ') || query.endsWith(' ' + g) || query === 'how are you?');
 
   if (matchedGreeting) {
-    return {
-      text: "Yo! What's up, bro? 👋 I'm Aria, your SapioMatch AI Advisor. I'm doing great, thank you! I'm here and ready to help you match with premium universities, compare tuition fees, or find flexible courses.\n\n" +
-            "Are you looking to upgrade your skills, switch careers, or check out some budget options today? Let me know, or just ask me any question!"
-    };
+    const greetingName = studentProfile && studentProfile.name ? studentProfile.name : "bro";
+    let customText = `Yo! What's up, ${greetingName}? 👋 I'm Aria, your SapioMatch AI Advisor. I'm doing great, thank you! I'm here and ready to help you match with premium universities, compare tuition fees, or find flexible courses.`;
+    
+    if (studentProfile && (studentProfile.field || studentProfile.format)) {
+      customText += `\n\nI see from your quiz answers that you are looking for **${studentProfile.field || 'academic'}** programs at the **${studentProfile.education || 'undergrad'}** level, with a preference for **${studentProfile.format || 'flexible'}** delivery. How can I help you choose?`;
+    } else {
+      customText += `\n\nAre you looking to upgrade your skills, switch careers, or check out some budget options today? Let me know, or just ask me any question!`;
+    }
+    
+    return { text: customText };
   }
 
   // Identity / Capabilities Small Talk

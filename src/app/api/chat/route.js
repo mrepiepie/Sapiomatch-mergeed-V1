@@ -28,7 +28,8 @@ async function getLiveCourses() {
 
 export async function POST(request) {
   try {
-    const { message, history, apiKey: clientApiKey } = await request.body ? await request.json() : {};
+    const body = await request.json().catch(() => ({}));
+    const { message, history, apiKey: clientApiKey, studentProfile } = body;
     
     if (!message) {
       return NextResponse.json({ error: "Message is required." }, { status: 400 });
@@ -58,12 +59,25 @@ export async function POST(request) {
 
       const liveCoursesText = await getLiveCourses();
 
+      let profileContext = "";
+      if (studentProfile && (studentProfile.field || studentProfile.education || studentProfile.name)) {
+        profileContext = `\n\nAdvising Context (Profile of user you are chatting with):
+- Name: ${studentProfile.name || 'Candidate'}
+- Current Education: ${studentProfile.education || 'Not specified'}
+- Field of Interest: ${studentProfile.field || 'Not specified'}
+- Career Goal: ${studentProfile.goal || 'Not specified'}
+- Preferred Study Format: ${studentProfile.format || 'Not specified'}
+- Budget Bracket: ${studentProfile.budget || 'Not specified'}
+- Work Experience: ${studentProfile.experience || 'Not specified'}
+Use this context to personalize your suggestions. For instance, greet them by their name if appropriate and suggest courses matching their format or budget.`;
+      }
+
       const systemInstruction = {
         parts: [{
           text: `You are Aria, the premium AI Academic Advisor for SapioMatch. Your goal is to guide students and working professionals to find their best-fit programs.
 You must be conversational, warm, friendly, empathetic, and extremely helpful. Stick strictly to topics related to education, universities, vocational bootcamps, tuition fees, career upgrades, promotions, and study formats.
 Use the following partner database to suggest matches when asked:
-${liveCoursesText}
+${liveCoursesText}${profileContext}
 
 If the user asks questions unrelated to education or careers, politely guide them back to academic topics.
 If the user is unsatisfied or asks to speak to a real person, output a response suggesting they speak with a counselor (include the phrase "connect to counselor" in your response or trigger the handoff).
@@ -96,7 +110,6 @@ Keep your responses concise, user-friendly, and formatted in markdown.`
             modelUsed = model;
             break;
           } else if (response.status !== 404) {
-            // If it's a non-404 error (e.g. 400, 403), log it and break to fallback to avoid multiple failed requests
             const errText = await response.text();
             console.error(`[SapioMatch API Route] Gemini API returned error for model ${model}:`, response.status, errText);
             break;
@@ -133,7 +146,7 @@ Keep your responses concise, user-friendly, and formatted in markdown.`
 
     // Fallback to local AI Engine
     console.log(`[SapioMatch API Route] Falling back to local semantic AI Engine...`);
-    const aiResult = generateAiResponse(message, history);
+    const aiResult = generateAiResponse(message, history, studentProfile);
     try {
       await db.addAiInteraction({
         prompt: message,

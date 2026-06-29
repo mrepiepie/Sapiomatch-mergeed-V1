@@ -400,11 +400,19 @@ export default function SapioLegacySections({ setView }) {
           </div>
         </button>
         <strong>Next Steps checklist:</strong>
-        <ul className={visaReady ? "sapio-ready-list" : ""}>
-          <li><CircleDot size={14} /> Request a new statement from your bank.</li>
-          <li><CircleDot size={14} /> Ensure bank holds at least GBP 18,707.</li>
-          <li><CircleDot size={14} /> Maintain funds for 28 days before applying.</li>
-        </ul>
+        {visaReady ? (
+          <ul className="sapio-ready-list">
+            <li style={{ color: 'var(--primary)' }}><Check size={14} /> Bank statement verified successfully.</li>
+            <li style={{ color: 'var(--primary)' }}><Check size={14} /> Maintenance funds check passed (GBP 18,707+).</li>
+            <li style={{ color: 'var(--primary)' }}><Check size={14} /> Funds aged for 28+ consecutive days.</li>
+          </ul>
+        ) : (
+          <ul>
+            <li><CircleDot size={14} /> Request a new statement from your bank.</li>
+            <li><CircleDot size={14} /> Ensure bank holds at least GBP 18,707.</li>
+            <li><CircleDot size={14} /> Maintain funds for 28 days before applying.</li>
+          </ul>
+        )}
       </>
     );
   };
@@ -684,11 +692,19 @@ export default function SapioLegacySections({ setView }) {
               </div>
             </button>
             <strong>Next Steps checklist:</strong>
-            <ul className={visaReady ? "sapio-ready-list" : ""}>
-              <li><CircleDot size={14} /> Request a new statement from your bank.</li>
-              <li><CircleDot size={14} /> Ensure bank holds at least £18,707.</li>
-              <li><CircleDot size={14} /> Maintain funds for 28 days before applying.</li>
-            </ul>
+            {visaReady ? (
+              <ul className="sapio-ready-list">
+                <li style={{ color: 'var(--primary)' }}><Check size={14} /> Bank statement verified successfully.</li>
+                <li style={{ color: 'var(--primary)' }}><Check size={14} /> Maintenance funds check passed (£18,707+).</li>
+                <li style={{ color: 'var(--primary)' }}><Check size={14} /> Funds aged for 28+ consecutive days.</li>
+              </ul>
+            ) : (
+              <ul>
+                <li><CircleDot size={14} /> Request a new statement from your bank.</li>
+                <li><CircleDot size={14} /> Ensure bank holds at least £18,707.</li>
+                <li><CircleDot size={14} /> Maintain funds for 28 days before applying.</li>
+              </ul>
+            )}
           </div>
           <div className="sapio-visa-footer"><Zap size={20} /> We calculate your exact standing against the points-based immigration system.</div>
         </div>
