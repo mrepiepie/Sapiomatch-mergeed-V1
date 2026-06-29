@@ -71,7 +71,7 @@ export default function CheckoutModal({ isOpen, onClose, onSuccess, planPrice = 
         position: 'absolute',
         width: '300px',
         height: '300px',
-        background: 'radial-gradient(circle, rgba(251, 146, 60, 0.08) 0%, transparent 70%)',
+        background: 'radial-gradient(circle, rgba(0, 229, 201, 0.08) 0%, transparent 70%)',
         filter: 'blur(40px)',
         zIndex: 0,
         pointerEvents: 'none'
@@ -83,10 +83,10 @@ export default function CheckoutModal({ isOpen, onClose, onSuccess, planPrice = 
         padding: '32px',
         position: 'relative',
         zIndex: 1,
-        border: '1px solid var(--secondary)',
-        background: 'linear-gradient(135deg, rgba(251, 146, 60, 0.02) 0%, rgba(17, 24, 39, 0.95) 100%)',
+        border: '1px solid var(--primary)',
+        background: 'linear-gradient(135deg, rgba(0, 229, 201, 0.02) 0%, rgba(7, 16, 14, 0.98) 100%)',
         textAlign: 'center',
-        boxShadow: '0 0 30px rgba(251, 146, 60, 0.15)'
+        boxShadow: '0 0 35px rgba(0, 229, 201, 0.12)'
       }}>
         {/* Close Button */}
         {paymentState === 'idle' && (
@@ -121,7 +121,7 @@ export default function CheckoutModal({ isOpen, onClose, onSuccess, planPrice = 
               height: '150px',
               background: 'linear-gradient(135deg, #1f2937 0%, #111827 50%, #030712 100%)',
               borderRadius: '12px',
-              border: '1px solid rgba(251, 146, 60, 0.25)',
+              border: '1px solid rgba(0, 229, 201, 0.25)',
               padding: '20px',
               boxShadow: '0 10px 25px rgba(0,0,0,0.4)',
               textAlign: 'left',
@@ -139,7 +139,7 @@ export default function CheckoutModal({ isOpen, onClose, onSuccess, planPrice = 
                 right: '-50px',
                 width: '180px',
                 height: '180px',
-                background: 'radial-gradient(circle, rgba(251, 146, 60, 0.08) 0%, transparent 75%)',
+                background: 'radial-gradient(circle, rgba(0, 229, 201, 0.08) 0%, transparent 75%)',
                 pointerEvents: 'none'
               }} />
 
@@ -148,7 +148,7 @@ export default function CheckoutModal({ isOpen, onClose, onSuccess, planPrice = 
                 <div style={{
                   width: '38px',
                   height: '28px',
-                  background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
+                  background: 'linear-gradient(135deg, #00e5c9 0%, #10b981 100%)',
                   borderRadius: '6px',
                   boxShadow: 'inset 0 1px 3px rgba(255,255,255,0.4)'
                 }} />

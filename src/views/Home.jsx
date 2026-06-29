@@ -987,12 +987,12 @@ export default function Home({ setView, setExploreSearchTerm, onUpgradePremium, 
               onMouseLeave={handleMouseLeave} 
               style={{ 
                 padding: '40px 30px', 
-                '--spotlight-color': 'rgba(251, 146, 60, 0.15)', 
+                '--spotlight-color': 'rgba(0, 229, 201, 0.12)', 
                 display: 'flex', 
                 flexDirection: 'column', 
                 justifyContent: 'space-between',
-                border: '1px solid var(--secondary)',
-                background: 'linear-gradient(135deg, rgba(251, 146, 60, 0.05) 0%, rgba(17, 24, 39, 0.8) 100%), var(--card-bg)',
+                border: '1px solid var(--primary)',
+                background: 'linear-gradient(135deg, rgba(0, 229, 201, 0.03) 0%, rgba(7, 16, 14, 0.95) 100%), var(--card-bg)',
                 borderRadius: 'var(--border-radius-md)',
                 position: 'relative'
               }}
