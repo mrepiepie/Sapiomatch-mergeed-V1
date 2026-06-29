@@ -1,72 +1,54 @@
 import React, { useState } from 'react';
-import { X, CreditCard, Calendar, Lock, CheckCircle2, Loader2 } from 'lucide-react';
+import { X, CreditCard, Lock, CheckCircle2, Loader2, Mail } from 'lucide-react';
 
-export default function CheckoutModal({ isOpen, onClose, onSuccess, planPrice = "30 AED" }) {
-  const [cardNumber, setCardNumber] = useState('');
-  const [cardName, setCardName] = useState('');
-  const [expiry, setExpiry] = useState('');
-  const [cvv, setCvv] = useState('');
+export default function CheckoutModal({ isOpen, onClose, onSuccess, planPrice = "30 AED", currentUser }) {
+  const [emailInput, setEmailInput] = useState('');
   
   const [paymentState, setPaymentState] = useState('idle'); // 'idle', 'processing', 'success'
   const [statusText, setStatusText] = useState('Initiating payment gateway...');
 
   if (!isOpen) return null;
 
-  const handleCardNumberChange = (e) => {
-    let val = e.target.value.replace(/\D/g, '');
-    if (val.length > 16) val = val.substring(0, 16);
-    // Format as 4-4-4-4
-    let formatted = val.match(/.{1,4}/g)?.join(' ') || val;
-    setCardNumber(formatted);
-  };
-
-  const handleExpiryChange = (e) => {
-    let val = e.target.value.replace(/\D/g, '');
-    if (val.length > 4) val = val.substring(0, 4);
-    if (val.length > 2) {
-      val = val.substring(0, 2) + '/' + val.substring(2);
-    }
-    setExpiry(val);
-  };
-
-  const handleCvvChange = (e) => {
-    let val = e.target.value.replace(/\D/g, '');
-    if (val.length > 3) val = val.substring(0, 3);
-    setCvv(val);
-  };
-
-  const handlePay = (e) => {
+  const handlePay = async (e) => {
     e.preventDefault();
-    if (!cardNumber || !cardName || !expiry || !cvv) return;
+    const billingEmail = emailInput || currentUser?.email || 'guest@sapiomatch.ai';
+    if (!billingEmail) {
+      alert("Please provide an email address for billing.");
+      return;
+    }
 
     setPaymentState('processing');
-    
-    // Simulate secure network transaction stages
-    setTimeout(() => {
-      setStatusText("Connecting to secure bank gateway...");
-    }, 800);
+    setStatusText('Initiating secure Stripe session...');
 
-    setTimeout(() => {
-      setStatusText("Verifying card holder credentials...");
-    }, 1600);
+    try {
+      const res = await fetch('/api/payments/checkout-session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          productName: 'Premium Membership Upgrade',
+          price: 30,
+          credits: 700,
+          userEmail: billingEmail
+        })
+      });
 
-    setTimeout(() => {
-      setStatusText("Authorizing upgrade tokens...");
-    }, 2400);
-
-    setTimeout(() => {
-      setPaymentState('success');
-      setTimeout(() => {
-        onSuccess();
-        onClose();
-        // Reset state
+      if (res.ok) {
+        const data = await res.json();
+        if (data.url) {
+          window.location.href = data.url;
+        } else {
+          setPaymentState('idle');
+          alert("Stripe portal URL not returned.");
+        }
+      } else {
         setPaymentState('idle');
-        setCardNumber('');
-        setCardName('');
-        setExpiry('');
-        setCvv('');
-      }, 1500);
-    }, 3200);
+        alert("Failed to create Stripe checkout session.");
+      }
+    } catch (err) {
+      console.error("Stripe redirect error:", err);
+      setPaymentState('idle');
+      alert("Failed to connect to checkout services.");
+    }
   };
 
   return (
@@ -136,7 +118,7 @@ export default function CheckoutModal({ isOpen, onClose, onSuccess, planPrice = 
             {/* Simulated Live Credit Card Graphic */}
             <div style={{
               width: '100%',
-              height: '170px',
+              height: '150px',
               background: 'linear-gradient(135deg, #1f2937 0%, #111827 50%, #030712 100%)',
               borderRadius: '12px',
               border: '1px solid rgba(251, 146, 60, 0.25)',
@@ -163,7 +145,6 @@ export default function CheckoutModal({ isOpen, onClose, onSuccess, planPrice = 
 
               {/* Top Row: Chip and Logo */}
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                {/* Simulated Chip */}
                 <div style={{
                   width: '38px',
                   height: '28px',
@@ -171,33 +152,20 @@ export default function CheckoutModal({ isOpen, onClose, onSuccess, planPrice = 
                   borderRadius: '6px',
                   boxShadow: 'inset 0 1px 3px rgba(255,255,255,0.4)'
                 }} />
-                {/* Logo */}
                 <span style={{ fontSize: '14px', fontWeight: 800, color: 'var(--secondary)', letterSpacing: '0.1em' }}>
                   SAPIOPAY
                 </span>
               </div>
 
-              {/* Middle Row: Card Number */}
-              <div style={{ 
-                fontSize: '20px', 
-                fontFamily: 'monospace', 
-                letterSpacing: '0.15em', 
-                color: 'white', 
-                textShadow: '0 2px 4px rgba(0,0,0,0.5)',
-                margin: '12px 0'
-              }}>
-                {cardNumber || '•••• •••• •••• ••••'}
-              </div>
-
               {/* Bottom Row: Name and Expiry */}
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', color: 'rgba(255,255,255,0.7)', textTransform: 'uppercase', fontFamily: 'monospace' }}>
                 <div>
-                  <div style={{ fontSize: '8px', color: 'rgba(255,255,255,0.4)', marginBottom: '2px' }}>CARDHOLDER</div>
-                  <div style={{ letterSpacing: '0.05em' }}>{cardName || 'YOUR NAME'}</div>
+                  <div style={{ fontSize: '8px', color: 'rgba(255,255,255,0.4)', marginBottom: '2px' }}>UPGRADE TYPE</div>
+                  <div style={{ letterSpacing: '0.05em' }}>PREMIUM PASSPORT</div>
                 </div>
                 <div>
-                  <div style={{ fontSize: '8px', color: 'rgba(255,255,255,0.4)', marginBottom: '2px' }}>EXPIRES</div>
-                  <div>{expiry || 'MM/YY'}</div>
+                  <div style={{ fontSize: '8px', color: 'rgba(255,255,255,0.4)', marginBottom: '2px' }}>PRICE</div>
+                  <div style={{ color: 'var(--secondary)' }}>{planPrice}</div>
                 </div>
               </div>
             </div>
@@ -206,77 +174,25 @@ export default function CheckoutModal({ isOpen, onClose, onSuccess, planPrice = 
             <form onSubmit={handlePay} style={{ display: 'flex', flexDirection: 'column', gap: '16px', textAlign: 'left' }}>
               <div>
                 <label style={{ display: 'block', fontSize: '12px', color: 'var(--text-muted)', marginBottom: '6px' }}>
-                  Cardholder Full Name
-                </label>
-                <input 
-                  type="text"
-                  required
-                  placeholder="e.g. Sanji Al-Mansoori"
-                  value={cardName}
-                  onChange={(e) => setCardName(e.target.value)}
-                  className="custom-input"
-                />
-              </div>
-
-              <div>
-                <label style={{ display: 'block', fontSize: '12px', color: 'var(--text-muted)', marginBottom: '6px' }}>
-                  Credit Card Number
+                  Billing Email Address
                 </label>
                 <div style={{ position: 'relative' }}>
                   <input 
-                    type="text"
+                    type="email"
                     required
-                    placeholder="4242 4242 4242 4242"
-                    value={cardNumber}
-                    onChange={handleCardNumberChange}
+                    placeholder={currentUser?.email || "e.g. name@example.com"}
+                    value={emailInput}
+                    onChange={(e) => setEmailInput(e.target.value)}
                     className="custom-input"
                     style={{ paddingLeft: '40px' }}
                   />
-                  <CreditCard size={16} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+                  <Mail size={16} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
                 </div>
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-                <div>
-                  <label style={{ display: 'block', fontSize: '12px', color: 'var(--text-muted)', marginBottom: '6px' }}>
-                    Expiration Date
-                  </label>
-                  <div style={{ position: 'relative' }}>
-                    <input 
-                      type="text"
-                      required
-                      placeholder="MM/YY"
-                      value={expiry}
-                      onChange={handleExpiryChange}
-                      className="custom-input"
-                      style={{ paddingLeft: '40px' }}
-                    />
-                    <Calendar size={16} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
-                  </div>
-                </div>
-
-                <div>
-                  <label style={{ display: 'block', fontSize: '12px', color: 'var(--text-muted)', marginBottom: '6px' }}>
-                    CVV / Security Code
-                  </label>
-                  <div style={{ position: 'relative' }}>
-                    <input 
-                      type="password"
-                      required
-                      placeholder="123"
-                      value={cvv}
-                      onChange={handleCvvChange}
-                      className="custom-input"
-                      style={{ paddingLeft: '40px' }}
-                    />
-                    <Lock size={16} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
-                  </div>
-                </div>
-              </div>
-
-              <div style={{ display: 'flex', gap: '8px', alignItems: 'center', marginTop: '8px', fontSize: '11px', color: 'var(--text-muted)', background: 'rgba(255,255,255,0.02)', padding: '10px', borderRadius: '6px', border: '1px solid var(--card-border)' }}>
+              <div style={{ display: 'flex', gap: '8px', alignItems: 'center', marginTop: '4px', fontSize: '11px', color: 'var(--text-muted)', background: 'rgba(255,255,255,0.02)', padding: '10px', borderRadius: '6px', border: '1px solid var(--card-border)' }}>
                 <Lock size={14} style={{ color: 'var(--primary)', flexShrink: 0 }} />
-                <span>Simulated secure sandboxed checkout environment. No real funds will be charged.</span>
+                <span>Redirects to Stripe Checkout. PCI-compliant and fully secure.</span>
               </div>
 
               <button 
@@ -284,7 +200,7 @@ export default function CheckoutModal({ isOpen, onClose, onSuccess, planPrice = 
                 className="btn-premium animate-pulse" 
                 style={{ width: '100%', justifyContent: 'center', marginTop: '10px', padding: '14px 24px' }}
               >
-                Pay {planPrice} & Upgrade Now
+                Proceed to Stripe Payment ({planPrice})
               </button>
             </form>
           </div>
@@ -293,12 +209,12 @@ export default function CheckoutModal({ isOpen, onClose, onSuccess, planPrice = 
         {paymentState === 'processing' && (
           <div style={{ padding: '40px 0', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '20px' }}>
             <Loader2 size={48} className="animate-spin" style={{ color: 'var(--secondary)' }} />
-            <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '20px', color: 'white' }}>Processing Payment...</h3>
+            <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '20px', color: 'white' }}>Processing Checkout...</h3>
             <p style={{ color: 'var(--secondary)', fontSize: '14px', fontWeight: 500 }}>
               {statusText}
             </p>
             <p style={{ color: 'var(--text-muted)', fontSize: '12px', maxWidth: '300px', lineHeight: '1.4' }}>
-              Please do not refresh the page or click back. Establishing secure SSL handshake tunnel...
+              Please do not refresh the page or click back. Redirecting to billing portal...
             </p>
           </div>
         )}

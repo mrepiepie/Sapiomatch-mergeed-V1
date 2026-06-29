@@ -605,6 +605,7 @@ export default function App() {
       if (window.location.hash !== `#${newView}`) {
         window.history.pushState({ view: newView }, '', `#${newView}`);
       }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
@@ -630,7 +631,19 @@ export default function App() {
           window.history.replaceState({ view: hashView }, '', `#${hashView}`);
         }
       } else {
-        window.history.replaceState({ view: 'public-home' }, '', '#public-home');
+        const saved = localStorage.getItem('sapio_current_user');
+        if (saved) {
+          try {
+            const parsed = JSON.parse(saved);
+            const defaultView = parsed.role === 'Student' ? 'user-dashboard' : parsed.role === 'University' ? 'institution-dashboard' : 'admin-dashboard';
+            setViewInternal(defaultView);
+            window.history.replaceState({ view: defaultView }, '', `#${defaultView}`);
+          } catch (e) {
+            window.history.replaceState({ view: 'public-home' }, '', '#public-home');
+          }
+        } else {
+          window.history.replaceState({ view: 'public-home' }, '', '#public-home');
+        }
       }
     }
 
@@ -713,7 +726,19 @@ export default function App() {
   });
 
   // Global Auth State
-  const [currentUser, setCurrentUser] = useState(null); // null means logged out
+  const [currentUser, setCurrentUser] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('sapio_current_user');
+      if (saved) {
+        try {
+          return JSON.parse(saved);
+        } catch (e) {
+          console.error("Failed to restore saved user:", e);
+        }
+      }
+    }
+    return null;
+  });
 
   const resolveInstitutionId = (detail = {}) => {
     const normalize = (value) => String(value || '')
@@ -865,6 +890,21 @@ export default function App() {
       console.error("Failed to persist membership update:", err);
     }
   };
+
+  // Sync page states (credits, plan, localStorage) with currentUser profile
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      if (currentUser) {
+        localStorage.setItem('sapio_current_user', JSON.stringify(currentUser));
+        if (currentUser.credits !== undefined) setCredits(currentUser.credits);
+        if (currentUser.plan !== undefined) setPlan(currentUser.plan);
+      } else {
+        localStorage.removeItem('sapio_current_user');
+        setCredits(10);
+        setPlan('Standard');
+      }
+    }
+  }, [currentUser]);
 
   // Notifications state
   const [notifications, setNotifications] = useState([]);
@@ -1944,9 +1984,28 @@ export default function App() {
             <button onClick={() => { setView('public-explore'); setNavMenuOpen(false); }} className={`nav-link ${(view === 'public-explore' || view === 'institution-detail') ? 'active' : ''}`}>
               <span>Explore Courses</span><span className="sapio-menu-num">04</span>
             </button>
-            <button onClick={() => { setView('questionnaire'); setNavMenuOpen(false); }} className={`nav-link ${(view === 'questionnaire' || view === 'results') ? 'active' : ''}`}>
-              <span>AI Matching</span><span className="sapio-menu-num">05</span>
-            </button>
+            {(!currentUser || currentUser.role === 'Student') && (
+              <button onClick={() => { setView('questionnaire'); setNavMenuOpen(false); }} className={`nav-link ${(view === 'questionnaire' || view === 'results') ? 'active' : ''}`}>
+                <span>AI Matching</span><span className="sapio-menu-num">05</span>
+              </button>
+            )}
+            {currentUser && currentUser.role === 'Student' && (
+              <button
+                onClick={() => { setView('user-dashboard'); setNavMenuOpen(false); }}
+                style={{
+                  color: view === 'user-dashboard' ? 'white' : 'var(--text-muted)',
+                  fontWeight: 600,
+                  fontSize: '13px',
+                  cursor: 'pointer',
+                  border: '1px solid var(--primary)',
+                  padding: '4px 8px',
+                  borderRadius: '4px',
+                  background: 'rgba(16, 185, 129, 0.05)'
+                }}
+              >
+                My Dashboard
+              </button>
+            )}
             {currentUser && currentUser.role === 'Admin' && (
               <button
                 onClick={() => { setView('admin-dashboard'); setNavMenuOpen(false); }}
@@ -1983,17 +2042,32 @@ export default function App() {
             )}
           </nav>
           
-          <button 
-            className="btn-premium"
-            onClick={() => {
-              setView('questionnaire');
-              setNavMenuOpen(false);
-            }}
-            style={{ padding: '8px 14px', fontSize: '13px' }}
-          >
-            Match Now
-            <ArrowRight size={14} />
-          </button>
+          {currentUser ? (
+            <button 
+              className="btn-premium"
+              onClick={() => {
+                const target = currentUser.role === 'Student' ? 'user-dashboard' : currentUser.role === 'University' ? 'institution-dashboard' : 'admin-dashboard';
+                setView(target);
+                setNavMenuOpen(false);
+              }}
+              style={{ padding: '8px 14px', fontSize: '13px' }}
+            >
+              {currentUser.role === 'Student' ? 'My Dashboard' : currentUser.role === 'University' ? 'Partner Panel' : 'Operator Portal'}
+              <ArrowRight size={14} />
+            </button>
+          ) : (
+            <button 
+              className="btn-premium"
+              onClick={() => {
+                setView('questionnaire');
+                setNavMenuOpen(false);
+              }}
+              style={{ padding: '8px 14px', fontSize: '13px' }}
+            >
+              Match Now
+              <ArrowRight size={14} />
+            </button>
+          )}
         </div>
       </header>
 
@@ -2496,6 +2570,7 @@ export default function App() {
           isOpen={isCheckoutOpen} 
           onClose={() => setIsCheckoutOpen(false)} 
           onSuccess={handleCheckoutSuccess} 
+          currentUser={currentUser}
         />
       )}
     </div>
