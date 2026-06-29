@@ -657,7 +657,7 @@ export default function Home({ setView, setExploreSearchTerm, onUpgradePremium, 
       </section>
 
       {/* Scroll-isolated interactive globe section */}
-      <section ref={globeFocusSectionRef} className="sapio-globe-focus-section sapio-snap-section">
+      <section ref={globeFocusSectionRef} className="sapio-globe-focus-section sapio-snap-section reveal-on-scroll">
         <div className="sapio-globe-focus-copy">
           <span className="sapio-globe-focus-kicker">Interactive university map</span>
           <h2 className="sapio-globe-typewriter-heading" aria-label={globeTitleText}>
@@ -675,7 +675,7 @@ export default function Home({ setView, setExploreSearchTerm, onUpgradePremium, 
       </section>
 
       {/* Mission Summary / Core Vision Section & Degree Program Navigator */}
-      <section style={{ padding: '60px 24px', borderTop: '1px solid var(--card-border)' }}>
+      <section className="reveal-on-scroll" style={{ padding: '60px 24px', borderTop: '1px solid var(--card-border)' }}>
         <style dangerouslySetInnerHTML={{__html: `
           .expandable-vision-card {
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
@@ -861,7 +861,7 @@ export default function Home({ setView, setExploreSearchTerm, onUpgradePremium, 
       <SapioLegacySections setView={setView} />
 
       {/* Target Audiences Section */}
-      <section className="sapio-snap-section sapio-snap-center" style={{ padding: '60px 24px', borderTop: '1px solid var(--card-border)' }}>
+      <section className="sapio-snap-section sapio-snap-center reveal-on-scroll" style={{ padding: '60px 24px', borderTop: '1px solid var(--card-border)' }}>
         <div style={{ maxWidth: '1000px', margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '40px' }}>
           <div>
             <h2 style={{ fontSize: '30px', marginBottom: '16px' }}>Designed for Career Upgrades</h2>
@@ -924,7 +924,7 @@ export default function Home({ setView, setExploreSearchTerm, onUpgradePremium, 
       </section>
 
       {/* Monetization & Plans Pricing Section */}
-      <section style={{ padding: '60px 24px', borderTop: '1px solid var(--card-border)', background: 'linear-gradient(180deg, transparent 0%, rgba(52, 211, 153, 0.02) 100%)' }}>
+      <section className="reveal-on-scroll" style={{ padding: '60px 24px', borderTop: '1px solid var(--card-border)', background: 'linear-gradient(180deg, transparent 0%, rgba(52, 211, 153, 0.02) 100%)' }}>
         <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: '48px' }}>
             <h2 style={{ fontSize: '32px', fontFamily: 'var(--font-display)', marginBottom: '12px' }}>

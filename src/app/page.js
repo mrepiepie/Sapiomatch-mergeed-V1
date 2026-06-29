@@ -1032,6 +1032,35 @@ export default function App() {
     window.alert = alert;
   }, []);
 
+  // IntersectionObserver for scroll-reveal animations across view transitions
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const timer = setTimeout(() => {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('revealed');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, {
+        threshold: 0.05,
+        rootMargin: '0px 0px -50px 0px'
+      });
+
+      const targets = document.querySelectorAll('.reveal-on-scroll');
+      targets.forEach(t => observer.observe(t));
+
+      return () => {
+        targets.forEach(t => observer.unobserve(t));
+        observer.disconnect();
+      };
+    }, 150);
+
+    return () => clearTimeout(timer);
+  }, [view]);
+
   // Sync state to current logged in user details
   useEffect(() => {
     // Clear old state immediately to prevent leakage during transition

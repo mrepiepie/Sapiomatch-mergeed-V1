@@ -867,3 +867,16 @@ button, input, select, textarea {
   animation: alertIconPulse 2s infinite ease-in-out;
   display: inline-block;
 }
+
+/* Reveal on Scroll Animations */
+.reveal-on-scroll {
+  opacity: 0 !important;
+  transform: translateY(24px) !important;
+  transition: opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1), transform 0.85s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  will-change: transform, opacity;
+}
+
+.reveal-on-scroll.revealed {
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+}
