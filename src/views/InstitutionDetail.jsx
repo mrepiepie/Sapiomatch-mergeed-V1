@@ -2,7 +2,15 @@ import React from 'react';
 import { MapPin, DollarSign, Clock, Award, Star, ThumbsUp, CheckCircle, ArrowLeft, Send } from 'lucide-react';
 
 export default function InstitutionDetail({ instId, setView, applyForCourse, appliedCourses = [], institutions = [] }) {
-  const inst = institutions.find(i => i.id === instId) || institutions[0];
+  const inst = (institutions && institutions.length > 0) ? (institutions.find(i => i.id === instId) || institutions[0]) : null;
+
+  if (!inst) {
+    return (
+      <div style={{ maxWidth: '1200px', margin: '40px auto', padding: '0 24px', color: 'white', textAlign: 'center' }}>
+        <h3>Loading institution details...</h3>
+      </div>
+    );
+  }
 
   return (
     <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '40px 24px' }}>
