@@ -8,12 +8,12 @@ export async function POST(request) {
       return NextResponse.json({ error: 'Name, email, password, and role are required.' }, { status: 400 });
     }
 
-    const existingUser = db.getUserByEmail(email);
+    const existingUser = await db.getUserByEmail(email);
     if (existingUser) {
       return NextResponse.json({ error: 'User with this email already exists.' }, { status: 409 });
     }
 
-    const newUser = db.addUser({
+    const newUser = await db.addUser({
       name,
       email,
       password,

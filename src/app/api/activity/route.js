@@ -3,10 +3,10 @@ import { db } from '../../../services/db';
 
 export async function GET(request) {
   try {
-    const users = db.getUsers() || [];
-    const applications = db.getApplications() || [];
-    const contacts = db.getContacts() || [];
-    const aiInteractions = db.getAiInteractions() || [];
+    const users = (await db.getUsers()) || [];
+    const applications = (await db.getApplications()) || [];
+    const contacts = (await db.getContacts()) || [];
+    const aiInteractions = (await db.getAiInteractions()) || [];
 
     // Map each record to an activity log format
     const userLogs = users.map(u => {

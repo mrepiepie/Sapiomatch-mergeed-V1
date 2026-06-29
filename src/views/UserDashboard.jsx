@@ -66,29 +66,41 @@ export default function UserDashboard({
     }
   };
 
-  const handleCheckout = (type) => {
+  const handleCheckout = async (type) => {
     setIsProcessing(true);
-    
-    setTimeout(() => {
-      setIsProcessing(false);
-      if (type === 'upgrade') {
-        applyMembershipUpdate({ nextPlan: 'Premium', addedCredits: 700 });
-        if (triggerAlert) {
-          triggerAlert("Successfully upgraded to Premium! 700 credits added to your balance.", "Premium Membership Active ⚡", "success");
+    try {
+      const productName = type === 'upgrade' ? 'Premium Membership Upgrade' : (selectedBundle?.name || 'Credits Pack');
+      const price = type === 'upgrade' ? 30 : (selectedBundle?.price || 10);
+      const addedCredits = type === 'upgrade' ? 700 : (selectedBundle?.credits || 100);
+
+      const res = await fetch('/api/payments/checkout-session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          productName,
+          price,
+          credits: addedCredits,
+          userEmail: currentUser?.email
+        })
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        if (data.url) {
+          window.location.href = data.url;
         } else {
-          alert("Successfully upgraded to Premium! 700 credits added to your balance.");
+          alert("Error: Stripe session URL not returned.");
+          setIsProcessing(false);
         }
       } else {
-        const addedCredits = selectedBundle ? selectedBundle.credits : 100;
-        applyMembershipUpdate({ addedCredits });
-        if (triggerAlert) {
-          triggerAlert(`Successfully purchased ${addedCredits} credits!`, "Credits Added 🪙", "success");
-        } else {
-          alert(`Successfully purchased ${addedCredits} credits!`);
-        }
-        setSelectedBundle(null);
+        alert("Checkout failed. Please try again.");
+        setIsProcessing(false);
       }
-    }, 1200);
+    } catch (err) {
+      console.error("Checkout error:", err);
+      alert("Network error: failed to initiate Stripe checkout.");
+      setIsProcessing(false);
+    }
   };
 
   const renderCheckoutForm = (checkoutType) => {

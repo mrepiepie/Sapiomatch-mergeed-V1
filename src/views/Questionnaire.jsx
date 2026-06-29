@@ -342,8 +342,7 @@ export default function Questionnaire({ setView, answers, setAnswers, completedQ
     return () => clearInterval(timer);
   }, [isCalculating, setCompletedQuiz, setView]);
 
-  // Process Resume File (validates size, extension, reads text, extracts metadata)
-  const processResumeFile = (file) => {
+  const processResumeFile = async (file) => {
     // 1. Validate file size (Max 5MB)
     const maxSizeBytes = 5 * 1024 * 1024;
     if (file.size > maxSizeBytes) {
@@ -356,7 +355,7 @@ export default function Questionnaire({ setView, answers, setAnswers, completedQ
     const fileName = file.name;
     const fileExtension = fileName.substring(fileName.lastIndexOf('.')).toLowerCase();
     if (!allowedExtensions.includes(fileExtension)) {
-      alert("Unsupported file format. Please upload a PDF, DOC, DOCX, or TXT file.");
+      alert("Unsupported file format. Please upload a PDF, DOCX, or TXT file.");
       return;
     }
 
@@ -371,183 +370,52 @@ export default function Questionnaire({ setView, answers, setAnswers, completedQ
     const interval = setInterval(() => {
       setScanProgress(p => {
         if (p >= 90) return 90;
-        return p + 15;
+        return p + 10;
       });
-    }, 120);
+    }, 150);
 
-    // 3. Process File Name for Metadata Extraction & Legitimacy Verification
-    const cleanFileName = fileName.replace(fileExtension, '');
-    const lowerName = cleanFileName.toLowerCase();
-    
-    // Check if filename contains obvious non-resume keywords (e.g. recipe, shopping_list, todo)
-    const isObviousNonResume = 
-      lowerName.includes('recipe') || 
-      lowerName.includes('shopping') || 
-      lowerName.includes('list') || 
-      lowerName.includes('todo') || 
-      lowerName.includes('notes') || 
-      lowerName.includes('draft') ||
-      lowerName.includes('test');
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
 
-    if (fileExtension !== '.txt' && isObviousNonResume) {
-      setTimeout(() => {
-        clearInterval(interval);
-        setIsScanning(false);
-        alert("Upload Failed: The uploaded document does not appear to be a legitimate CV/resume. Please upload a valid document containing your professional history.");
-      }, 1200);
-      return;
-    }
-
-    // Extract candidate name from cleanFileName
-    let extractedName = cleanFileName
-      .replace(/[-_]+/g, ' ')
-      .replace(/(resume|cv|biodata|profile|work|job|v2|v3|final|latest)/gi, '')
-      .trim();
-
-    extractedName = extractedName
-      .replace(/\s+/g, ' ')
-      .split(' ')
-      .map(w => w.charAt(0).toUpperCase() + w.slice(1))
-      .join(' ');
-
-    if (!extractedName) {
-      extractedName = currentUser ? currentUser.name : "Candidate";
-    }
-
-    // Determine field based on filename keywords
-    let extractedField = "Technology & AI";
-    if (lowerName.includes('law') || lowerName.includes('policy') || lowerName.includes('gov') || lowerName.includes('public')) {
-      extractedField = "Law & Public Policy";
-    } else if (lowerName.includes('business') || lowerName.includes('mgt') || lowerName.includes('manage') || lowerName.includes('admin') || lowerName.includes('mba') || lowerName.includes('market') || lowerName.includes('finance')) {
-      extractedField = "Business & Management";
-    } else if (lowerName.includes('health') || lowerName.includes('med') || lowerName.includes('bio') || lowerName.includes('pharm') || lowerName.includes('doctor')) {
-      extractedField = "Healthcare & Sciences";
-    }
-
-    // Determine education based on filename keywords
-    let extractedEducation = "Bachelor's degree";
-    if (lowerName.includes('phd') || lowerName.includes('doctorate')) {
-      extractedEducation = "Other / Professional";
-    } else if (lowerName.includes('master') || lowerName.includes('msc') || lowerName.includes('mba') || lowerName.includes('ma ')) {
-      extractedEducation = "Master's degree";
-    } else if (lowerName.includes('high') || lowerName.includes('school')) {
-      extractedEducation = "High School";
-    }
-
-    // Determine experience based on filename keywords
-    let extractedExperience = "3–5 years";
-    if (lowerName.includes('senior') || lowerName.includes('lead') || lowerName.includes('expert') || lowerName.includes('manager') || lowerName.includes('dir')) {
-      extractedExperience = "5+ years";
-    } else if (lowerName.includes('junior') || lowerName.includes('fresh') || lowerName.includes('intern') || lowerName.includes('student')) {
-      extractedExperience = "1–3 years";
-    }
-
-    // Determine age bracket
-    let extractedAge = "21-30";
-    if (extractedExperience === "5+ years") {
-      extractedAge = "31-40";
-    }
-
-    const finishParsing = (name, textContent = '') => {
-      let parsedField = extractedField;
-      let parsedEducation = extractedEducation;
-      let parsedExperience = extractedExperience;
-      let parsedAge = extractedAge;
-      let parsedName = name;
-
-      if (textContent) {
-        const textLower = textContent.toLowerCase();
-
-        // Validation: Verify if text content contains standard CV sections or keywords
-        const cvKeywords = ['education', 'experience', 'skills', 'work', 'projects', 'employment', 'cv', 'resume', 'contact', 'profile', 'objective', 'summary', 'certifications', 'history'];
-        const matchedKeywords = cvKeywords.filter(keyword => textLower.includes(keyword));
-        if (matchedKeywords.length < 2) {
-          clearInterval(interval);
-          setIsScanning(false);
-          alert("Upload Failed: The uploaded document does not appear to be a legitimate CV/resume. Standard sections like Education, Experience, or Skills were not found. Please upload a valid document.");
-          return;
-        }
-
-        const lines = textContent.split('\n').map(l => l.trim()).filter(l => l.length > 0);
-        if (lines.length > 0 && lines[0].split(' ').length <= 4) {
-          parsedName = lines[0];
-        }
-
-        // Refine field
-        if (textLower.includes('computer science') || textLower.includes('software') || textLower.includes('programming') || textLower.includes('developer') || textLower.includes('ai ') || textLower.includes('machine learning') || textLower.includes('technology')) {
-          parsedField = "Technology & AI";
-        } else if (textLower.includes('law ') || textLower.includes('legal') || textLower.includes('public policy') || textLower.includes('governance')) {
-          parsedField = "Law & Public Policy";
-        } else if (textLower.includes('business') || textLower.includes('management') || textLower.includes('marketing') || textLower.includes('finance') || textLower.includes('mba')) {
-          parsedField = "Business & Management";
-        } else if (textLower.includes('healthcare') || textLower.includes('medicine') || textLower.includes('science') || textLower.includes('biological') || textLower.includes('pharmacy')) {
-          parsedField = "Healthcare & Sciences";
-        }
-
-        // Refine education
-        if (textLower.includes('doctor of') || textLower.includes('phd') || textLower.includes('p.h.d')) {
-          parsedEducation = "Other / Professional";
-        } else if (textLower.includes('master') || textLower.includes('m.s') || textLower.includes('m.a') || textLower.includes('msc') || textLower.includes('mba')) {
-          parsedEducation = "Master's degree";
-        } else if (textLower.includes('bachelor') || textLower.includes('b.s') || textLower.includes('b.a') || textLower.includes('bsc')) {
-          parsedEducation = "Bachelor's degree";
-        } else if (textLower.includes('high school') || textLower.includes('diploma')) {
-          parsedEducation = "High School";
-        }
-
-        // Refine experience
-        if (textLower.includes('5 years') || textLower.includes('6 years') || textLower.includes('7 years') || textLower.includes('8 years') || textLower.includes('10 years') || textLower.includes('senior')) {
-          parsedExperience = "5+ years";
-        } else if (textLower.includes('3 years') || textLower.includes('4 years') || textLower.includes('5 years')) {
-          parsedExperience = "3–5 years";
-        } else if (textLower.includes('1 year') || textLower.includes('2 years') || textLower.includes('junior')) {
-          parsedExperience = "1–3 years";
-        } else {
-          parsedExperience = "No experience / student";
-        }
-
-        // Refine age based on experience
-        if (parsedExperience === "5+ years") {
-          parsedAge = "31-40";
-        } else if (parsedExperience === "3–5 years") {
-          parsedAge = "21-30";
-        } else {
-          parsedAge = "16-20";
-        }
-      }
+      const res = await fetch('/api/parse-resume', {
+        method: 'POST',
+        body: formData
+      });
 
       clearInterval(interval);
-      setScanProgress(100);
-      
-      setTimeout(() => {
-        setExtractedData({
-          name: parsedName,
-          age: parsedAge,
-          education: parsedEducation,
-          field: parsedField,
-          goal: "Get promoted",
-          format: "Hybrid",
-          budget: "Low budget / affordable options only",
-          experience: parsedExperience
-        });
-        setIsScanning(false);
-      }, 500);
-    };
 
-    if (fileExtension === '.txt') {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const text = e.target.result;
-        finishParsing(extractedName, text);
-      };
-      reader.onerror = () => {
-        finishParsing(extractedName);
-      };
-      reader.readAsText(file);
-    } else {
-      setTimeout(() => {
-        finishParsing(extractedName);
-      }, 1200);
+      if (res.ok) {
+        const result = await res.json();
+        if (result.isLegitimateCv) {
+          setScanProgress(100);
+          setTimeout(() => {
+            setExtractedData({
+              name: result.name || "Candidate",
+              age: result.age || "21-30",
+              education: result.education || "Bachelor's degree",
+              field: result.field || "Computer Science",
+              goal: "Get promoted",
+              format: "Hybrid",
+              budget: "Low budget / affordable options only",
+              experience: result.experience || "3–5 years"
+            });
+            setIsScanning(false);
+          }, 500);
+        } else {
+          setIsScanning(false);
+          alert(`Upload Failed: ${result.rejectionReason || 'The uploaded document does not appear to be a legitimate CV/resume.'}`);
+        }
+      } else {
+        setIsScanning(false);
+        const errText = await res.text();
+        alert(`Failed to parse resume: ${errText || 'Internal server error.'}`);
+      }
+    } catch (err) {
+      clearInterval(interval);
+      setIsScanning(false);
+      console.error("Resume upload error:", err);
+      alert("Failed to connect to resume parser API.");
     }
   };
 

@@ -11,7 +11,7 @@ export async function GET(request) {
       return NextResponse.json({ error: 'Email parameter is required.' }, { status: 400 });
     }
 
-    const notifications = db.getNotifications(email);
+    const notifications = await db.getNotifications(email);
     return NextResponse.json(notifications);
   } catch (err) {
     console.error('Error in GET notifications API:', err);
@@ -27,7 +27,7 @@ export async function POST(request) {
       return NextResponse.json({ error: 'Email is required.' }, { status: 400 });
     }
 
-    db.markNotificationsAsRead(email);
+    await db.markNotificationsAsRead(email);
     return NextResponse.json({ success: true });
   } catch (err) {
     console.error('Error in POST notifications API:', err);

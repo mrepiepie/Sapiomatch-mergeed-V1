@@ -14,11 +14,11 @@ export async function POST(request, { params }) {
     let updatedApp = null;
 
     if (replyText || meetingLink || meetingDate) {
-      updatedApp = db.updateApplicationReply(id, replyText || '', meetingLink || '', meetingDate || '');
+      updatedApp = await db.updateApplicationReply(id, replyText || '', meetingLink || '', meetingDate || '');
     }
 
     if (status) {
-      updatedApp = db.updateApplicationStatus(id, status);
+      updatedApp = await db.updateApplicationStatus(id, status);
     }
 
     if (!updatedApp) {

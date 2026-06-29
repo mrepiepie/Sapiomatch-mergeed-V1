@@ -3,7 +3,7 @@ import { db } from '../../../services/db';
 
 export async function GET(request) {
   try {
-    const catalog = db.getCatalog();
+    const catalog = await db.getCatalog();
     return NextResponse.json(catalog);
   } catch (err) {
     console.error('Error in GET catalog api:', err);
@@ -20,7 +20,7 @@ export async function POST(request) {
       return NextResponse.json({ error: 'Countries and Subjects lists are required.' }, { status: 400 });
     }
 
-    const updatedCatalog = db.updateCatalog({ countries, subjects });
+    const updatedCatalog = await db.updateCatalog({ countries, subjects });
     return NextResponse.json({ success: true, catalog: updatedCatalog });
   } catch (err) {
     console.error('Error in POST catalog api:', err);

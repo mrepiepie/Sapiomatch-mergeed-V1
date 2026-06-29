@@ -115,7 +115,7 @@ Keep your responses concise, user-friendly, and formatted in markdown.`
               action = 'connect_human';
             }
             try {
-              db.addAiInteraction({
+              await db.addAiInteraction({
                 prompt: message,
                 response: responseText,
                 model: modelUsed
@@ -135,7 +135,7 @@ Keep your responses concise, user-friendly, and formatted in markdown.`
     console.log(`[SapioMatch API Route] Falling back to local semantic AI Engine...`);
     const aiResult = generateAiResponse(message, history);
     try {
-      db.addAiInteraction({
+      await db.addAiInteraction({
         prompt: message,
         response: aiResult.text,
         model: 'local-semantic-engine'

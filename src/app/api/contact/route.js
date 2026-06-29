@@ -4,7 +4,7 @@ import { db } from '../../../services/db';
 // GET all contacts
 export async function GET(request) {
   try {
-    const list = db.getContacts();
+    const list = await db.getContacts();
     return NextResponse.json(list);
   } catch (err) {
     console.error('Error in GET contact API:', err);
@@ -22,7 +22,7 @@ export async function POST(request) {
       return NextResponse.json({ error: 'Missing required fields.' }, { status: 400 });
     }
 
-    const newContact = db.addContact({
+    const newContact = await db.addContact({
       fullName,
       email,
       phone: phone || '',
@@ -47,7 +47,7 @@ export async function DELETE(request) {
       return NextResponse.json({ error: 'Inquiry ID is required.' }, { status: 400 });
     }
 
-    const deleted = db.deleteContact(id);
+    const deleted = await db.deleteContact(id);
     if (!deleted) {
       return NextResponse.json({ error: 'Inquiry not found.' }, { status: 404 });
     }

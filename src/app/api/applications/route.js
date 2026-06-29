@@ -9,7 +9,7 @@ export async function GET(request) {
     const email = searchParams.get('email');
     const universityName = searchParams.get('universityName');
 
-    const allApps = db.getApplications();
+    const allApps = await db.getApplications();
 
     if (role === 'Student') {
       const filtered = allApps.filter(app => app.studentEmail?.toLowerCase() === email?.toLowerCase());
@@ -49,7 +49,7 @@ export async function POST(request) {
     }
 
     // Verify student credits
-    const student = db.getUserByEmail(studentEmail);
+    const student = await db.getUserByEmail(studentEmail);
     if (!student) {
       return NextResponse.json({ error: 'Student account not found.' }, { status: 404 });
     }
@@ -60,10 +60,10 @@ export async function POST(request) {
 
     // Deduct credits (unless super admin doing a test submission)
     if (student.role !== 'Admin') {
-      db.updateUser(studentEmail, { credits: Math.max(0, student.credits - 2) });
+      await db.updateUser(studentEmail, { credits: Math.max(0, student.credits - 2) });
     }
 
-    const newApp = db.addApplication({
+    const newApp = await db.addApplication({
       studentName: studentName || student.name,
       studentEmail,
       studentContact: studentContact || student.contactNumber,

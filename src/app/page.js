@@ -1098,6 +1098,7 @@ export default function App() {
   const [counselorName, setCounselorName] = useState('AI Advisor: Aria');
   const [isHumanConnected, setIsHumanConnected] = useState(false);
   const [geminiApiKey, setGeminiApiKey] = useState('');
+  const [hasServerKey, setHasServerKey] = useState(false);
   const [showChatSettings, setShowChatSettings] = useState(false);
   const [tempApiKeyInput, setTempApiKeyInput] = useState('');
   const [chatMessages, setChatMessages] = useState([
@@ -1110,7 +1111,74 @@ export default function App() {
       setGeminiApiKey(savedKey);
       setTempApiKeyInput(savedKey);
     }
+
+    // Check server key configuration
+    const checkServerKey = async () => {
+      try {
+        const res = await fetch('/api/chat/status');
+        if (res.ok) {
+          const data = await res.json();
+          setHasServerKey(data.hasServerKey);
+        }
+      } catch (err) {
+        console.error("Failed to check chat status:", err);
+      }
+    };
+    checkServerKey();
   }, []);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const urlParams = new URLSearchParams(window.location.search);
+    const payment = urlParams.get('payment');
+    const type = urlParams.get('type');
+    const creditsAdded = parseInt(urlParams.get('credits') || '0', 10);
+    const userEmail = urlParams.get('email');
+
+    if (payment === 'success' && userEmail) {
+      const grantPaymentUpdate = async () => {
+        const nextPlan = type === 'upgrade' ? 'Premium' : plan;
+        try {
+          const resUsers = await fetch('/api/users');
+          if (resUsers.ok) {
+            const users = await resUsers.json();
+            const dbUser = users.find(u => u.email.toLowerCase() === userEmail.toLowerCase());
+            if (dbUser) {
+              const nextCredits = dbUser.credits + creditsAdded;
+              const updates = { credits: nextCredits };
+              if (type === 'upgrade') updates.plan = 'Premium';
+
+              const resUpdate = await fetch('/api/users', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: userEmail, updates })
+              });
+
+              if (resUpdate.ok) {
+                if (currentUser && currentUser.email.toLowerCase() === userEmail.toLowerCase()) {
+                  const updatedUser = { ...currentUser, ...updates };
+                  setCurrentUser(updatedUser);
+                  setCredits(nextCredits);
+                  if (type === 'upgrade') setPlan('Premium');
+                }
+                alert(`Payment Success! Successfully granted ${creditsAdded} credits to ${userEmail}.`);
+              }
+            }
+          }
+        } catch (err) {
+          console.error("Failed to grant payment credits:", err);
+        }
+
+        const cleanUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+        window.history.replaceState({ path: cleanUrl }, '', cleanUrl);
+      };
+      grantPaymentUpdate();
+    } else if (payment === 'cancel') {
+      alert("Payment cancelled.");
+      const cleanUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+      window.history.replaceState({ path: cleanUrl }, '', cleanUrl);
+    }
+  }, [currentUser]);
 
   const messagesEndRef = useRef(null);
 
@@ -2198,7 +2266,7 @@ export default function App() {
               <span style={{ fontWeight: 600, fontSize: '13px', display: 'flex', alignItems: 'center', gap: '6px' }}>
                 {isHumanConnected 
                   ? 'Advisor: David (Admissions)' 
-                  : (counselorName === 'Connecting...' ? 'Connecting...' : (geminiApiKey ? 'Aria (Gemini AI Active) ⚡' : 'AI Advisor: Aria 🤖'))}
+                  : (counselorName === 'Connecting...' ? 'Connecting...' : ((geminiApiKey || hasServerKey) ? 'Aria (Live AI Active) ✨' : 'AI Advisor: Aria 🤖'))}
               </span>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 {!isHumanConnected && (
@@ -2225,8 +2293,8 @@ export default function App() {
               <div className="live-chat-settings-pane">
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2px' }}>
                   <h4 style={{ margin: 0, fontSize: '12.5px', color: 'white', fontWeight: 600 }}>Gemini Key Configuration</h4>
-                  <span className={`live-chat-status-badge ${geminiApiKey ? 'live' : 'local'}`}>
-                    {geminiApiKey ? 'Live LLM' : 'Local NLP'}
+                  <span className={`live-chat-status-badge ${(geminiApiKey || hasServerKey) ? 'live' : 'local'}`}>
+                    {(geminiApiKey || hasServerKey) ? 'Live LLM' : 'Local NLP'}
                   </span>
                 </div>
                 

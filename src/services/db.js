@@ -1,9 +1,40 @@
 import fs from 'fs';
 import path from 'path';
+import { MongoClient } from 'mongodb';
 
 const DB_PATH = path.resolve(process.cwd(), 'database.json');
 
-// Helper to get raw data
+// --- MongoDB Client Configuration ---
+const MONGODB_URI = process.env.MONGODB_URI;
+let mongoClient = null;
+let mongoDb = null;
+let isConnected = false;
+
+if (MONGODB_URI) {
+  try {
+    mongoClient = new MongoClient(MONGODB_URI);
+  } catch (err) {
+    console.error("[db.js] Failed to initialize MongoClient:", err);
+  }
+}
+
+async function getMongoDb() {
+  if (!mongoClient) return null;
+  if (!isConnected) {
+    try {
+      await mongoClient.connect();
+      mongoDb = mongoClient.db('sapiomatch');
+      isConnected = true;
+      console.log("[db.js] Connected to MongoDB database.");
+    } catch (err) {
+      console.error("[db.js] MongoDB connection error:", err);
+      return null;
+    }
+  }
+  return mongoDb;
+}
+
+// --- Local File Database Handlers (Fallback) ---
 function readData() {
   try {
     if (!fs.existsSync(DB_PATH)) {
@@ -19,7 +50,6 @@ function readData() {
   }
 }
 
-// Helper to save data
 function writeData(data) {
   try {
     fs.writeFileSync(DB_PATH, JSON.stringify(data, null, 2), 'utf-8');
@@ -30,7 +60,6 @@ function writeData(data) {
   }
 }
 
-// Default records for grading/testing out-of-the-box
 function getInitialData() {
   return {
     users: [
@@ -134,12 +163,26 @@ function getInitialData() {
   };
 }
 
+// --- Unified Async Database Accessors ---
 export const db = {
   // --- USERS ---
-  getUsers: () => readData().users,
-  getUserByEmail: (email) => readData().users.find(u => u.email.toLowerCase() === email.toLowerCase()),
-  addUser: (user) => {
-    const data = readData();
+  getUsers: async () => {
+    const mongo = await getMongoDb();
+    if (mongo) {
+      return await mongo.collection('users').find({}).toArray();
+    }
+    return readData().users;
+  },
+
+  getUserByEmail: async (email) => {
+    const mongo = await getMongoDb();
+    if (mongo) {
+      return await mongo.collection('users').findOne({ email: { $regex: new RegExp('^' + email + '$', 'i') } });
+    }
+    return readData().users.find(u => u.email.toLowerCase() === email.toLowerCase());
+  },
+
+  addUser: async (user) => {
     const newUser = {
       id: `usr_${Date.now()}`,
       status: "Active",
@@ -147,11 +190,29 @@ export const db = {
       credits: user.role === 'Student' ? 10 : 0,
       ...user
     };
+
+    const mongo = await getMongoDb();
+    if (mongo) {
+      await mongo.collection('users').insertOne(newUser);
+      return newUser;
+    }
+
+    const data = readData();
     data.users.push(newUser);
     writeData(data);
     return newUser;
   },
-  updateUser: (email, updates) => {
+
+  updateUser: async (email, updates) => {
+    const mongo = await getMongoDb();
+    if (mongo) {
+      await mongo.collection('users').updateOne(
+        { email: { $regex: new RegExp('^' + email + '$', 'i') } },
+        { $set: updates }
+      );
+      return await mongo.collection('users').findOne({ email: { $regex: new RegExp('^' + email + '$', 'i') } });
+    }
+
     const data = readData();
     const idx = data.users.findIndex(u => u.email.toLowerCase() === email.toLowerCase());
     if (idx === -1) return null;
@@ -159,7 +220,14 @@ export const db = {
     writeData(data);
     return data.users[idx];
   },
-  deleteUser: (id) => {
+
+  deleteUser: async (id) => {
+    const mongo = await getMongoDb();
+    if (mongo) {
+      await mongo.collection('users').deleteOne({ id });
+      return true;
+    }
+
     const data = readData();
     data.users = data.users.filter(u => u.id !== id);
     writeData(data);
@@ -167,21 +235,24 @@ export const db = {
   },
 
   // --- UNIVERSITIES ---
-  getUniversities: () => readData().universities,
-  addUniversity: (uni) => {
-    const data = readData();
+  getUniversities: async () => {
+    const mongo = await getMongoDb();
+    if (mongo) {
+      return await mongo.collection('universities').find({}).toArray();
+    }
+    return readData().universities;
+  },
+
+  addUniversity: async (uni) => {
     const newUni = {
       id: `uni_${Date.now()}`,
       ...uni
     };
-    data.universities.push(newUni);
-    
-    // Also auto-create a University user account
     const uniUser = {
       id: `usr_${Date.now()}`,
       name: `${uni.name} representative`,
       email: uni.email,
-      password: "password", // default password
+      password: "password",
       role: "University",
       contactNumber: "",
       plan: "Premium",
@@ -189,16 +260,31 @@ export const db = {
       status: "Active",
       universityName: uni.name
     };
+
+    const mongo = await getMongoDb();
+    if (mongo) {
+      await mongo.collection('universities').insertOne(newUni);
+      await mongo.collection('users').insertOne(uniUser);
+      return newUni;
+    }
+
+    const data = readData();
+    data.universities.push(newUni);
     data.users.push(uniUser);
-    
     writeData(data);
     return newUni;
   },
 
   // --- APPLICATIONS ---
-  getApplications: () => readData().applications,
-  addApplication: (app) => {
-    const data = readData();
+  getApplications: async () => {
+    const mongo = await getMongoDb();
+    if (mongo) {
+      return await mongo.collection('applications').find({}).toArray();
+    }
+    return readData().applications;
+  },
+
+  addApplication: async (app) => {
     const newApp = {
       id: `app_${Date.now()}`,
       status: "Under Review",
@@ -208,9 +294,6 @@ export const db = {
       meetingDate: "",
       ...app
     };
-    data.applications.push(newApp);
-    
-    // Create notification for student
     const newNotif = {
       id: `not_${Date.now()}`,
       userEmail: app.studentEmail,
@@ -219,26 +302,57 @@ export const db = {
       read: false,
       link: ""
     };
-    data.notifications.push(newNotif);
 
+    const mongo = await getMongoDb();
+    if (mongo) {
+      await mongo.collection('applications').insertOne(newApp);
+      await mongo.collection('notifications').insertOne(newNotif);
+      return newApp;
+    }
+
+    const data = readData();
+    data.applications.push(newApp);
+    data.notifications.push(newNotif);
     writeData(data);
     return newApp;
   },
-  updateApplicationReply: (id, replyText, meetingLink, meetingDate) => {
+
+  updateApplicationReply: async (id, replyText, meetingLink, meetingDate) => {
+    const mongo = await getMongoDb();
+    if (mongo) {
+      await mongo.collection('applications').updateOne(
+        { id },
+        { $set: { replyText, meetingLink, meetingDate, status: "Contacted" } }
+      );
+      const app = await mongo.collection('applications').findOne({ id });
+      if (!app) return null;
+
+      const meetingType = app.counselorPreference || "Consultation";
+      const text = `${app.universityName} representative replied: "${replyText}". scheduled: ${meetingDate} (${meetingType})`;
+      const newNotif = {
+        id: `not_${Date.now()}`,
+        userEmail: app.studentEmail,
+        text,
+        date: new Date().toISOString().split('T')[0],
+        read: false,
+        link: meetingLink
+      };
+      await mongo.collection('notifications').insertOne(newNotif);
+      return app;
+    }
+
     const data = readData();
     const idx = data.applications.findIndex(a => a.id === id);
     if (idx === -1) return null;
-    
+
     const app = data.applications[idx];
     app.replyText = replyText;
     app.meetingLink = meetingLink;
     app.meetingDate = meetingDate;
     app.status = "Contacted";
-    
-    // Add notification for the student
+
     const meetingType = app.counselorPreference || "Consultation";
     const text = `${app.universityName} representative replied: "${replyText}". scheduled: ${meetingDate} (${meetingType})`;
-    
     const newNotif = {
       id: `not_${Date.now()}`,
       userEmail: app.studentEmail,
@@ -248,18 +362,34 @@ export const db = {
       link: meetingLink
     };
     data.notifications.push(newNotif);
-    
     writeData(data);
     return app;
   },
-  updateApplicationStatus: (id, status) => {
+
+  updateApplicationStatus: async (id, status) => {
+    const mongo = await getMongoDb();
+    if (mongo) {
+      await mongo.collection('applications').updateOne({ id }, { $set: { status } });
+      const app = await mongo.collection('applications').findOne({ id });
+      if (!app) return null;
+
+      const newNotif = {
+        id: `not_${Date.now()}`,
+        userEmail: app.studentEmail,
+        text: `Your application for ${app.courseName} status updated to: ${status}`,
+        date: new Date().toISOString().split('T')[0],
+        read: false,
+        link: ""
+      };
+      await mongo.collection('notifications').insertOne(newNotif);
+      return app;
+    }
+
     const data = readData();
     const idx = data.applications.findIndex(a => a.id === id);
     if (idx === -1) return null;
-    
+
     data.applications[idx].status = status;
-    
-    // Add notification for student
     const newNotif = {
       id: `not_${Date.now()}`,
       userEmail: data.applications[idx].studentEmail,
@@ -269,11 +399,17 @@ export const db = {
       link: ""
     };
     data.notifications.push(newNotif);
-
     writeData(data);
     return data.applications[idx];
   },
-  deleteApplication: (id) => {
+
+  deleteApplication: async (id) => {
+    const mongo = await getMongoDb();
+    if (mongo) {
+      await mongo.collection('applications').deleteOne({ id });
+      return true;
+    }
+
     const data = readData();
     data.applications = data.applications.filter(a => a.id !== id);
     writeData(data);
@@ -281,12 +417,15 @@ export const db = {
   },
 
   // --- NOTIFICATIONS ---
-  getNotifications: (email) => {
-    const data = readData();
-    return data.notifications.filter(n => n.userEmail.toLowerCase() === email.toLowerCase());
+  getNotifications: async (email) => {
+    const mongo = await getMongoDb();
+    if (mongo) {
+      return await mongo.collection('notifications').find({ userEmail: { $regex: new RegExp('^' + email + '$', 'i') } }).toArray();
+    }
+    return readData().notifications.filter(n => n.userEmail.toLowerCase() === email.toLowerCase());
   },
-  addNotification: (notif) => {
-    const data = readData();
+
+  addNotification: async (notif) => {
     const newNotif = {
       id: `not_${Date.now()}`,
       date: new Date().toISOString().split('T')[0],
@@ -294,11 +433,29 @@ export const db = {
       link: "",
       ...notif
     };
+
+    const mongo = await getMongoDb();
+    if (mongo) {
+      await mongo.collection('notifications').insertOne(newNotif);
+      return newNotif;
+    }
+
+    const data = readData();
     data.notifications.push(newNotif);
     writeData(data);
     return newNotif;
   },
-  markNotificationsAsRead: (email) => {
+
+  markNotificationsAsRead: async (email) => {
+    const mongo = await getMongoDb();
+    if (mongo) {
+      await mongo.collection('notifications').updateMany(
+        { userEmail: { $regex: new RegExp('^' + email + '$', 'i') } },
+        { $set: { read: true } }
+      );
+      return true;
+    }
+
     const data = readData();
     data.notifications = data.notifications.map(n => {
       if (n.userEmail.toLowerCase() === email.toLowerCase()) {
@@ -311,21 +468,42 @@ export const db = {
   },
 
   // --- CONTACTS ---
-  getContacts: () => readData().contacts || [],
-  addContact: (contact) => {
-    const data = readData();
-    if (!data.contacts) data.contacts = [];
+  getContacts: async () => {
+    const mongo = await getMongoDb();
+    if (mongo) {
+      return await mongo.collection('contacts').find({}).toArray();
+    }
+    return readData().contacts || [];
+  },
+
+  addContact: async (contact) => {
     const newContact = {
       id: `con_${Date.now()}`,
       status: "New",
       date: new Date().toISOString().split('T')[0],
       ...contact
     };
+
+    const mongo = await getMongoDb();
+    if (mongo) {
+      await mongo.collection('contacts').insertOne(newContact);
+      return newContact;
+    }
+
+    const data = readData();
+    if (!data.contacts) data.contacts = [];
     data.contacts.push(newContact);
     writeData(data);
     return newContact;
   },
-  deleteContact: (id) => {
+
+  deleteContact: async (id) => {
+    const mongo = await getMongoDb();
+    if (mongo) {
+      await mongo.collection('contacts').deleteOne({ id });
+      return true;
+    }
+
     const data = readData();
     if (!data.contacts) return false;
     data.contacts = data.contacts.filter(c => c.id !== id);
@@ -334,22 +512,49 @@ export const db = {
   },
 
   // --- AI INTERACTIONS ---
-  getAiInteractions: () => readData().aiInteractions || [],
-  addAiInteraction: (interaction) => {
-    const data = readData();
-    if (!data.aiInteractions) data.aiInteractions = [];
+  getAiInteractions: async () => {
+    const mongo = await getMongoDb();
+    if (mongo) {
+      return await mongo.collection('ai_interactions').find({}).toArray();
+    }
+    return readData().aiInteractions || [];
+  },
+
+  addAiInteraction: async (interaction) => {
     const newInteraction = {
       id: `ai_${Date.now()}`,
       date: new Date().toISOString(),
       ...interaction
     };
+
+    const mongo = await getMongoDb();
+    if (mongo) {
+      await mongo.collection('ai_interactions').insertOne(newInteraction);
+      return newInteraction;
+    }
+
+    const data = readData();
+    if (!data.aiInteractions) data.aiInteractions = [];
     data.aiInteractions.push(newInteraction);
     writeData(data);
     return newInteraction;
   },
 
   // --- CATALOG ---
-  getCatalog: () => {
+  getCatalog: async () => {
+    const mongo = await getMongoDb();
+    if (mongo) {
+      let cat = await mongo.collection('catalog').findOne({});
+      if (!cat) {
+        cat = {
+          countries: ["United States", "United Kingdom", "Canada", "Australia", "Germany", "United Arab Emirates"],
+          subjects: ["Computer Science", "Business Administration", "Data Science", "Law & Public Policy", "Healthcare & Sciences", "Engineering"]
+        };
+        await mongo.collection('catalog').insertOne(cat);
+      }
+      return cat;
+    }
+
     const data = readData();
     if (!data.catalog) {
       data.catalog = {
@@ -360,7 +565,15 @@ export const db = {
     }
     return data.catalog;
   },
-  updateCatalog: (catalog) => {
+
+  updateCatalog: async (catalog) => {
+    const mongo = await getMongoDb();
+    if (mongo) {
+      await mongo.collection('catalog').deleteMany({});
+      await mongo.collection('catalog').insertOne(catalog);
+      return catalog;
+    }
+
     const data = readData();
     data.catalog = catalog;
     writeData(data);

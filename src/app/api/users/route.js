@@ -3,7 +3,7 @@ import { db } from '../../../services/db';
 
 export async function GET(request) {
   try {
-    const list = db.getUsers();
+    const list = await db.getUsers();
     // Map to safe public user data (excluding passwords for security best practices)
     const safeList = list.map(u => ({
       id: u.id,
@@ -32,7 +32,7 @@ export async function DELETE(request) {
       return NextResponse.json({ error: 'User ID is required.' }, { status: 400 });
     }
 
-    db.deleteUser(id);
+    await db.deleteUser(id);
     return NextResponse.json({ success: true });
   } catch (err) {
     console.error('Error in DELETE user api:', err);
@@ -49,7 +49,7 @@ export async function PUT(request) {
       return NextResponse.json({ error: 'User email is required.' }, { status: 400 });
     }
 
-    const updatedUser = db.updateUser(email, updates);
+    const updatedUser = await db.updateUser(email, updates);
     if (!updatedUser) {
       return NextResponse.json({ error: 'User not found.' }, { status: 404 });
     }

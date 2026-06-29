@@ -4,7 +4,7 @@ import { db } from '../../../services/db';
 // GET universities
 export async function GET() {
   try {
-    const list = db.getUniversities();
+    const list = await db.getUniversities();
     return NextResponse.json(list);
   } catch (err) {
     console.error('Error in GET universities API:', err);
@@ -22,7 +22,7 @@ export async function POST(request) {
       return NextResponse.json({ error: 'Name and email are required.' }, { status: 400 });
     }
 
-    const newUni = db.addUniversity({ name, email });
+    const newUni = await db.addUniversity({ name, email });
     return NextResponse.json({ success: true, university: newUni });
   } catch (err) {
     console.error('Error in POST universities API:', err);
