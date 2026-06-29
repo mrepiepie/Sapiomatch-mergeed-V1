@@ -308,14 +308,12 @@ export default function Questionnaire({ setView, answers, setAnswers, completedQ
     if (!isCalculating) return;
 
     let current = 0;
-    const stepTime = 60; // 60ms updates (16 renders per second instead of 40)
-    const increment = 3.3; // Reaches 100% in ~1.8 seconds
+    const duration = 2500; // 2.5 seconds count-up to 100% progress
+    const stepTime = duration / 100;
 
     const timer = setInterval(() => {
-      current += increment;
-      const rounded = Math.min(100, Math.floor(current));
-      
-      if (rounded >= 100) {
+      current += 1;
+      if (current >= 100) {
         setMatchProgress(100);
         setStatusText("Calculation complete! Matches identified.");
         clearInterval(timer);
@@ -326,7 +324,7 @@ export default function Questionnaire({ setView, answers, setAnswers, completedQ
           setView('results');
         }, 1800);
       } else {
-        setMatchProgress(rounded);
+        setMatchProgress(current);
         
         // Dynamic status updates based on progress percentage
         if (current < 25) {
@@ -993,7 +991,7 @@ export default function Questionnaire({ setView, answers, setAnswers, completedQ
                     strokeDasharray="314.16"
                     strokeDashoffset={314.16 - (matchProgress / 100) * 314.16}
                     strokeLinecap="round"
-                    style={{ transition: 'stroke-dashoffset 0.06s linear', filter: 'drop-shadow(0 0 8px var(--secondary-glow))' }}
+                    style={{ transition: 'stroke-dashoffset 0.08s linear', filter: 'drop-shadow(0 0 8px var(--secondary-glow))' }}
                   />
                 </svg>
                 
