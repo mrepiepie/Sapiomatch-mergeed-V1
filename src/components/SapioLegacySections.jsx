@@ -122,7 +122,19 @@ const testimonials = [
 export default function SapioLegacySections({ setView }) {
   const [activePathway, setActivePathway] = useState("tutoring");
   const [activeVisaTab, setActiveVisaTab] = useState("eligibility");
-  const [visaReady, setVisaReady] = useState(false);
+  const [visaReady, setVisaReady] = useState(false); // Finance
+  const [studyVerified, setStudyVerified] = useState(true);
+  const [englishScore, setEnglishScore] = useState("ielts-6.5");
+  const [credibilityVerified, setCredibilityVerified] = useState(true);
+
+  const studyScoreVal = studyVerified ? 50 : 0;
+  const englishScoreVal = (englishScore === 'ielts-6.5' || englishScore === 'waiver') ? 10 : (englishScore === 'ielts-6.0' ? 8 : 0);
+  const financeScoreVal = visaReady ? 10 : 0;
+  const credibilityScoreVal = credibilityVerified ? 10 : 0;
+  const totalVisaScore = studyScoreVal + englishScoreVal + financeScoreVal + credibilityScoreVal;
+  const isVisaEligible = totalVisaScore >= 70;
+  const visaProgressPercent = Math.round((totalVisaScore / 80) * 100);
+
   const [activeTestimonial, setActiveTestimonial] = useState(0);
   const [testimonialPaused, setTestimonialPaused] = useState(false);
   const [testimonialInView, setTestimonialInView] = useState(false);
@@ -318,11 +330,23 @@ export default function SapioLegacySections({ setView }) {
       return (
         <div className="sapio-visa-info-panel">
           <strong>Study evidence checks</strong>
-          <p>Confirm your CAS, offer letter, course level, and study history before submission.</p>
+          <p style={{ marginBottom: '16px' }}>Confirm your CAS, offer letter, course level, and study history before submission.</p>
+          <button 
+            type="button" 
+            className={`sapio-check-row ${studyVerified ? "checked" : ""}`} 
+            onClick={() => setStudyVerified(!studyVerified)}
+            style={{ width: '100%', marginBottom: '16px' }}
+          >
+            <span />
+            <div>
+              <strong>Simulate CAS Offer Verification (50 Points)</strong>
+              <p>Confirmation of Acceptance for Studies issued by licensed sponsor.</p>
+            </div>
+          </button>
           <ul>
-            <li><Check size={14} /> Course level aligns with visa rules.</li>
-            <li><Check size={14} /> Provider sponsorship status verified.</li>
-            <li><Check size={14} /> Academic progression narrative prepared.</li>
+            <li style={{ color: studyVerified ? 'var(--primary)' : 'var(--text-muted)' }}><Check size={14} /> Course level aligns with visa rules.</li>
+            <li style={{ color: studyVerified ? 'var(--primary)' : 'var(--text-muted)' }}><Check size={14} /> Provider sponsorship status verified.</li>
+            <li style={{ color: studyVerified ? 'var(--primary)' : 'var(--text-muted)' }}><Check size={14} /> Academic progression narrative prepared.</li>
           </ul>
         </div>
       );
@@ -332,14 +356,27 @@ export default function SapioLegacySections({ setView }) {
       return (
         <div className="sapio-visa-info-panel">
           <strong>Finance readiness</strong>
-          <p>Simulate fund age, tuition coverage, maintenance amounts, and statement risks.</p>
+          <p style={{ marginBottom: '16px' }}>Simulate fund age, tuition coverage, maintenance amounts, and statement risks.</p>
           <button type="button" className={`sapio-check-row ${visaReady ? "checked" : ""}`} onClick={() => setVisaReady(!visaReady)}>
             <span />
             <div>
-              <strong>Simulate Maintenance Funds Check</strong>
-              <p>Check maintaining at least GBP 18,707 for 28 consecutive days.</p>
+              <strong>Simulate Maintenance Funds Check (10 Points)</strong>
+              <p>Verify maintaining at least GBP 18,707 for 28 consecutive days.</p>
             </div>
           </button>
+          {visaReady ? (
+            <ul className="sapio-ready-list" style={{ marginTop: '12px' }}>
+              <li style={{ color: 'var(--primary)' }}><Check size={14} /> Bank statement verified successfully.</li>
+              <li style={{ color: 'var(--primary)' }}><Check size={14} /> Maintenance funds check passed (GBP 18,707+).</li>
+              <li style={{ color: 'var(--primary)' }}><Check size={14} /> Funds aged for 28+ consecutive days.</li>
+            </ul>
+          ) : (
+            <ul style={{ marginTop: '12px' }}>
+              <li><CircleDot size={14} /> Request a new statement from your bank.</li>
+              <li><CircleDot size={14} /> Ensure bank holds at least GBP 18,707.</li>
+              <li><CircleDot size={14} /> Maintain funds for 28 days before applying.</li>
+            </ul>
+          )}
         </div>
       );
     }
@@ -347,12 +384,54 @@ export default function SapioLegacySections({ setView }) {
     if (activeVisaTab === "english") {
       return (
         <div className="sapio-visa-info-panel">
-          <strong>English evidence</strong>
+          <strong>English proficiency evidence</strong>
           <p>Track IELTS, TOEFL, waiver status, and institution-specific language requirements.</p>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', margin: '15px 0' }}>
+            <label style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', fontSize: '13.5px' }}>
+              <input 
+                type="radio" 
+                name="englishScore" 
+                checked={englishScore === 'ielts-6.5'} 
+                onChange={() => setEnglishScore('ielts-6.5')} 
+                style={{ accentColor: 'var(--primary)' }}
+              />
+              IELTS 6.5+ / CEFR B2 Level (10 Points)
+            </label>
+            <label style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', fontSize: '13.5px' }}>
+              <input 
+                type="radio" 
+                name="englishScore" 
+                checked={englishScore === 'waiver'} 
+                onChange={() => setEnglishScore('waiver')} 
+                style={{ accentColor: 'var(--primary)' }}
+              />
+              University English Waiver Approved (10 Points)
+            </label>
+            <label style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', fontSize: '13.5px' }}>
+              <input 
+                type="radio" 
+                name="englishScore" 
+                checked={englishScore === 'ielts-6.0'} 
+                onChange={() => setEnglishScore('ielts-6.0')} 
+                style={{ accentColor: 'var(--primary)' }}
+              />
+              IELTS 6.0 (8 Points)
+            </label>
+            <label style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', fontSize: '13.5px' }}>
+              <input 
+                type="radio" 
+                name="englishScore" 
+                checked={englishScore === 'below-6.0'} 
+                onChange={() => setEnglishScore('below-6.0')} 
+                style={{ accentColor: 'var(--primary)' }}
+              />
+              IELTS below 5.5 / No Test (0 Points)
+            </label>
+          </div>
           <ul>
-            <li><Check size={14} /> Test score format checked.</li>
-            <li><Check size={14} /> Expiry date risk reviewed.</li>
-            <li><Check size={14} /> Waiver evidence mapped.</li>
+            <li style={{ color: englishScoreVal > 0 ? 'var(--primary)' : 'var(--text-muted)' }}><Check size={14} /> Test score format checked.</li>
+            <li style={{ color: englishScoreVal > 0 ? 'var(--primary)' : 'var(--text-muted)' }}><Check size={14} /> Expiry date risk reviewed.</li>
+            <li style={{ color: englishScore === 'waiver' ? 'var(--primary)' : 'var(--text-muted)' }}><Check size={14} /> Waiver evidence mapped.</li>
           </ul>
         </div>
       );
@@ -362,11 +441,23 @@ export default function SapioLegacySections({ setView }) {
       return (
         <div className="sapio-visa-info-panel">
           <strong>Credibility interview prep</strong>
-          <p>Practice consistent answers about course choice, funding, career pathway, and return plans.</p>
+          <p style={{ marginBottom: '16px' }}>Practice consistent answers about course choice, funding, career pathway, and return plans.</p>
+          <button 
+            type="button" 
+            className={`sapio-check-row ${credibilityVerified ? "checked" : ""}`} 
+            onClick={() => setCredibilityVerified(!credibilityVerified)}
+            style={{ width: '100%', marginBottom: '16px' }}
+          >
+            <span />
+            <div>
+              <strong>Simulate Mock Interview Pass (10 Points)</strong>
+              <p>Verify confidence and authenticity of study intentions.</p>
+            </div>
+          </button>
           <ul>
-            <li><Check size={14} /> Course motivation story prepared.</li>
-            <li><Check size={14} /> Funding source explanation checked.</li>
-            <li><Check size={14} /> Career outcome narrative aligned.</li>
+            <li style={{ color: credibilityVerified ? 'var(--primary)' : 'var(--text-muted)' }}><Check size={14} /> Course motivation story prepared.</li>
+            <li style={{ color: credibilityVerified ? 'var(--primary)' : 'var(--text-muted)' }}><Check size={14} /> Funding source explanation checked.</li>
+            <li style={{ color: credibilityVerified ? 'var(--primary)' : 'var(--text-muted)' }}><Check size={14} /> Career outcome narrative aligned.</li>
           </ul>
         </div>
       );
@@ -376,43 +467,43 @@ export default function SapioLegacySections({ setView }) {
       <>
         <div className="sapio-visa-topline">
           <strong>Precise eligibility audit</strong>
-          <span className={visaReady ? "ready" : ""}>{visaReady ? "Ready" : "Not yet ready"}</span>
+          <span className={isVisaEligible ? "ready" : ""}>{isVisaEligible ? "Ready" : "Not yet ready"}</span>
         </div>
         <div className="sapio-score-row">
           <div className="sapio-score-ring">
-            <b>{visaReady ? 70 : 60}</b>
-            <span>{visaReady ? "100%" : "86%"}</span>
+            <b>{totalVisaScore}</b>
+            <span>{visaProgressPercent}%</span>
           </div>
           <div className="sapio-score-bars">
-            <label>Study <span>50/50</span></label>
-            <div><i style={{ width: "100%" }} /></div>
-            <label>English <span>10/10</span></label>
-            <div><i style={{ width: "100%" }} /></div>
-            <label>Finance <span className={visaReady ? "" : "danger"}>{visaReady ? "10/10" : "0/10"}</span></label>
-            <div><i style={{ width: visaReady ? "100%" : "0%" }} /></div>
+            <label>Study <span>{studyScoreVal}/50</span></label>
+            <div><i style={{ width: `${(studyScoreVal / 50) * 100}%` }} /></div>
+            <label>English <span>{englishScoreVal}/10</span></label>
+            <div><i style={{ width: `${(englishScoreVal / 10) * 100}%` }} /></div>
+            <label>Finance <span className={financeScoreVal > 0 ? "" : "danger"}>{financeScoreVal}/10</span></label>
+            <div><i style={{ width: `${(financeScoreVal / 10) * 100}%` }} /></div>
           </div>
         </div>
-        <button type="button" className={`sapio-check-row ${visaReady ? "checked" : ""}`} onClick={() => setVisaReady(!visaReady)}>
-          <span />
-          <div>
-            <strong>Simulate Maintenance Funds Check</strong>
-            <p>Check to verify maintaining at least GBP 18,707 for 28 consecutive days.</p>
+        <div style={{ marginTop: '16px', padding: '12px', background: 'rgba(255,255,255,0.02)', borderRadius: '8px', border: '1px solid var(--card-border)', textAlign: 'left' }}>
+          <strong style={{ fontSize: '13px', display: 'block', marginBottom: '8px' }}>UK Points Requirements (70 Min):</strong>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', fontSize: '12px', color: 'var(--text-muted)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', color: studyVerified ? 'var(--primary)' : '' }}>
+              <span>✓ CAS Acceptance Letter</span>
+              <span>{studyScoreVal} / 50 pts</span>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', color: englishScoreVal === 10 ? 'var(--primary)' : '' }}>
+              <span>✓ English Language (CEFR B2)</span>
+              <span>{englishScoreVal} / 10 pts</span>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', color: visaReady ? 'var(--primary)' : '' }}>
+              <span>✓ Financial Maintenance (£18,707)</span>
+              <span>{financeScoreVal} / 10 pts</span>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', color: credibilityVerified ? 'var(--primary)' : '' }}>
+              <span>✓ Mock Credibility Interview</span>
+              <span>{credibilityScoreVal} / 10 pts</span>
+            </div>
           </div>
-        </button>
-        <strong>Next Steps checklist:</strong>
-        {visaReady ? (
-          <ul className="sapio-ready-list">
-            <li style={{ color: 'var(--primary)' }}><Check size={14} /> Bank statement verified successfully.</li>
-            <li style={{ color: 'var(--primary)' }}><Check size={14} /> Maintenance funds check passed (GBP 18,707+).</li>
-            <li style={{ color: 'var(--primary)' }}><Check size={14} /> Funds aged for 28+ consecutive days.</li>
-          </ul>
-        ) : (
-          <ul>
-            <li><CircleDot size={14} /> Request a new statement from your bank.</li>
-            <li><CircleDot size={14} /> Ensure bank holds at least GBP 18,707.</li>
-            <li><CircleDot size={14} /> Maintain funds for 28 days before applying.</li>
-          </ul>
-        )}
+        </div>
       </>
     );
   };
@@ -668,20 +759,20 @@ export default function SapioLegacySections({ setView }) {
           <div className="sapio-visa-body">
             <div className="sapio-visa-topline">
               <strong>Precise eligibility audit</strong>
-              <span className={visaReady ? "ready" : ""}>{visaReady ? "Ready" : "Not yet ready"}</span>
+              <span className={isVisaEligible ? "ready" : ""}>{isVisaEligible ? "Ready" : "Not yet ready"}</span>
             </div>
             <div className="sapio-score-row">
               <div className="sapio-score-ring">
-                <b>{visaReady ? 86 : 60}</b>
-                <span>{visaReady ? "95%" : "86%"}</span>
+                <b>{totalVisaScore}</b>
+                <span>{visaProgressPercent}%</span>
               </div>
               <div className="sapio-score-bars">
-                <label>Study <span>50/50</span></label>
-                <div><i style={{ width: "100%" }} /></div>
-                <label>English <span>10/10</span></label>
-                <div><i style={{ width: "100%" }} /></div>
-                <label>Finance <span className={visaReady ? "" : "danger"}>{visaReady ? "26/30" : "0/10"}</span></label>
-                <div><i style={{ width: visaReady ? "86%" : "0%" }} /></div>
+                <label>Study <span>{studyScoreVal}/50</span></label>
+                <div><i style={{ width: `${(studyScoreVal / 50) * 100}%` }} /></div>
+                <label>English <span>{englishScoreVal}/10</span></label>
+                <div><i style={{ width: `${(englishScoreVal / 10) * 100}%` }} /></div>
+                <label>Finance <span className={financeScoreVal > 0 ? "" : "danger"}>{financeScoreVal}/10</span></label>
+                <div><i style={{ width: `${(financeScoreVal / 10) * 100}%` }} /></div>
               </div>
             </div>
             <button type="button" className={`sapio-check-row ${visaReady ? "checked" : ""}`} onClick={() => setVisaReady(!visaReady)}>
@@ -692,17 +783,17 @@ export default function SapioLegacySections({ setView }) {
               </div>
             </button>
             <strong>Next Steps checklist:</strong>
-            {visaReady ? (
+            {isVisaEligible ? (
               <ul className="sapio-ready-list">
                 <li style={{ color: 'var(--primary)' }}><Check size={14} /> Bank statement verified successfully.</li>
                 <li style={{ color: 'var(--primary)' }}><Check size={14} /> Maintenance funds check passed (£18,707+).</li>
-                <li style={{ color: 'var(--primary)' }}><Check size={14} /> Funds aged for 28+ consecutive days.</li>
+                <li style={{ color: 'var(--primary)' }}><Check size={14} /> English & CAS acceptance points secured.</li>
               </ul>
             ) : (
               <ul>
                 <li><CircleDot size={14} /> Request a new statement from your bank.</li>
-                <li><CircleDot size={14} /> Ensure bank holds at least £18,707.</li>
-                <li><CircleDot size={14} /> Maintain funds for 28 days before applying.</li>
+                <li><CircleDot size={14} /> Complete study, language, and funds checks.</li>
+                <li><CircleDot size={14} /> Secure at least 70/80 points to pass threshold.</li>
               </ul>
             )}
           </div>
