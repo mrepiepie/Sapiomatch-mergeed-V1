@@ -1,0 +1,311 @@
+Create a complete futuristic AI education-matching website design in Figma for a platform called “SapioMatch AI”.
+
+The platform is an AI-powered education discovery and matching marketplace. It helps students, working professionals, and future learners find the best universities, academies, training providers, and professional programs based on their goals, academic background, budget, preferred location, delivery mode, and career direction.
+
+Design style:
+Create a premium, futuristic, deep AI technology visual identity. The design should feel modern, intelligent, trustworthy, and exciting — not like a basic education website. Use a dark futuristic theme with deep navy, black, midnight blue, purple, cyan, and electric blue accents. Use glowing gradients, glassmorphism cards, soft neon borders, floating UI panels, subtle grid backgrounds, AI particles, abstract light trails, and futuristic dashboard previews. It should look like a high-end AI SaaS product combined with an education/career platform.
+
+Do not make it childish or too “school website”. It should feel like an advanced AI platform for serious learners, working professionals, universities, and academies.
+
+Visual inspiration:
+Combine the best concepts from:
+
+1. Career mapping platforms: personalized path visualization, match scores, future path cards, skill gaps, and AI recommendations.
+2. Career discovery platforms: simple guided journey, clean “explore your possibilities” messaging, human-centered motivation, and step-by-step onboarding.
+3. AI education tools: guided input forms, no-prompting-required workflows, clean cards, generated recommendations, and structured educational outputs.
+4. AI school/platform websites: bold hero section, trust/safety emphasis, stats, testimonials, purple AI branding, glowing cards, and strong CTA buttons.
+
+Overall website structure:
+Create separate desktop frames/pages for:
+
+1. Homepage
+2. About Us
+3. Contact Us
+4. User Login / Learner Login
+5. Institution Login
+6. Admin Login
+7. Super Admin Login
+
+Use a consistent top navigation bar across the public pages:
+Logo / SapioMatch AI
+Home
+About Us
+Contact Us
+Login
+
+The navigation should be click-based, not automatic. Use prototype links:
+Home → Homepage
+About Us → About Us
+Contact Us → Contact Us
+Login → User Login / Learner Login
+
+Homepage requirements:
+Create a strong futuristic hero section.
+
+Hero headline:
+“Find the right program with AI-powered matching.”
+
+Hero subtext:
+“Compare universities, academies, and professional programs based on your goals, background, budget, location, study preferences, and career direction.”
+
+Primary CTA:
+“Find My Best Program”
+
+Secondary CTA:
+“Explore Institutions”
+
+Hero visual:
+On the right side, create a futuristic AI matching dashboard mockup. It should include:
+
+* A glowing AI orb or digital brain
+* A “92% Match Score” card
+* Floating recommended program cards
+* Program examples such as “Global MBA”, “AI Business Diploma”, “Cybersecurity Academy”
+* Mini cards showing: Budget Fit, Location Fit, Career Alignment, Delivery Mode
+* A glowing “AI Recommendation Engine” label
+* A visual path from “Your Profile” to “Best-Fit Programs”
+
+Homepage sections:
+
+1. “How It Works”
+   Show a clean 4-step process:
+
+* Enter your goals
+* AI analyzes your profile
+* View ranked programs
+* Connect with institutions
+
+2. “Why Choose SapioMatch AI”
+   Use 4 futuristic cards:
+
+* AI Matching
+* Verified Institution Data
+* Smart Program Comparison
+* Career-Focused Recommendations
+
+3. “Explore Your Possibilities”
+   Inspired by career-path platforms. Show a visual career/education map with dotted lines from the user profile to multiple program cards. Include matching percentages and small labels like “Best Fit”, “Flexible Schedule”, “Career Boost”, and “Budget Friendly”.
+
+4. “Trusted Data, Better Decisions”
+   Explain that institutions submit and update their own information, while admins validate before publication. This is important: the institution is responsible for maintaining its own academic and commercial data, not the admin.
+
+5. “Built for Learners and Institutions”
+   Two-column section:
+   Left: For students, working professionals, and learners.
+   Right: For universities, academies, and training providers.
+
+6. Add a final CTA section:
+   “Ready to discover your best-fit program?”
+   Button: “Start Matching Now”
+
+About Us page requirements:
+The About Us page should explain the platform’s purpose in a futuristic but trustworthy way.
+
+Main headline:
+“A smarter bridge between learners and trusted education providers.”
+
+Content:
+Explain that SapioMatch AI helps users make confident education decisions by matching them with suitable programs using AI, verified institution data, and transparent comparison logic.
+
+Include sections:
+
+1. “The Problem We Solve”
+   Talk about scattered information, confusing program options, unclear requirements, and difficulty comparing institutions.
+
+2. “Why Matching Matters”
+   Explain that the best program is not always the most famous one; it is the one that fits the learner’s background, budget, schedule, location, goals, and career direction.
+
+3. “How We Help Users”
+   Cards:
+
+* Personalized recommendations
+* Program comparison
+* Match scores
+* Saved results
+* Guided decision-making
+
+4. “How We Help Institutions”
+   Cards:
+
+* Institution-controlled profiles
+* Program visibility
+* Qualified leads
+* Admin-validated publication
+* Commercial and lead access rules
+
+5. “Our Operating Model”
+   Show this as a modern matrix or process:
+   Institution submits/updates data → Admin validates → Approved data is published → Users see matching results → Leads become visible based on permissions and credit rules → Super Admin controls governance and commercial rules.
+
+Contact Us page requirements:
+Create a clean futuristic contact page.
+
+Headline:
+“Let’s connect users, institutions, and opportunities.”
+
+Include a contact form with:
+
+* Full Name
+* Email Address
+* Phone Number
+* Inquiry Type dropdown
+* Message
+
+Inquiry type options:
+
+* Student / Working Professional
+* University
+* Academy / Training Provider
+* Support
+* Partnership Inquiry
+
+Add a side panel with:
+
+* Contact email: To be added
+* Phone: To be added
+* Location: To be added
+* Response time: 1–2 business days
+
+Add small glowing cards for:
+
+* Learner support
+* Institution onboarding
+* Partnership inquiries
+
+User Login / Learner Login page requirements:
+This page should focus mainly on the actual user/learner. Do not make this a general role-selection page.
+
+Main headline:
+“Start your journey with us.”
+
+Subtext:
+“Your next academic step should feel clear, not confusing. Sign in to continue your personalized matching journey, save your results, compare programs, and discover opportunities that fit your goals.”
+
+Audience label:
+“For students, working professionals, and future learners.”
+
+Create a large dynamic login panel with:
+
+* Email address
+* Password
+* Remember me
+* Forgot password?
+* Login and Continue button
+* Create New Account link
+
+Make the login box feel premium and futuristic with glassmorphism, glowing input borders, and an AI assistant hint card.
+
+Add a motivational card:
+“The right program can change the direction of your career. Let AI help you find the path that actually fits you.”
+
+Add a small section at the bottom or side:
+“Not a learner?”
+With three small portal buttons:
+
+* Institution Login
+* Admin Login
+* Super Admin Login
+
+These buttons should navigate to separate pages, not be the main focus.
+
+Institution Login page requirements:
+Create a dedicated page for universities, academies, and training providers.
+
+Headline:
+“Institution access for education providers.”
+
+Subtext:
+“Manage your institution profile, submit program data, update fees and requirements, and access approved leads based on your permissions.”
+
+Login form:
+
+* Institution email
+* Password
+* Continue to Institution Portal
+
+Add a side info card:
+“Institutions own and maintain their own data. Admins validate submitted updates before publication.”
+
+Admin Login page requirements:
+Create a dedicated page for platform admins.
+
+Headline:
+“Operational control for platform reviewers.”
+
+Subtext:
+“Review submitted institution data, validate updates, approve or reject content, and monitor platform data quality.”
+
+Login form:
+
+* Admin email
+* Password
+* Continue to Admin Panel
+
+Add a side info card:
+“Admins validate and govern data quality. They are not responsible for manually maintaining institution information.”
+
+Super Admin Login page requirements:
+Create a dedicated page for Super Admin.
+
+Headline:
+“Governance and commercial control center.”
+
+Subtext:
+“Manage permissions, commercial rules, credit logic, lead visibility, institution access, and sensitive platform governance.”
+
+Login form:
+
+* Super Admin email
+* Password
+* Continue to Super Admin
+
+Add a side info card:
+“Super Admin controls the platform’s highest-level governance, credit rules, access rules, and commercial model.”
+
+Design system:
+Use modern fonts such as Inter, Sora, Space Grotesk, or Manrope.
+Headings should be bold, large, and premium.
+Body text should be clean and readable.
+Use rounded cards, glowing borders, subtle shadows, and layered glass panels.
+
+Color palette:
+
+* Main background: #050816, #070B1A, #0B1020
+* Card background: rgba(18, 26, 51, 0.72)
+* Primary accent: #3B82F6
+* Secondary accent: #8B5CF6
+* Cyan accent: #22D3EE
+* Highlight pink/violet: #D946EF
+* Text white: #F8FAFC
+* Muted text: #CBD5E1
+
+Components to create:
+
+* Top navigation bar
+* Primary gradient button
+* Secondary outline button
+* Glass card
+* Feature card
+* Match score card
+* Program recommendation card
+* Login input field
+* Contact input field
+* Portal link card
+* Process step card
+* Institution/Admin/Super Admin login form
+
+Prototype interactions:
+Create click navigation:
+Home nav item → Homepage
+About Us nav item → About Us
+Contact Us nav item → Contact Us
+Login nav item → User Login / Learner Login
+Institution Login button → Institution Login page
+Admin Login button → Admin Login page
+Super Admin button → Super Admin Login page
+
+Use simple transitions:
+On click → Navigate to selected page → Dissolve or Instant
+
+Important design direction:
+Make the design more advanced than a basic landing page. It should feel like a real AI platform, with dashboard-like visuals, smart matching UI, glowing cards, visual program pathways, match scores, and a strong futuristic brand. Combine human motivation with deep technology. The user should immediately feel: “This platform will help me find my best education path intelligently.”

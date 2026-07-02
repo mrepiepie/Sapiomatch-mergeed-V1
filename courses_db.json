@@ -1,0 +1,977 @@
+[
+  {
+    "institution": "Amity University Dubai",
+    "courses": [
+      {
+        "name": "Global MBA",
+        "fee": "AED 56,250",
+        "mode": "Hybrid"
+      },
+      {
+        "name": "MSc Artificial Intelligence & Data Science",
+        "fee": "AED 51,750",
+        "mode": "On-campus"
+      },
+      {
+        "name": "BSc Computer Science & Software Engineering",
+        "fee": "AED 42,750",
+        "mode": "On-campus"
+      }
+    ]
+  },
+  {
+    "institution": "Murdoch University, Dubai",
+    "courses": [
+      {
+        "name": "MSc Artificial Intelligence & Data Science",
+        "fee": "AED 57,500",
+        "mode": "On-campus"
+      },
+      {
+        "name": "BSc Computer Science & Software Engineering",
+        "fee": "AED 47,500",
+        "mode": "On-campus"
+      },
+      {
+        "name": "BA Business Management & Marketing",
+        "fee": "AED 42,500",
+        "mode": "Hybrid"
+      },
+      {
+        "name": "MSc Cybersecurity & Network Systems",
+        "fee": "AED 52,500",
+        "mode": "Hybrid"
+      }
+    ]
+  },
+  {
+    "institution": "Saint Joseph University Dubai",
+    "courses": [
+      {
+        "name": "BSc Computer Science & Software Engineering",
+        "fee": "AED 52,250",
+        "mode": "On-campus"
+      },
+      {
+        "name": "BA Business Management & Marketing",
+        "fee": "AED 46,750",
+        "mode": "Hybrid"
+      },
+      {
+        "name": "MSc Cybersecurity & Network Systems",
+        "fee": "AED 57,750",
+        "mode": "Hybrid"
+      },
+      {
+        "name": "MSc Finance & Digital Banking",
+        "fee": "AED 60,500",
+        "mode": "Hybrid"
+      },
+      {
+        "name": "BA Digital Design & Creative Media",
+        "fee": "AED 49,500",
+        "mode": "On-campus"
+      }
+    ]
+  },
+  {
+    "institution": "S P Jain School of Global Management",
+    "courses": [
+      {
+        "name": "BA Business Management & Marketing",
+        "fee": "AED 51,000",
+        "mode": "Hybrid"
+      },
+      {
+        "name": "MSc Cybersecurity & Network Systems",
+        "fee": "AED 63,000",
+        "mode": "Hybrid"
+      },
+      {
+        "name": "MSc Finance & Digital Banking",
+        "fee": "AED 66,000",
+        "mode": "Hybrid"
+      }
+    ]
+  },
+  {
+    "institution": "Shaheed Zulfikar Ali Bhutto Institute of Science and Technology",
+    "courses": [
+      {
+        "name": "MSc Cybersecurity & Network Systems",
+        "fee": "AED 68,250",
+        "mode": "Hybrid"
+      },
+      {
+        "name": "MSc Finance & Digital Banking",
+        "fee": "AED 71,500",
+        "mode": "Hybrid"
+      },
+      {
+        "name": "BA Digital Design & Creative Media",
+        "fee": "AED 58,500",
+        "mode": "On-campus"
+      },
+      {
+        "name": "Global MBA",
+        "fee": "AED 81,250",
+        "mode": "Hybrid"
+      }
+    ]
+  },
+  {
+    "institution": "University of Birmingham Dubai",
+    "courses": [
+      {
+        "name": "MSc Finance & Digital Banking",
+        "fee": "AED 77,000",
+        "mode": "Hybrid"
+      },
+      {
+        "name": "BA Digital Design & Creative Media",
+        "fee": "AED 63,000",
+        "mode": "On-campus"
+      },
+      {
+        "name": "Global MBA",
+        "fee": "AED 87,500",
+        "mode": "Hybrid"
+      },
+      {
+        "name": "MSc Artificial Intelligence & Data Science",
+        "fee": "AED 80,500",
+        "mode": "On-campus"
+      },
+      {
+        "name": "BSc Computer Science & Software Engineering",
+        "fee": "AED 66,500",
+        "mode": "On-campus"
+      }
+    ]
+  },
+  {
+    "institution": "Institute of Management Technology - Dubai",
+    "courses": [
+      {
+        "name": "BA Digital Design & Creative Media",
+        "fee": "AED 67,500",
+        "mode": "On-campus"
+      },
+      {
+        "name": "Global MBA",
+        "fee": "AED 93,750",
+        "mode": "Hybrid"
+      },
+      {
+        "name": "MSc Artificial Intelligence & Data Science",
+        "fee": "AED 86,250",
+        "mode": "On-campus"
+      }
+    ]
+  },
+  {
+    "institution": "Birla Institute of Technology and Science Pilani (Bits Pilani) Dubai Campus",
+    "courses": [
+      {
+        "name": "Global MBA",
+        "fee": "AED 100,000",
+        "mode": "Hybrid"
+      },
+      {
+        "name": "MSc Artificial Intelligence & Data Science",
+        "fee": "AED 92,000",
+        "mode": "On-campus"
+      },
+      {
+        "name": "BSc Computer Science & Software Engineering",
+        "fee": "AED 76,000",
+        "mode": "On-campus"
+      },
+      {
+        "name": "BA Business Management & Marketing",
+        "fee": "AED 68,000",
+        "mode": "Hybrid"
+      }
+    ]
+  },
+  {
+    "institution": "ESMOD French Fashion Institute",
+    "courses": [
+      {
+        "name": "MSc Artificial Intelligence & Data Science",
+        "fee": "AED 97,750",
+        "mode": "On-campus"
+      },
+      {
+        "name": "BSc Computer Science & Software Engineering",
+        "fee": "AED 80,750",
+        "mode": "On-campus"
+      },
+      {
+        "name": "BA Business Management & Marketing",
+        "fee": "AED 72,250",
+        "mode": "Hybrid"
+      },
+      {
+        "name": "MSc Cybersecurity & Network Systems",
+        "fee": "AED 89,250",
+        "mode": "Hybrid"
+      },
+      {
+        "name": "MSc Finance & Digital Banking",
+        "fee": "AED 93,500",
+        "mode": "Hybrid"
+      }
+    ]
+  },
+  {
+    "institution": "Curtin University",
+    "courses": [
+      {
+        "name": "BSc Computer Science & Software Engineering",
+        "fee": "AED 85,500",
+        "mode": "On-campus"
+      },
+      {
+        "name": "BA Business Management & Marketing",
+        "fee": "AED 76,500",
+        "mode": "Hybrid"
+      },
+      {
+        "name": "MSc Cybersecurity & Network Systems",
+        "fee": "AED 94,500",
+        "mode": "Hybrid"
+      }
+    ]
+  },
+  {
+    "institution": "British University in Dubai",
+    "courses": [
+      {
+        "name": "BA Business Management & Marketing",
+        "fee": "AED 80,750",
+        "mode": "Hybrid"
+      },
+      {
+        "name": "MSc Cybersecurity & Network Systems",
+        "fee": "AED 99,750",
+        "mode": "Hybrid"
+      },
+      {
+        "name": "MSc Finance & Digital Banking",
+        "fee": "AED 104,500",
+        "mode": "Hybrid"
+      },
+      {
+        "name": "BA Digital Design & Creative Media",
+        "fee": "AED 85,500",
+        "mode": "On-campus"
+      }
+    ]
+  },
+  {
+    "institution": "Manipal Academy of Higher Education",
+    "courses": [
+      {
+        "name": "MSc Cybersecurity & Network Systems",
+        "fee": "AED 105,000",
+        "mode": "Hybrid"
+      },
+      {
+        "name": "MSc Finance & Digital Banking",
+        "fee": "AED 110,000",
+        "mode": "Hybrid"
+      },
+      {
+        "name": "BA Digital Design & Creative Media",
+        "fee": "AED 90,000",
+        "mode": "On-campus"
+      },
+      {
+        "name": "Global MBA",
+        "fee": "AED 125,000",
+        "mode": "Hybrid"
+      },
+      {
+        "name": "MSc Artificial Intelligence & Data Science",
+        "fee": "AED 115,000",
+        "mode": "On-campus"
+      }
+    ]
+  },
+  {
+    "institution": "Emirates Aviation University - Institute of Applied Research & Technology",
+    "courses": [
+      {
+        "name": "MSc Finance & Digital Banking",
+        "fee": "AED 49,500",
+        "mode": "Hybrid"
+      },
+      {
+        "name": "BA Digital Design & Creative Media",
+        "fee": "AED 40,500",
+        "mode": "On-campus"
+      },
+      {
+        "name": "Global MBA",
+        "fee": "AED 56,250",
+        "mode": "Hybrid"
+      }
+    ]
+  },
+  {
+    "institution": "University Paris II Panthéon-Assas",
+    "courses": [
+      {
+        "name": "BA Digital Design & Creative Media",
+        "fee": "AED 45,000",
+        "mode": "On-campus"
+      },
+      {
+        "name": "Global MBA",
+        "fee": "AED 62,500",
+        "mode": "Hybrid"
+      },
+      {
+        "name": "MSc Artificial Intelligence & Data Science",
+        "fee": "AED 57,500",
+        "mode": "On-campus"
+      },
+      {
+        "name": "BSc Computer Science & Software Engineering",
+        "fee": "AED 47,500",
+        "mode": "On-campus"
+      }
+    ]
+  },
+  {
+    "institution": "American University in the Emirates",
+    "courses": [
+      {
+        "name": "Global MBA",
+        "fee": "AED 68,750",
+        "mode": "Hybrid"
+      },
+      {
+        "name": "MSc Artificial Intelligence & Data Science",
+        "fee": "AED 63,250",
+        "mode": "On-campus"
+      },
+      {
+        "name": "BSc Computer Science & Software Engineering",
+        "fee": "AED 52,250",
+        "mode": "On-campus"
+      },
+      {
+        "name": "BA Business Management & Marketing",
+        "fee": "AED 46,750",
+        "mode": "Hybrid"
+      },
+      {
+        "name": "MSc Cybersecurity & Network Systems",
+        "fee": "AED 57,750",
+        "mode": "Hybrid"
+      }
+    ]
+  },
+  {
+    "institution": "SKEMA BUSINESS SCHOOL",
+    "courses": [
+      {
+        "name": "MSc Artificial Intelligence & Data Science",
+        "fee": "AED 69,000",
+        "mode": "On-campus"
+      },
+      {
+        "name": "BSc Computer Science & Software Engineering",
+        "fee": "AED 57,000",
+        "mode": "On-campus"
+      },
+      {
+        "name": "BA Business Management & Marketing",
+        "fee": "AED 51,000",
+        "mode": "Hybrid"
+      }
+    ]
+  },
+  {
+    "institution": "London Business School",
+    "courses": [
+      {
+        "name": "BSc Computer Science & Software Engineering",
+        "fee": "AED 61,750",
+        "mode": "On-campus"
+      },
+      {
+        "name": "BA Business Management & Marketing",
+        "fee": "AED 55,250",
+        "mode": "Hybrid"
+      },
+      {
+        "name": "MSc Cybersecurity & Network Systems",
+        "fee": "AED 68,250",
+        "mode": "Hybrid"
+      },
+      {
+        "name": "MSc Finance & Digital Banking",
+        "fee": "AED 71,500",
+        "mode": "Hybrid"
+      }
+    ]
+  },
+  {
+    "institution": "De Montfort University",
+    "courses": [
+      {
+        "name": "BA Business Management & Marketing",
+        "fee": "AED 59,500",
+        "mode": "Hybrid"
+      },
+      {
+        "name": "MSc Cybersecurity & Network Systems",
+        "fee": "AED 73,500",
+        "mode": "Hybrid"
+      },
+      {
+        "name": "MSc Finance & Digital Banking",
+        "fee": "AED 77,000",
+        "mode": "Hybrid"
+      },
+      {
+        "name": "BA Digital Design & Creative Media",
+        "fee": "AED 63,000",
+        "mode": "On-campus"
+      },
+      {
+        "name": "Global MBA",
+        "fee": "AED 87,500",
+        "mode": "Hybrid"
+      }
+    ]
+  },
+  {
+    "institution": "Istituto Marangoni Dubai",
+    "courses": [
+      {
+        "name": "MSc Cybersecurity & Network Systems",
+        "fee": "AED 78,750",
+        "mode": "Hybrid"
+      },
+      {
+        "name": "MSc Finance & Digital Banking",
+        "fee": "AED 82,500",
+        "mode": "Hybrid"
+      },
+      {
+        "name": "BA Digital Design & Creative Media",
+        "fee": "AED 67,500",
+        "mode": "On-campus"
+      }
+    ]
+  },
+  {
+    "institution": "Heriot-Watt University",
+    "courses": [
+      {
+        "name": "MSc Finance & Digital Banking",
+        "fee": "AED 88,000",
+        "mode": "Hybrid"
+      },
+      {
+        "name": "BA Digital Design & Creative Media",
+        "fee": "AED 72,000",
+        "mode": "On-campus"
+      },
+      {
+        "name": "Global MBA",
+        "fee": "AED 100,000",
+        "mode": "Hybrid"
+      },
+      {
+        "name": "MSc Artificial Intelligence & Data Science",
+        "fee": "AED 92,000",
+        "mode": "On-campus"
+      }
+    ]
+  },
+  {
+    "institution": "ESCP Business School",
+    "courses": [
+      {
+        "name": "BA Digital Design & Creative Media",
+        "fee": "AED 76,500",
+        "mode": "On-campus"
+      },
+      {
+        "name": "Global MBA",
+        "fee": "AED 106,250",
+        "mode": "Hybrid"
+      },
+      {
+        "name": "MSc Artificial Intelligence & Data Science",
+        "fee": "AED 97,750",
+        "mode": "On-campus"
+      },
+      {
+        "name": "BSc Computer Science & Software Engineering",
+        "fee": "AED 80,750",
+        "mode": "On-campus"
+      },
+      {
+        "name": "BA Business Management & Marketing",
+        "fee": "AED 72,250",
+        "mode": "Hybrid"
+      }
+    ]
+  },
+  {
+    "institution": "SAE UNIVERSITY COLLEGE",
+    "courses": [
+      {
+        "name": "Global MBA",
+        "fee": "AED 112,500",
+        "mode": "Hybrid"
+      },
+      {
+        "name": "MSc Artificial Intelligence & Data Science",
+        "fee": "AED 103,500",
+        "mode": "On-campus"
+      },
+      {
+        "name": "BSc Computer Science & Software Engineering",
+        "fee": "AED 85,500",
+        "mode": "On-campus"
+      }
+    ]
+  },
+  {
+    "institution": "Middlesex University Dubai",
+    "courses": [
+      {
+        "name": "MSc Artificial Intelligence & Data Science",
+        "fee": "AED 109,250",
+        "mode": "On-campus"
+      },
+      {
+        "name": "BSc Computer Science & Software Engineering",
+        "fee": "AED 90,250",
+        "mode": "On-campus"
+      },
+      {
+        "name": "BA Business Management & Marketing",
+        "fee": "AED 80,750",
+        "mode": "Hybrid"
+      },
+      {
+        "name": "MSc Cybersecurity & Network Systems",
+        "fee": "AED 99,750",
+        "mode": "Hybrid"
+      }
+    ]
+  },
+  {
+    "institution": "Strathclyde Business School UAE",
+    "courses": [
+      {
+        "name": "BSc Computer Science & Software Engineering",
+        "fee": "AED 95,000",
+        "mode": "On-campus"
+      },
+      {
+        "name": "BA Business Management & Marketing",
+        "fee": "AED 85,000",
+        "mode": "Hybrid"
+      },
+      {
+        "name": "MSc Cybersecurity & Network Systems",
+        "fee": "AED 105,000",
+        "mode": "Hybrid"
+      },
+      {
+        "name": "MSc Finance & Digital Banking",
+        "fee": "AED 110,000",
+        "mode": "Hybrid"
+      },
+      {
+        "name": "BA Digital Design & Creative Media",
+        "fee": "AED 90,000",
+        "mode": "On-campus"
+      }
+    ]
+  },
+  {
+    "institution": "EM Normandie Business School",
+    "courses": [
+      {
+        "name": "BA Business Management & Marketing",
+        "fee": "AED 38,250",
+        "mode": "Hybrid"
+      },
+      {
+        "name": "MSc Cybersecurity & Network Systems",
+        "fee": "AED 47,250",
+        "mode": "Hybrid"
+      },
+      {
+        "name": "MSc Finance & Digital Banking",
+        "fee": "AED 49,500",
+        "mode": "Hybrid"
+      }
+    ]
+  },
+  {
+    "institution": "University of Bradford",
+    "courses": [
+      {
+        "name": "MSc Cybersecurity & Network Systems",
+        "fee": "AED 52,500",
+        "mode": "Hybrid"
+      },
+      {
+        "name": "MSc Finance & Digital Banking",
+        "fee": "AED 55,000",
+        "mode": "Hybrid"
+      },
+      {
+        "name": "BA Digital Design & Creative Media",
+        "fee": "AED 45,000",
+        "mode": "On-campus"
+      },
+      {
+        "name": "Global MBA",
+        "fee": "AED 62,500",
+        "mode": "Hybrid"
+      }
+    ]
+  },
+  {
+    "institution": "Symbiosis International University",
+    "courses": [
+      {
+        "name": "MSc Finance & Digital Banking",
+        "fee": "AED 60,500",
+        "mode": "Hybrid"
+      },
+      {
+        "name": "BA Digital Design & Creative Media",
+        "fee": "AED 49,500",
+        "mode": "On-campus"
+      },
+      {
+        "name": "Global MBA",
+        "fee": "AED 68,750",
+        "mode": "Hybrid"
+      },
+      {
+        "name": "MSc Artificial Intelligence & Data Science",
+        "fee": "AED 63,250",
+        "mode": "On-campus"
+      },
+      {
+        "name": "BSc Computer Science & Software Engineering",
+        "fee": "AED 52,250",
+        "mode": "On-campus"
+      }
+    ]
+  },
+  {
+    "institution": "The University of Manchester Worldwide",
+    "courses": [
+      {
+        "name": "BA Digital Design & Creative Media",
+        "fee": "AED 54,000",
+        "mode": "On-campus"
+      },
+      {
+        "name": "Global MBA",
+        "fee": "AED 75,000",
+        "mode": "Hybrid"
+      },
+      {
+        "name": "MSc Artificial Intelligence & Data Science",
+        "fee": "AED 69,000",
+        "mode": "On-campus"
+      }
+    ]
+  },
+  {
+    "institution": "American University in Dubai",
+    "courses": [
+      {
+        "name": "Global MBA",
+        "fee": "AED 81,250",
+        "mode": "Hybrid"
+      },
+      {
+        "name": "MSc Artificial Intelligence & Data Science",
+        "fee": "AED 74,750",
+        "mode": "On-campus"
+      },
+      {
+        "name": "BSc Computer Science & Software Engineering",
+        "fee": "AED 61,750",
+        "mode": "On-campus"
+      },
+      {
+        "name": "BA Business Management & Marketing",
+        "fee": "AED 55,250",
+        "mode": "Hybrid"
+      }
+    ]
+  },
+  {
+    "institution": "Moscow University for Industry and Finance (Synergy)",
+    "courses": [
+      {
+        "name": "MSc Artificial Intelligence & Data Science",
+        "fee": "AED 80,500",
+        "mode": "On-campus"
+      },
+      {
+        "name": "BSc Computer Science & Software Engineering",
+        "fee": "AED 66,500",
+        "mode": "On-campus"
+      },
+      {
+        "name": "BA Business Management & Marketing",
+        "fee": "AED 59,500",
+        "mode": "Hybrid"
+      },
+      {
+        "name": "MSc Cybersecurity & Network Systems",
+        "fee": "AED 73,500",
+        "mode": "Hybrid"
+      },
+      {
+        "name": "MSc Finance & Digital Banking",
+        "fee": "AED 77,000",
+        "mode": "Hybrid"
+      }
+    ]
+  },
+  {
+    "institution": "Plekhanov Russian University of Economics - Dubai",
+    "courses": [
+      {
+        "name": "BSc Computer Science & Software Engineering",
+        "fee": "AED 71,250",
+        "mode": "On-campus"
+      },
+      {
+        "name": "BA Business Management & Marketing",
+        "fee": "AED 63,750",
+        "mode": "Hybrid"
+      },
+      {
+        "name": "MSc Cybersecurity & Network Systems",
+        "fee": "AED 78,750",
+        "mode": "Hybrid"
+      }
+    ]
+  },
+  {
+    "institution": "Rochester Institute of Technology- Dubai",
+    "courses": [
+      {
+        "name": "BA Business Management & Marketing",
+        "fee": "AED 68,000",
+        "mode": "Hybrid"
+      },
+      {
+        "name": "MSc Cybersecurity & Network Systems",
+        "fee": "AED 84,000",
+        "mode": "Hybrid"
+      },
+      {
+        "name": "MSc Finance & Digital Banking",
+        "fee": "AED 88,000",
+        "mode": "Hybrid"
+      },
+      {
+        "name": "BA Digital Design & Creative Media",
+        "fee": "AED 72,000",
+        "mode": "On-campus"
+      }
+    ]
+  },
+  {
+    "institution": "Abu Dhabi University",
+    "courses": [
+      {
+        "name": "MSc Cybersecurity & Network Systems",
+        "fee": "AED 89,250",
+        "mode": "Hybrid"
+      },
+      {
+        "name": "MSc Finance & Digital Banking",
+        "fee": "AED 93,500",
+        "mode": "Hybrid"
+      },
+      {
+        "name": "BA Digital Design & Creative Media",
+        "fee": "AED 76,500",
+        "mode": "On-campus"
+      },
+      {
+        "name": "Global MBA",
+        "fee": "AED 106,250",
+        "mode": "Hybrid"
+      },
+      {
+        "name": "MSc Artificial Intelligence & Data Science",
+        "fee": "AED 97,750",
+        "mode": "On-campus"
+      }
+    ]
+  },
+  {
+    "institution": "LUISS Libera Universita Internazionale degli Studi Sociali Guido Carli (DWTCA Branch)",
+    "courses": [
+      {
+        "name": "MSc Finance & Digital Banking",
+        "fee": "AED 99,000",
+        "mode": "Hybrid"
+      },
+      {
+        "name": "BA Digital Design & Creative Media",
+        "fee": "AED 81,000",
+        "mode": "On-campus"
+      },
+      {
+        "name": "Global MBA",
+        "fee": "AED 112,500",
+        "mode": "Hybrid"
+      }
+    ]
+  },
+  {
+    "institution": "University of Europe for Applied Sciences",
+    "courses": [
+      {
+        "name": "BA Digital Design & Creative Media",
+        "fee": "AED 85,500",
+        "mode": "On-campus"
+      },
+      {
+        "name": "Global MBA",
+        "fee": "AED 118,750",
+        "mode": "Hybrid"
+      },
+      {
+        "name": "MSc Artificial Intelligence & Data Science",
+        "fee": "AED 109,250",
+        "mode": "On-campus"
+      },
+      {
+        "name": "BSc Computer Science & Software Engineering",
+        "fee": "AED 90,250",
+        "mode": "On-campus"
+      }
+    ]
+  },
+  {
+    "institution": "Georgetown University Dubai",
+    "courses": [
+      {
+        "name": "Global MBA",
+        "fee": "AED 125,000",
+        "mode": "Hybrid"
+      },
+      {
+        "name": "MSc Artificial Intelligence & Data Science",
+        "fee": "AED 115,000",
+        "mode": "On-campus"
+      },
+      {
+        "name": "BSc Computer Science & Software Engineering",
+        "fee": "AED 95,000",
+        "mode": "On-campus"
+      },
+      {
+        "name": "BA Business Management & Marketing",
+        "fee": "AED 85,000",
+        "mode": "Hybrid"
+      },
+      {
+        "name": "MSc Cybersecurity & Network Systems",
+        "fee": "AED 105,000",
+        "mode": "Hybrid"
+      }
+    ]
+  },
+  {
+    "institution": "University of Wollongong in Dubai",
+    "courses": [
+      {
+        "name": "MSc Artificial Intelligence & Data Science",
+        "fee": "AED 51,750",
+        "mode": "On-campus"
+      },
+      {
+        "name": "BSc Computer Science & Software Engineering",
+        "fee": "AED 42,750",
+        "mode": "On-campus"
+      },
+      {
+        "name": "BA Business Management & Marketing",
+        "fee": "AED 38,250",
+        "mode": "Hybrid"
+      }
+    ]
+  },
+  {
+    "institution": "Dubai Institute of Design and Innovation",
+    "courses": [
+      {
+        "name": "BSc Computer Science & Software Engineering",
+        "fee": "AED 47,500",
+        "mode": "On-campus"
+      },
+      {
+        "name": "BA Business Management & Marketing",
+        "fee": "AED 42,500",
+        "mode": "Hybrid"
+      },
+      {
+        "name": "MSc Cybersecurity & Network Systems",
+        "fee": "AED 52,500",
+        "mode": "Hybrid"
+      },
+      {
+        "name": "MSc Finance & Digital Banking",
+        "fee": "AED 55,000",
+        "mode": "Hybrid"
+      }
+    ]
+  },
+  {
+    "institution": "Hult International Business School",
+    "courses": [
+      {
+        "name": "BA Business Management & Marketing",
+        "fee": "AED 46,750",
+        "mode": "Hybrid"
+      },
+      {
+        "name": "MSc Cybersecurity & Network Systems",
+        "fee": "AED 57,750",
+        "mode": "Hybrid"
+      },
+      {
+        "name": "MSc Finance & Digital Banking",
+        "fee": "AED 60,500",
+        "mode": "Hybrid"
+      },
+      {
+        "name": "BA Digital Design & Creative Media",
+        "fee": "AED 49,500",
+        "mode": "On-campus"
+      },
+      {
+        "name": "Global MBA",
+        "fee": "AED 68,750",
+        "mode": "Hybrid"
+      }
+    ]
+  }
+]

@@ -1,0 +1,1987 @@
+export { mockQuestions } from './data/mockQuestions.js';
+
+export const mockInstitutions = [
+  {
+    "id": "amity-university-dubai",
+    "name": "Amity University Dubai",
+    "type": "University",
+    "location": "Academic City, Dubai, UAE",
+    "reputation": "4.0 / 5",
+    "satisfaction": "82%",
+    "practicality": "80%",
+    "recognition": "KHDA Approved Higher Education (Est. 2011)",
+    "fee": "AED 45,000 – AED 60,000 per year",
+    "feeNum": 45000.0,
+    "duration": "1 - 2 Years",
+    "mode": "On-campus / Hybrid",
+    "tagline": "Undergraduate and Postgraduate Career Building Paths",
+    "about": "Amity University Dubai is an approved higher education institution situated in Academic City, Dubai. Operating under KHDA supervision since 2011, it offers rich, accredited program paths, maintaining a high-fidelity 4 star rating in global performance frameworks.",
+    "courses": [
+      {
+        "name": "Global MBA",
+        "duration": "12-18 months",
+        "mode": "Hybrid",
+        "fee": "AED 56,250"
+      },
+      {
+        "name": "MSc Artificial Intelligence & Data Science",
+        "duration": "12 months",
+        "mode": "On-campus",
+        "fee": "AED 51,750"
+      },
+      {
+        "name": "BSc Computer Science & Software Engineering",
+        "duration": "36 months",
+        "mode": "On-campus",
+        "fee": "AED 42,750"
+      }
+    ],
+    "whySuit": [
+      "KHDA Licensed Higher Education Provider",
+      "Established in 2011 with specialized branches",
+      "Located at primary campus area: Academic City",
+      "Academic Quality Rating: 4 Stars"
+    ]
+  },
+  {
+    "id": "murdoch-university-dubai",
+    "name": "Murdoch University, Dubai",
+    "type": "University",
+    "location": "Academic City, Dubai, UAE",
+    "reputation": "5.0 / 5",
+    "satisfaction": "100%",
+    "practicality": "97%",
+    "recognition": "KHDA Approved Higher Education (Est. 2008)",
+    "fee": "AED 50,000 – AED 70,000 per year",
+    "feeNum": 50000.0,
+    "duration": "1 - 2 Years",
+    "mode": "On-campus / Hybrid",
+    "tagline": "Undergraduate and Postgraduate Career Building Paths",
+    "about": "Murdoch University, Dubai is an approved higher education institution situated in Academic City, Dubai. Operating under KHDA supervision since 2008, it offers rich, accredited program paths, maintaining a high-fidelity 5 star rating in global performance frameworks.",
+    "courses": [
+      {
+        "name": "MSc Artificial Intelligence & Data Science",
+        "duration": "12 months",
+        "mode": "On-campus",
+        "fee": "AED 57,500"
+      },
+      {
+        "name": "BSc Computer Science & Software Engineering",
+        "duration": "36 months",
+        "mode": "On-campus",
+        "fee": "AED 47,500"
+      },
+      {
+        "name": "BA Business Management & Marketing",
+        "duration": "36 months",
+        "mode": "Hybrid",
+        "fee": "AED 42,500"
+      },
+      {
+        "name": "MSc Cybersecurity & Network Systems",
+        "duration": "12 months",
+        "mode": "Hybrid",
+        "fee": "AED 52,500"
+      }
+    ],
+    "whySuit": [
+      "KHDA Licensed Higher Education Provider",
+      "Established in 2008 with specialized branches",
+      "Located at primary campus area: Academic City",
+      "Academic Quality Rating: 5 Stars"
+    ]
+  },
+  {
+    "id": "saint-joseph-university-dubai",
+    "name": "Saint Joseph University Dubai",
+    "type": "University",
+    "location": "Academic City, Dubai, UAE",
+    "reputation": "4.0 / 5",
+    "satisfaction": "82%",
+    "practicality": "80%",
+    "recognition": "KHDA Approved Higher Education (Est. 2008)",
+    "fee": "AED 55,000 – AED 80,000 per year",
+    "feeNum": 55000.0,
+    "duration": "1 - 2 Years",
+    "mode": "On-campus / Hybrid",
+    "tagline": "Undergraduate and Postgraduate Career Building Paths",
+    "about": "Saint Joseph University Dubai is an approved higher education institution situated in Academic City, Dubai. Operating under KHDA supervision since 2008, it offers rich, accredited program paths, maintaining a high-fidelity 4 star rating in global performance frameworks.",
+    "courses": [
+      {
+        "name": "BSc Computer Science & Software Engineering",
+        "duration": "36 months",
+        "mode": "On-campus",
+        "fee": "AED 52,250"
+      },
+      {
+        "name": "BA Business Management & Marketing",
+        "duration": "36 months",
+        "mode": "Hybrid",
+        "fee": "AED 46,750"
+      },
+      {
+        "name": "MSc Cybersecurity & Network Systems",
+        "duration": "12 months",
+        "mode": "Hybrid",
+        "fee": "AED 57,750"
+      },
+      {
+        "name": "MSc Finance & Digital Banking",
+        "duration": "12 months",
+        "mode": "Hybrid",
+        "fee": "AED 60,500"
+      },
+      {
+        "name": "BA Digital Design & Creative Media",
+        "duration": "36 months",
+        "mode": "On-campus",
+        "fee": "AED 49,500"
+      }
+    ],
+    "whySuit": [
+      "KHDA Licensed Higher Education Provider",
+      "Established in 2008 with specialized branches",
+      "Located at primary campus area: Academic City",
+      "Academic Quality Rating: 4 Stars"
+    ]
+  },
+  {
+    "id": "s-p-jain-school-of-global-management",
+    "name": "S P Jain School of Global Management",
+    "type": "University",
+    "location": "Academic City, Dubai, UAE",
+    "reputation": "4.0 / 5",
+    "satisfaction": "82%",
+    "practicality": "80%",
+    "recognition": "KHDA Approved Higher Education (Est. 2004)",
+    "fee": "AED 60,000 – AED 90,000 per year",
+    "feeNum": 60000.0,
+    "duration": "1 - 2 Years",
+    "mode": "On-campus / Hybrid",
+    "tagline": "Undergraduate and Postgraduate Career Building Paths",
+    "about": "S P Jain School of Global Management is an approved higher education institution situated in Academic City, Dubai. Operating under KHDA supervision since 2004, it offers rich, accredited program paths, maintaining a high-fidelity 4 star rating in global performance frameworks.",
+    "courses": [
+      {
+        "name": "BA Business Management & Marketing",
+        "duration": "36 months",
+        "mode": "Hybrid",
+        "fee": "AED 51,000"
+      },
+      {
+        "name": "MSc Cybersecurity & Network Systems",
+        "duration": "12 months",
+        "mode": "Hybrid",
+        "fee": "AED 63,000"
+      },
+      {
+        "name": "MSc Finance & Digital Banking",
+        "duration": "12 months",
+        "mode": "Hybrid",
+        "fee": "AED 66,000"
+      }
+    ],
+    "whySuit": [
+      "KHDA Licensed Higher Education Provider",
+      "Established in 2004 with specialized branches",
+      "Located at primary campus area: Academic City",
+      "Academic Quality Rating: 4 Stars"
+    ]
+  },
+  {
+    "id": "shaheed-zulfikar-ali-bhutto-institute-of-science-and-technology",
+    "name": "Shaheed Zulfikar Ali Bhutto Institute of Science and Technology",
+    "type": "University",
+    "location": "Academic City, Dubai, UAE",
+    "reputation": "2.0 / 5",
+    "satisfaction": "46%",
+    "practicality": "46%",
+    "recognition": "KHDA Approved Higher Education (Est. 2003)",
+    "fee": "AED 65,000 – AED 100,000 per year",
+    "feeNum": 65000.0,
+    "duration": "1 - 2 Years",
+    "mode": "On-campus / Hybrid",
+    "tagline": "Undergraduate and Postgraduate Career Building Paths",
+    "about": "Shaheed Zulfikar Ali Bhutto Institute of Science and Technology is an approved higher education institution situated in Academic City, Dubai. Operating under KHDA supervision since 2003, it offers rich, accredited program paths, maintaining a high-fidelity 2 star rating in global performance frameworks.",
+    "courses": [
+      {
+        "name": "MSc Cybersecurity & Network Systems",
+        "duration": "12 months",
+        "mode": "Hybrid",
+        "fee": "AED 68,250"
+      },
+      {
+        "name": "MSc Finance & Digital Banking",
+        "duration": "12 months",
+        "mode": "Hybrid",
+        "fee": "AED 71,500"
+      },
+      {
+        "name": "BA Digital Design & Creative Media",
+        "duration": "36 months",
+        "mode": "On-campus",
+        "fee": "AED 58,500"
+      },
+      {
+        "name": "Global MBA",
+        "duration": "12-18 months",
+        "mode": "Hybrid",
+        "fee": "AED 81,250"
+      }
+    ],
+    "whySuit": [
+      "KHDA Licensed Higher Education Provider",
+      "Established in 2003 with specialized branches",
+      "Located at primary campus area: Academic City",
+      "Academic Quality Rating: 2 Stars"
+    ]
+  },
+  {
+    "id": "university-of-birmingham-dubai",
+    "name": "University of Birmingham Dubai",
+    "type": "University",
+    "location": "Academic City, Dubai, UAE",
+    "reputation": "4.3 / 5",
+    "satisfaction": "87%",
+    "practicality": "85%",
+    "recognition": "KHDA Approved Higher Education (Est. 2018)",
+    "fee": "AED 70,000 – AED 110,000 per year",
+    "feeNum": 70000.0,
+    "duration": "1 - 2 Years",
+    "mode": "On-campus / Hybrid",
+    "tagline": "Undergraduate and Postgraduate Career Building Paths",
+    "about": "University of Birmingham Dubai is an approved higher education institution situated in Academic City, Dubai. Operating under KHDA supervision since 2018, it offers rich, accredited program paths, maintaining a high-fidelity 4.3 star rating in global performance frameworks.",
+    "courses": [
+      {
+        "name": "MSc Finance & Digital Banking",
+        "duration": "12 months",
+        "mode": "Hybrid",
+        "fee": "AED 77,000"
+      },
+      {
+        "name": "BA Digital Design & Creative Media",
+        "duration": "36 months",
+        "mode": "On-campus",
+        "fee": "AED 63,000"
+      },
+      {
+        "name": "Global MBA",
+        "duration": "12-18 months",
+        "mode": "Hybrid",
+        "fee": "AED 87,500"
+      },
+      {
+        "name": "MSc Artificial Intelligence & Data Science",
+        "duration": "12 months",
+        "mode": "On-campus",
+        "fee": "AED 80,500"
+      },
+      {
+        "name": "BSc Computer Science & Software Engineering",
+        "duration": "36 months",
+        "mode": "On-campus",
+        "fee": "AED 66,500"
+      }
+    ],
+    "whySuit": [
+      "KHDA Licensed Higher Education Provider",
+      "Established in 2018 with specialized branches",
+      "Located at primary campus area: Academic City",
+      "Academic Quality Rating: 4.3 Stars"
+    ]
+  },
+  {
+    "id": "institute-of-management-technology-dubai",
+    "name": "Institute of Management Technology - Dubai",
+    "type": "University",
+    "location": "Academic City, Dubai, UAE",
+    "reputation": "4.4 / 5",
+    "satisfaction": "89%",
+    "practicality": "86%",
+    "recognition": "KHDA Approved Higher Education (Est. 2006)",
+    "fee": "AED 75,000 – AED 90,000 per year",
+    "feeNum": 75000.0,
+    "duration": "1 - 2 Years",
+    "mode": "On-campus / Hybrid",
+    "tagline": "Undergraduate and Postgraduate Career Building Paths",
+    "about": "Institute of Management Technology - Dubai is an approved higher education institution situated in Academic City, Dubai. Operating under KHDA supervision since 2006, it offers rich, accredited program paths, maintaining a high-fidelity 4.4 star rating in global performance frameworks.",
+    "courses": [
+      {
+        "name": "BA Digital Design & Creative Media",
+        "duration": "36 months",
+        "mode": "On-campus",
+        "fee": "AED 67,500"
+      },
+      {
+        "name": "Global MBA",
+        "duration": "12-18 months",
+        "mode": "Hybrid",
+        "fee": "AED 93,750"
+      },
+      {
+        "name": "MSc Artificial Intelligence & Data Science",
+        "duration": "12 months",
+        "mode": "On-campus",
+        "fee": "AED 86,250"
+      }
+    ],
+    "whySuit": [
+      "KHDA Licensed Higher Education Provider",
+      "Established in 2006 with specialized branches",
+      "Located at primary campus area: Academic City",
+      "Academic Quality Rating: 4.4 Stars"
+    ]
+  },
+  {
+    "id": "birla-institute-of-technology-and-science-pilani-bits-pilani-dubai-campus",
+    "name": "Birla Institute of Technology and Science Pilani (Bits Pilani) Dubai Campus",
+    "type": "University",
+    "location": "Academic City, Dubai, UAE",
+    "reputation": "5.0 / 5",
+    "satisfaction": "100%",
+    "practicality": "97%",
+    "recognition": "KHDA Approved Higher Education (Est. 2003)",
+    "fee": "AED 80,000 – AED 100,000 per year",
+    "feeNum": 80000.0,
+    "duration": "1 - 2 Years",
+    "mode": "On-campus / Hybrid",
+    "tagline": "Undergraduate and Postgraduate Career Building Paths",
+    "about": "Birla Institute of Technology and Science Pilani (Bits Pilani) Dubai Campus is an approved higher education institution situated in Academic City, Dubai. Operating under KHDA supervision since 2003, it offers rich, accredited program paths, maintaining a high-fidelity 5 star rating in global performance frameworks.",
+    "courses": [
+      {
+        "name": "Global MBA",
+        "duration": "12-18 months",
+        "mode": "Hybrid",
+        "fee": "AED 100,000"
+      },
+      {
+        "name": "MSc Artificial Intelligence & Data Science",
+        "duration": "12 months",
+        "mode": "On-campus",
+        "fee": "AED 92,000"
+      },
+      {
+        "name": "BSc Computer Science & Software Engineering",
+        "duration": "36 months",
+        "mode": "On-campus",
+        "fee": "AED 76,000"
+      },
+      {
+        "name": "BA Business Management & Marketing",
+        "duration": "36 months",
+        "mode": "Hybrid",
+        "fee": "AED 68,000"
+      }
+    ],
+    "whySuit": [
+      "KHDA Licensed Higher Education Provider",
+      "Established in 2003 with specialized branches",
+      "Located at primary campus area: Academic City",
+      "Academic Quality Rating: 5 Stars"
+    ]
+  },
+  {
+    "id": "esmod-french-fashion-institute",
+    "name": "ESMOD French Fashion Institute",
+    "type": "University",
+    "location": "Academic City, Dubai, UAE",
+    "reputation": "4.0 / 5",
+    "satisfaction": "82%",
+    "practicality": "80%",
+    "recognition": "KHDA Approved Higher Education (Est. 2007)",
+    "fee": "AED 85,000 – AED 110,000 per year",
+    "feeNum": 85000.0,
+    "duration": "1 - 2 Years",
+    "mode": "On-campus / Hybrid",
+    "tagline": "Undergraduate and Postgraduate Career Building Paths",
+    "about": "ESMOD French Fashion Institute is an approved higher education institution situated in Academic City, Dubai. Operating under KHDA supervision since 2007, it offers rich, accredited program paths, maintaining a high-fidelity 4 star rating in global performance frameworks.",
+    "courses": [
+      {
+        "name": "MSc Artificial Intelligence & Data Science",
+        "duration": "12 months",
+        "mode": "On-campus",
+        "fee": "AED 97,750"
+      },
+      {
+        "name": "BSc Computer Science & Software Engineering",
+        "duration": "36 months",
+        "mode": "On-campus",
+        "fee": "AED 80,750"
+      },
+      {
+        "name": "BA Business Management & Marketing",
+        "duration": "36 months",
+        "mode": "Hybrid",
+        "fee": "AED 72,250"
+      },
+      {
+        "name": "MSc Cybersecurity & Network Systems",
+        "duration": "12 months",
+        "mode": "Hybrid",
+        "fee": "AED 89,250"
+      },
+      {
+        "name": "MSc Finance & Digital Banking",
+        "duration": "12 months",
+        "mode": "Hybrid",
+        "fee": "AED 93,500"
+      }
+    ],
+    "whySuit": [
+      "KHDA Licensed Higher Education Provider",
+      "Established in 2007 with specialized branches",
+      "Located at primary campus area: Academic City",
+      "Academic Quality Rating: 4 Stars"
+    ]
+  },
+  {
+    "id": "curtin-university",
+    "name": "Curtin University",
+    "type": "University",
+    "location": "Academic City, Dubai, UAE",
+    "reputation": "5.0 / 5",
+    "satisfaction": "100%",
+    "practicality": "97%",
+    "recognition": "KHDA Approved Higher Education (Est. 2017)",
+    "fee": "AED 90,000 – AED 120,000 per year",
+    "feeNum": 90000.0,
+    "duration": "1 - 2 Years",
+    "mode": "On-campus / Hybrid",
+    "tagline": "Undergraduate and Postgraduate Career Building Paths",
+    "about": "Curtin University is an approved higher education institution situated in Academic City, Dubai. Operating under KHDA supervision since 2017, it offers rich, accredited program paths, maintaining a high-fidelity 5 star rating in global performance frameworks.",
+    "courses": [
+      {
+        "name": "BSc Computer Science & Software Engineering",
+        "duration": "36 months",
+        "mode": "On-campus",
+        "fee": "AED 85,500"
+      },
+      {
+        "name": "BA Business Management & Marketing",
+        "duration": "36 months",
+        "mode": "Hybrid",
+        "fee": "AED 76,500"
+      },
+      {
+        "name": "MSc Cybersecurity & Network Systems",
+        "duration": "12 months",
+        "mode": "Hybrid",
+        "fee": "AED 94,500"
+      }
+    ],
+    "whySuit": [
+      "KHDA Licensed Higher Education Provider",
+      "Established in 2017 with specialized branches",
+      "Located at primary campus area: Academic City",
+      "Academic Quality Rating: 5 Stars"
+    ]
+  },
+  {
+    "id": "british-university-in-dubai",
+    "name": "British University in Dubai",
+    "type": "University",
+    "location": "Academic City, Dubai, UAE",
+    "reputation": "4.8 / 5",
+    "satisfaction": "96%",
+    "practicality": "93%",
+    "recognition": "KHDA Approved Higher Education (Est. 2004)",
+    "fee": "AED 95,000 – AED 130,000 per year",
+    "feeNum": 95000.0,
+    "duration": "1 - 2 Years",
+    "mode": "On-campus / Hybrid",
+    "tagline": "Undergraduate and Postgraduate Career Building Paths",
+    "about": "British University in Dubai is an approved higher education institution situated in Academic City, Dubai. Operating under KHDA supervision since 2004, it offers rich, accredited program paths, maintaining a high-fidelity 4.8 star rating in global performance frameworks.",
+    "courses": [
+      {
+        "name": "BA Business Management & Marketing",
+        "duration": "36 months",
+        "mode": "Hybrid",
+        "fee": "AED 80,750"
+      },
+      {
+        "name": "MSc Cybersecurity & Network Systems",
+        "duration": "12 months",
+        "mode": "Hybrid",
+        "fee": "AED 99,750"
+      },
+      {
+        "name": "MSc Finance & Digital Banking",
+        "duration": "12 months",
+        "mode": "Hybrid",
+        "fee": "AED 104,500"
+      },
+      {
+        "name": "BA Digital Design & Creative Media",
+        "duration": "36 months",
+        "mode": "On-campus",
+        "fee": "AED 85,500"
+      }
+    ],
+    "whySuit": [
+      "KHDA Licensed Higher Education Provider",
+      "Established in 2004 with specialized branches",
+      "Located at primary campus area: Academic City",
+      "Academic Quality Rating: 4.8 Stars"
+    ]
+  },
+  {
+    "id": "manipal-academy-of-higher-education",
+    "name": "Manipal Academy of Higher Education",
+    "type": "University",
+    "location": "Academic City, Dubai, UAE",
+    "reputation": "5.0 / 5",
+    "satisfaction": "100%",
+    "practicality": "97%",
+    "recognition": "KHDA Approved Higher Education (Est. 2003)",
+    "fee": "AED 100,000 – AED 140,000 per year",
+    "feeNum": 100000.0,
+    "duration": "1 - 2 Years",
+    "mode": "On-campus / Hybrid",
+    "tagline": "Undergraduate and Postgraduate Career Building Paths",
+    "about": "Manipal Academy of Higher Education is an approved higher education institution situated in Academic City, Dubai. Operating under KHDA supervision since 2003, it offers rich, accredited program paths, maintaining a high-fidelity 5 star rating in global performance frameworks.",
+    "courses": [
+      {
+        "name": "MSc Cybersecurity & Network Systems",
+        "duration": "12 months",
+        "mode": "Hybrid",
+        "fee": "AED 105,000"
+      },
+      {
+        "name": "MSc Finance & Digital Banking",
+        "duration": "12 months",
+        "mode": "Hybrid",
+        "fee": "AED 110,000"
+      },
+      {
+        "name": "BA Digital Design & Creative Media",
+        "duration": "36 months",
+        "mode": "On-campus",
+        "fee": "AED 90,000"
+      },
+      {
+        "name": "Global MBA",
+        "duration": "12-18 months",
+        "mode": "Hybrid",
+        "fee": "AED 125,000"
+      },
+      {
+        "name": "MSc Artificial Intelligence & Data Science",
+        "duration": "12 months",
+        "mode": "On-campus",
+        "fee": "AED 115,000"
+      }
+    ],
+    "whySuit": [
+      "KHDA Licensed Higher Education Provider",
+      "Established in 2003 with specialized branches",
+      "Located at primary campus area: Academic City",
+      "Academic Quality Rating: 5 Stars"
+    ]
+  },
+  {
+    "id": "emirates-aviation-university-institute-of-applied-research-technology",
+    "name": "Emirates Aviation University - Institute of Applied Research & Technology",
+    "type": "University",
+    "location": "AL ROWAIYAH FIRST, Dubai, UAE",
+    "reputation": "3.8 / 5",
+    "satisfaction": "78%",
+    "practicality": "76%",
+    "recognition": "KHDA Approved Higher Education (Est. 1991)",
+    "fee": "AED 45,000 – AED 60,000 per year",
+    "feeNum": 45000.0,
+    "duration": "1 - 2 Years",
+    "mode": "On-campus / Hybrid",
+    "tagline": "Undergraduate and Postgraduate Career Building Paths",
+    "about": "Emirates Aviation University - Institute of Applied Research & Technology is an approved higher education institution situated in AL ROWAIYAH FIRST, Dubai. Operating under KHDA supervision since 1991, it offers rich, accredited program paths, maintaining a high-fidelity 3.8 star rating in global performance frameworks.",
+    "courses": [
+      {
+        "name": "MSc Finance & Digital Banking",
+        "duration": "12 months",
+        "mode": "Hybrid",
+        "fee": "AED 49,500"
+      },
+      {
+        "name": "BA Digital Design & Creative Media",
+        "duration": "36 months",
+        "mode": "On-campus",
+        "fee": "AED 40,500"
+      },
+      {
+        "name": "Global MBA",
+        "duration": "12-18 months",
+        "mode": "Hybrid",
+        "fee": "AED 56,250"
+      }
+    ],
+    "whySuit": [
+      "KHDA Licensed Higher Education Provider",
+      "Established in 1991 with specialized branches",
+      "Located at primary campus area: AL ROWAIYAH FIRST",
+      "Academic Quality Rating: 3.8 Stars"
+    ]
+  },
+  {
+    "id": "university-paris-ii-panth-on-assas",
+    "name": "University Paris II Panthéon-Assas",
+    "type": "University",
+    "location": "DIFC, Dubai, UAE",
+    "reputation": "3.0 / 5",
+    "satisfaction": "64%",
+    "practicality": "63%",
+    "recognition": "KHDA Approved Higher Education (Est. 2019)",
+    "fee": "AED 50,000 – AED 70,000 per year",
+    "feeNum": 50000.0,
+    "duration": "1 - 2 Years",
+    "mode": "On-campus / Hybrid",
+    "tagline": "Undergraduate and Postgraduate Career Building Paths",
+    "about": "University Paris II Panthéon-Assas is an approved higher education institution situated in DIFC, Dubai. Operating under KHDA supervision since 2019, it offers rich, accredited program paths, maintaining a high-fidelity 3 star rating in global performance frameworks.",
+    "courses": [
+      {
+        "name": "BA Digital Design & Creative Media",
+        "duration": "36 months",
+        "mode": "On-campus",
+        "fee": "AED 45,000"
+      },
+      {
+        "name": "Global MBA",
+        "duration": "12-18 months",
+        "mode": "Hybrid",
+        "fee": "AED 62,500"
+      },
+      {
+        "name": "MSc Artificial Intelligence & Data Science",
+        "duration": "12 months",
+        "mode": "On-campus",
+        "fee": "AED 57,500"
+      },
+      {
+        "name": "BSc Computer Science & Software Engineering",
+        "duration": "36 months",
+        "mode": "On-campus",
+        "fee": "AED 47,500"
+      }
+    ],
+    "whySuit": [
+      "KHDA Licensed Higher Education Provider",
+      "Established in 2019 with specialized branches",
+      "Located at primary campus area: DIFC",
+      "Academic Quality Rating: 3 Stars"
+    ]
+  },
+  {
+    "id": "american-university-in-the-emirates",
+    "name": "American University in the Emirates",
+    "type": "University",
+    "location": "Academic City, Dubai, UAE",
+    "reputation": "4.0 / 5",
+    "satisfaction": "82%",
+    "practicality": "80%",
+    "recognition": "KHDA Approved Higher Education (Est. 2025)",
+    "fee": "AED 55,000 – AED 80,000 per year",
+    "feeNum": 55000.0,
+    "duration": "1 - 2 Years",
+    "mode": "On-campus / Hybrid",
+    "tagline": "Undergraduate and Postgraduate Career Building Paths",
+    "about": "American University in the Emirates is an approved higher education institution situated in Academic City, Dubai. Operating under KHDA supervision since 2025, it offers rich, accredited program paths, maintaining a high-fidelity 4 star rating in global performance frameworks.",
+    "courses": [
+      {
+        "name": "Global MBA",
+        "duration": "12-18 months",
+        "mode": "Hybrid",
+        "fee": "AED 68,750"
+      },
+      {
+        "name": "MSc Artificial Intelligence & Data Science",
+        "duration": "12 months",
+        "mode": "On-campus",
+        "fee": "AED 63,250"
+      },
+      {
+        "name": "BSc Computer Science & Software Engineering",
+        "duration": "36 months",
+        "mode": "On-campus",
+        "fee": "AED 52,250"
+      },
+      {
+        "name": "BA Business Management & Marketing",
+        "duration": "36 months",
+        "mode": "Hybrid",
+        "fee": "AED 46,750"
+      },
+      {
+        "name": "MSc Cybersecurity & Network Systems",
+        "duration": "12 months",
+        "mode": "Hybrid",
+        "fee": "AED 57,750"
+      }
+    ],
+    "whySuit": [
+      "KHDA Licensed Higher Education Provider",
+      "Established in 2025 with specialized branches",
+      "Located at primary campus area: Academic City",
+      "Academic Quality Rating: 4 Stars"
+    ]
+  },
+  {
+    "id": "skema-business-school",
+    "name": "SKEMA BUSINESS SCHOOL",
+    "type": "University",
+    "location": "DIFC, Dubai, UAE",
+    "reputation": "4.1 / 5",
+    "satisfaction": "83%",
+    "practicality": "81%",
+    "recognition": "KHDA Approved Higher Education (Est. 2024)",
+    "fee": "AED 60,000 – AED 90,000 per year",
+    "feeNum": 60000.0,
+    "duration": "1 - 2 Years",
+    "mode": "On-campus / Hybrid",
+    "tagline": "Undergraduate and Postgraduate Career Building Paths",
+    "about": "SKEMA BUSINESS SCHOOL is an approved higher education institution situated in DIFC, Dubai. Operating under KHDA supervision since 2024, it offers rich, accredited program paths, maintaining a high-fidelity 4.1 star rating in global performance frameworks.",
+    "courses": [
+      {
+        "name": "MSc Artificial Intelligence & Data Science",
+        "duration": "12 months",
+        "mode": "On-campus",
+        "fee": "AED 69,000"
+      },
+      {
+        "name": "BSc Computer Science & Software Engineering",
+        "duration": "36 months",
+        "mode": "On-campus",
+        "fee": "AED 57,000"
+      },
+      {
+        "name": "BA Business Management & Marketing",
+        "duration": "36 months",
+        "mode": "Hybrid",
+        "fee": "AED 51,000"
+      }
+    ],
+    "whySuit": [
+      "KHDA Licensed Higher Education Provider",
+      "Established in 2024 with specialized branches",
+      "Located at primary campus area: DIFC",
+      "Academic Quality Rating: 4.1 Stars"
+    ]
+  },
+  {
+    "id": "london-business-school",
+    "name": "London Business School",
+    "type": "University",
+    "location": "DIFC, Dubai, UAE",
+    "reputation": "5.0 / 5",
+    "satisfaction": "100%",
+    "practicality": "97%",
+    "recognition": "KHDA Approved Higher Education (Est. 2006)",
+    "fee": "AED 65,000 – AED 100,000 per year",
+    "feeNum": 65000.0,
+    "duration": "1 - 2 Years",
+    "mode": "On-campus / Hybrid",
+    "tagline": "Undergraduate and Postgraduate Career Building Paths",
+    "about": "London Business School is an approved higher education institution situated in DIFC, Dubai. Operating under KHDA supervision since 2006, it offers rich, accredited program paths, maintaining a high-fidelity 5 star rating in global performance frameworks.",
+    "courses": [
+      {
+        "name": "BSc Computer Science & Software Engineering",
+        "duration": "36 months",
+        "mode": "On-campus",
+        "fee": "AED 61,750"
+      },
+      {
+        "name": "BA Business Management & Marketing",
+        "duration": "36 months",
+        "mode": "Hybrid",
+        "fee": "AED 55,250"
+      },
+      {
+        "name": "MSc Cybersecurity & Network Systems",
+        "duration": "12 months",
+        "mode": "Hybrid",
+        "fee": "AED 68,250"
+      },
+      {
+        "name": "MSc Finance & Digital Banking",
+        "duration": "12 months",
+        "mode": "Hybrid",
+        "fee": "AED 71,500"
+      }
+    ],
+    "whySuit": [
+      "KHDA Licensed Higher Education Provider",
+      "Established in 2006 with specialized branches",
+      "Located at primary campus area: DIFC",
+      "Academic Quality Rating: 5 Stars"
+    ]
+  },
+  {
+    "id": "de-montfort-university",
+    "name": "De Montfort University",
+    "type": "University",
+    "location": "Dubai Internet City, UAE",
+    "reputation": "4.3 / 5",
+    "satisfaction": "87%",
+    "practicality": "85%",
+    "recognition": "KHDA Approved Higher Education (Est. 2021)",
+    "fee": "AED 70,000 – AED 110,000 per year",
+    "feeNum": 70000.0,
+    "duration": "1 - 2 Years",
+    "mode": "On-campus / Hybrid",
+    "tagline": "Undergraduate and Postgraduate Career Building Paths",
+    "about": "De Montfort University is an approved higher education institution situated in Dubai Internet City, Dubai. Operating under KHDA supervision since 2021, it offers rich, accredited program paths, maintaining a high-fidelity 4.3 star rating in global performance frameworks.",
+    "courses": [
+      {
+        "name": "BA Business Management & Marketing",
+        "duration": "36 months",
+        "mode": "Hybrid",
+        "fee": "AED 59,500"
+      },
+      {
+        "name": "MSc Cybersecurity & Network Systems",
+        "duration": "12 months",
+        "mode": "Hybrid",
+        "fee": "AED 73,500"
+      },
+      {
+        "name": "MSc Finance & Digital Banking",
+        "duration": "12 months",
+        "mode": "Hybrid",
+        "fee": "AED 77,000"
+      },
+      {
+        "name": "BA Digital Design & Creative Media",
+        "duration": "36 months",
+        "mode": "On-campus",
+        "fee": "AED 63,000"
+      },
+      {
+        "name": "Global MBA",
+        "duration": "12-18 months",
+        "mode": "Hybrid",
+        "fee": "AED 87,500"
+      }
+    ],
+    "whySuit": [
+      "KHDA Licensed Higher Education Provider",
+      "Established in 2021 with specialized branches",
+      "Located at primary campus area: Dubai Internet City",
+      "Academic Quality Rating: 4.3 Stars"
+    ]
+  },
+  {
+    "id": "istituto-marangoni-dubai",
+    "name": "Istituto Marangoni Dubai",
+    "type": "University",
+    "location": "DIFC, Dubai, UAE",
+    "reputation": "4.4 / 5",
+    "satisfaction": "89%",
+    "practicality": "86%",
+    "recognition": "KHDA Approved Higher Education (Est. 2022)",
+    "fee": "AED 75,000 – AED 90,000 per year",
+    "feeNum": 75000.0,
+    "duration": "1 - 2 Years",
+    "mode": "On-campus / Hybrid",
+    "tagline": "Undergraduate and Postgraduate Career Building Paths",
+    "about": "Istituto Marangoni Dubai is an approved higher education institution situated in DIFC, Dubai. Operating under KHDA supervision since 2022, it offers rich, accredited program paths, maintaining a high-fidelity 4.4 star rating in global performance frameworks.",
+    "courses": [
+      {
+        "name": "MSc Cybersecurity & Network Systems",
+        "duration": "12 months",
+        "mode": "Hybrid",
+        "fee": "AED 78,750"
+      },
+      {
+        "name": "MSc Finance & Digital Banking",
+        "duration": "12 months",
+        "mode": "Hybrid",
+        "fee": "AED 82,500"
+      },
+      {
+        "name": "BA Digital Design & Creative Media",
+        "duration": "36 months",
+        "mode": "On-campus",
+        "fee": "AED 67,500"
+      }
+    ],
+    "whySuit": [
+      "KHDA Licensed Higher Education Provider",
+      "Established in 2022 with specialized branches",
+      "Located at primary campus area: DIFC",
+      "Academic Quality Rating: 4.4 Stars"
+    ]
+  },
+  {
+    "id": "heriot-watt-university",
+    "name": "Heriot-Watt University",
+    "type": "University",
+    "location": "Dubai Knowledge Park, UAE",
+    "reputation": "5.0 / 5",
+    "satisfaction": "100%",
+    "practicality": "97%",
+    "recognition": "KHDA Approved Higher Education (Est. 2005)",
+    "fee": "AED 80,000 – AED 100,000 per year",
+    "feeNum": 80000.0,
+    "duration": "1 - 2 Years",
+    "mode": "On-campus / Hybrid",
+    "tagline": "Undergraduate and Postgraduate Career Building Paths",
+    "about": "Heriot-Watt University is an approved higher education institution situated in Dubai Knowledge Park, Dubai. Operating under KHDA supervision since 2005, it offers rich, accredited program paths, maintaining a high-fidelity 5 star rating in global performance frameworks.",
+    "courses": [
+      {
+        "name": "MSc Finance & Digital Banking",
+        "duration": "12 months",
+        "mode": "Hybrid",
+        "fee": "AED 88,000"
+      },
+      {
+        "name": "BA Digital Design & Creative Media",
+        "duration": "36 months",
+        "mode": "On-campus",
+        "fee": "AED 72,000"
+      },
+      {
+        "name": "Global MBA",
+        "duration": "12-18 months",
+        "mode": "Hybrid",
+        "fee": "AED 100,000"
+      },
+      {
+        "name": "MSc Artificial Intelligence & Data Science",
+        "duration": "12 months",
+        "mode": "On-campus",
+        "fee": "AED 92,000"
+      }
+    ],
+    "whySuit": [
+      "KHDA Licensed Higher Education Provider",
+      "Established in 2005 with specialized branches",
+      "Located at primary campus area: Dubai Knowledge Park",
+      "Academic Quality Rating: 5 Stars"
+    ]
+  },
+  {
+    "id": "escp-business-school",
+    "name": "ESCP Business School",
+    "type": "University",
+    "location": "DIFC, Dubai, UAE",
+    "reputation": "4.6 / 5",
+    "satisfaction": "92%",
+    "practicality": "90%",
+    "recognition": "KHDA Approved Higher Education (Est. 2022)",
+    "fee": "AED 85,000 – AED 110,000 per year",
+    "feeNum": 85000.0,
+    "duration": "1 - 2 Years",
+    "mode": "On-campus / Hybrid",
+    "tagline": "Undergraduate and Postgraduate Career Building Paths",
+    "about": "ESCP Business School is an approved higher education institution situated in DIFC, Dubai. Operating under KHDA supervision since 2022, it offers rich, accredited program paths, maintaining a high-fidelity 4.6 star rating in global performance frameworks.",
+    "courses": [
+      {
+        "name": "BA Digital Design & Creative Media",
+        "duration": "36 months",
+        "mode": "On-campus",
+        "fee": "AED 76,500"
+      },
+      {
+        "name": "Global MBA",
+        "duration": "12-18 months",
+        "mode": "Hybrid",
+        "fee": "AED 106,250"
+      },
+      {
+        "name": "MSc Artificial Intelligence & Data Science",
+        "duration": "12 months",
+        "mode": "On-campus",
+        "fee": "AED 97,750"
+      },
+      {
+        "name": "BSc Computer Science & Software Engineering",
+        "duration": "36 months",
+        "mode": "On-campus",
+        "fee": "AED 80,750"
+      },
+      {
+        "name": "BA Business Management & Marketing",
+        "duration": "36 months",
+        "mode": "Hybrid",
+        "fee": "AED 72,250"
+      }
+    ],
+    "whySuit": [
+      "KHDA Licensed Higher Education Provider",
+      "Established in 2022 with specialized branches",
+      "Located at primary campus area: DIFC",
+      "Academic Quality Rating: 4.6 Stars"
+    ]
+  },
+  {
+    "id": "sae-university-college",
+    "name": "SAE UNIVERSITY COLLEGE",
+    "type": "University",
+    "location": "Dubai Knowledge Park, UAE",
+    "reputation": "4.0 / 5",
+    "satisfaction": "82%",
+    "practicality": "80%",
+    "recognition": "KHDA Approved Higher Education (Est. 2005)",
+    "fee": "AED 90,000 – AED 120,000 per year",
+    "feeNum": 90000.0,
+    "duration": "1 - 2 Years",
+    "mode": "On-campus / Hybrid",
+    "tagline": "Undergraduate and Postgraduate Career Building Paths",
+    "about": "SAE UNIVERSITY COLLEGE is an approved higher education institution situated in Dubai Knowledge Park, Dubai. Operating under KHDA supervision since 2005, it offers rich, accredited program paths, maintaining a high-fidelity 4 star rating in global performance frameworks.",
+    "courses": [
+      {
+        "name": "Global MBA",
+        "duration": "12-18 months",
+        "mode": "Hybrid",
+        "fee": "AED 112,500"
+      },
+      {
+        "name": "MSc Artificial Intelligence & Data Science",
+        "duration": "12 months",
+        "mode": "On-campus",
+        "fee": "AED 103,500"
+      },
+      {
+        "name": "BSc Computer Science & Software Engineering",
+        "duration": "36 months",
+        "mode": "On-campus",
+        "fee": "AED 85,500"
+      }
+    ],
+    "whySuit": [
+      "KHDA Licensed Higher Education Provider",
+      "Established in 2005 with specialized branches",
+      "Located at primary campus area: Dubai Knowledge Park",
+      "Academic Quality Rating: 4 Stars"
+    ]
+  },
+  {
+    "id": "middlesex-university-dubai",
+    "name": "Middlesex University Dubai",
+    "type": "University",
+    "location": "Dubai Knowledge Park, UAE",
+    "reputation": "5.0 / 5",
+    "satisfaction": "100%",
+    "practicality": "97%",
+    "recognition": "KHDA Approved Higher Education (Est. 2005)",
+    "fee": "AED 95,000 – AED 130,000 per year",
+    "feeNum": 95000.0,
+    "duration": "1 - 2 Years",
+    "mode": "On-campus / Hybrid",
+    "tagline": "Undergraduate and Postgraduate Career Building Paths",
+    "about": "Middlesex University Dubai is an approved higher education institution situated in Dubai Knowledge Park, Dubai. Operating under KHDA supervision since 2005, it offers rich, accredited program paths, maintaining a high-fidelity 5 star rating in global performance frameworks.",
+    "courses": [
+      {
+        "name": "MSc Artificial Intelligence & Data Science",
+        "duration": "12 months",
+        "mode": "On-campus",
+        "fee": "AED 109,250"
+      },
+      {
+        "name": "BSc Computer Science & Software Engineering",
+        "duration": "36 months",
+        "mode": "On-campus",
+        "fee": "AED 90,250"
+      },
+      {
+        "name": "BA Business Management & Marketing",
+        "duration": "36 months",
+        "mode": "Hybrid",
+        "fee": "AED 80,750"
+      },
+      {
+        "name": "MSc Cybersecurity & Network Systems",
+        "duration": "12 months",
+        "mode": "Hybrid",
+        "fee": "AED 99,750"
+      }
+    ],
+    "whySuit": [
+      "KHDA Licensed Higher Education Provider",
+      "Established in 2005 with specialized branches",
+      "Located at primary campus area: Dubai Knowledge Park",
+      "Academic Quality Rating: 5 Stars"
+    ]
+  },
+  {
+    "id": "strathclyde-business-school-uae",
+    "name": "Strathclyde Business School UAE",
+    "type": "University",
+    "location": "Dubai Knowledge Park, UAE",
+    "reputation": "4.9 / 5",
+    "satisfaction": "98%",
+    "practicality": "95%",
+    "recognition": "KHDA Approved Higher Education (Est. 1)",
+    "fee": "AED 100,000 – AED 140,000 per year",
+    "feeNum": 100000.0,
+    "duration": "1 - 2 Years",
+    "mode": "On-campus / Hybrid",
+    "tagline": "Undergraduate and Postgraduate Career Building Paths",
+    "about": "Strathclyde Business School UAE is an approved higher education institution situated in Dubai Knowledge Park, Dubai. Operating under KHDA supervision since 1, it offers rich, accredited program paths, maintaining a high-fidelity 4.9 star rating in global performance frameworks.",
+    "courses": [
+      {
+        "name": "BSc Computer Science & Software Engineering",
+        "duration": "36 months",
+        "mode": "On-campus",
+        "fee": "AED 95,000"
+      },
+      {
+        "name": "BA Business Management & Marketing",
+        "duration": "36 months",
+        "mode": "Hybrid",
+        "fee": "AED 85,000"
+      },
+      {
+        "name": "MSc Cybersecurity & Network Systems",
+        "duration": "12 months",
+        "mode": "Hybrid",
+        "fee": "AED 105,000"
+      },
+      {
+        "name": "MSc Finance & Digital Banking",
+        "duration": "12 months",
+        "mode": "Hybrid",
+        "fee": "AED 110,000"
+      },
+      {
+        "name": "BA Digital Design & Creative Media",
+        "duration": "36 months",
+        "mode": "On-campus",
+        "fee": "AED 90,000"
+      }
+    ],
+    "whySuit": [
+      "KHDA Licensed Higher Education Provider",
+      "Established in 1 with specialized branches",
+      "Located at primary campus area: Dubai Knowledge Park",
+      "Academic Quality Rating: 4.9 Stars"
+    ]
+  },
+  {
+    "id": "em-normandie-business-school",
+    "name": "EM Normandie Business School",
+    "type": "University",
+    "location": "Dubai Knowledge Park, UAE",
+    "reputation": "3.8 / 5",
+    "satisfaction": "78%",
+    "practicality": "76%",
+    "recognition": "KHDA Approved Higher Education (Est. 2023)",
+    "fee": "AED 45,000 – AED 60,000 per year",
+    "feeNum": 45000.0,
+    "duration": "1 - 2 Years",
+    "mode": "On-campus / Hybrid",
+    "tagline": "Undergraduate and Postgraduate Career Building Paths",
+    "about": "EM Normandie Business School is an approved higher education institution situated in Dubai Knowledge Park, Dubai. Operating under KHDA supervision since 2023, it offers rich, accredited program paths, maintaining a high-fidelity 3.8 star rating in global performance frameworks.",
+    "courses": [
+      {
+        "name": "BA Business Management & Marketing",
+        "duration": "36 months",
+        "mode": "Hybrid",
+        "fee": "AED 38,250"
+      },
+      {
+        "name": "MSc Cybersecurity & Network Systems",
+        "duration": "12 months",
+        "mode": "Hybrid",
+        "fee": "AED 47,250"
+      },
+      {
+        "name": "MSc Finance & Digital Banking",
+        "duration": "12 months",
+        "mode": "Hybrid",
+        "fee": "AED 49,500"
+      }
+    ],
+    "whySuit": [
+      "KHDA Licensed Higher Education Provider",
+      "Established in 2023 with specialized branches",
+      "Located at primary campus area: Dubai Knowledge Park",
+      "Academic Quality Rating: 3.8 Stars"
+    ]
+  },
+  {
+    "id": "university-of-bradford",
+    "name": "University of Bradford",
+    "type": "University",
+    "location": "Dubai Knowledge Park, UAE",
+    "reputation": "3.0 / 5",
+    "satisfaction": "64%",
+    "practicality": "63%",
+    "recognition": "KHDA Approved Higher Education (Est. 2008)",
+    "fee": "AED 50,000 – AED 70,000 per year",
+    "feeNum": 50000.0,
+    "duration": "1 - 2 Years",
+    "mode": "On-campus / Hybrid",
+    "tagline": "Undergraduate and Postgraduate Career Building Paths",
+    "about": "University of Bradford is an approved higher education institution situated in Dubai Knowledge Park, Dubai. Operating under KHDA supervision since 2008, it offers rich, accredited program paths, maintaining a high-fidelity 3 star rating in global performance frameworks.",
+    "courses": [
+      {
+        "name": "MSc Cybersecurity & Network Systems",
+        "duration": "12 months",
+        "mode": "Hybrid",
+        "fee": "AED 52,500"
+      },
+      {
+        "name": "MSc Finance & Digital Banking",
+        "duration": "12 months",
+        "mode": "Hybrid",
+        "fee": "AED 55,000"
+      },
+      {
+        "name": "BA Digital Design & Creative Media",
+        "duration": "36 months",
+        "mode": "On-campus",
+        "fee": "AED 45,000"
+      },
+      {
+        "name": "Global MBA",
+        "duration": "12-18 months",
+        "mode": "Hybrid",
+        "fee": "AED 62,500"
+      }
+    ],
+    "whySuit": [
+      "KHDA Licensed Higher Education Provider",
+      "Established in 2008 with specialized branches",
+      "Located at primary campus area: Dubai Knowledge Park",
+      "Academic Quality Rating: 3 Stars"
+    ]
+  },
+  {
+    "id": "symbiosis-international-university",
+    "name": "Symbiosis International University",
+    "type": "University",
+    "location": "Dubai Knowledge Park, UAE",
+    "reputation": "4.0 / 5",
+    "satisfaction": "82%",
+    "practicality": "80%",
+    "recognition": "KHDA Approved Higher Education (Est. 2024)",
+    "fee": "AED 55,000 – AED 80,000 per year",
+    "feeNum": 55000.0,
+    "duration": "1 - 2 Years",
+    "mode": "On-campus / Hybrid",
+    "tagline": "Undergraduate and Postgraduate Career Building Paths",
+    "about": "Symbiosis International University is an approved higher education institution situated in Dubai Knowledge Park, Dubai. Operating under KHDA supervision since 2024, it offers rich, accredited program paths, maintaining a high-fidelity 4 star rating in global performance frameworks.",
+    "courses": [
+      {
+        "name": "MSc Finance & Digital Banking",
+        "duration": "12 months",
+        "mode": "Hybrid",
+        "fee": "AED 60,500"
+      },
+      {
+        "name": "BA Digital Design & Creative Media",
+        "duration": "36 months",
+        "mode": "On-campus",
+        "fee": "AED 49,500"
+      },
+      {
+        "name": "Global MBA",
+        "duration": "12-18 months",
+        "mode": "Hybrid",
+        "fee": "AED 68,750"
+      },
+      {
+        "name": "MSc Artificial Intelligence & Data Science",
+        "duration": "12 months",
+        "mode": "On-campus",
+        "fee": "AED 63,250"
+      },
+      {
+        "name": "BSc Computer Science & Software Engineering",
+        "duration": "36 months",
+        "mode": "On-campus",
+        "fee": "AED 52,250"
+      }
+    ],
+    "whySuit": [
+      "KHDA Licensed Higher Education Provider",
+      "Established in 2024 with specialized branches",
+      "Located at primary campus area: Dubai Knowledge Park",
+      "Academic Quality Rating: 4 Stars"
+    ]
+  },
+  {
+    "id": "the-university-of-manchester-worldwide",
+    "name": "The University of Manchester Worldwide",
+    "type": "University",
+    "location": "Dubai Knowledge Park, UAE",
+    "reputation": "5.0 / 5",
+    "satisfaction": "100%",
+    "practicality": "97%",
+    "recognition": "KHDA Approved Higher Education (Est. 2006)",
+    "fee": "AED 60,000 – AED 90,000 per year",
+    "feeNum": 60000.0,
+    "duration": "1 - 2 Years",
+    "mode": "On-campus / Hybrid",
+    "tagline": "Undergraduate and Postgraduate Career Building Paths",
+    "about": "The University of Manchester Worldwide is an approved higher education institution situated in Dubai Knowledge Park, Dubai. Operating under KHDA supervision since 2006, it offers rich, accredited program paths, maintaining a high-fidelity 5 star rating in global performance frameworks.",
+    "courses": [
+      {
+        "name": "BA Digital Design & Creative Media",
+        "duration": "36 months",
+        "mode": "On-campus",
+        "fee": "AED 54,000"
+      },
+      {
+        "name": "Global MBA",
+        "duration": "12-18 months",
+        "mode": "Hybrid",
+        "fee": "AED 75,000"
+      },
+      {
+        "name": "MSc Artificial Intelligence & Data Science",
+        "duration": "12 months",
+        "mode": "On-campus",
+        "fee": "AED 69,000"
+      }
+    ],
+    "whySuit": [
+      "KHDA Licensed Higher Education Provider",
+      "Established in 2006 with specialized branches",
+      "Located at primary campus area: Dubai Knowledge Park",
+      "Academic Quality Rating: 5 Stars"
+    ]
+  },
+  {
+    "id": "american-university-in-dubai",
+    "name": "American University in Dubai",
+    "type": "University",
+    "location": "Dubai Media City, UAE",
+    "reputation": "4.2 / 5",
+    "satisfaction": "85%",
+    "practicality": "83%",
+    "recognition": "KHDA Approved Higher Education (Est. 1995)",
+    "fee": "AED 65,000 – AED 100,000 per year",
+    "feeNum": 65000.0,
+    "duration": "1 - 2 Years",
+    "mode": "On-campus / Hybrid",
+    "tagline": "Undergraduate and Postgraduate Career Building Paths",
+    "about": "American University in Dubai is an approved higher education institution situated in Dubai Media City, Dubai. Operating under KHDA supervision since 1995, it offers rich, accredited program paths, maintaining a high-fidelity 4.2 star rating in global performance frameworks.",
+    "courses": [
+      {
+        "name": "Global MBA",
+        "duration": "12-18 months",
+        "mode": "Hybrid",
+        "fee": "AED 81,250"
+      },
+      {
+        "name": "MSc Artificial Intelligence & Data Science",
+        "duration": "12 months",
+        "mode": "On-campus",
+        "fee": "AED 74,750"
+      },
+      {
+        "name": "BSc Computer Science & Software Engineering",
+        "duration": "36 months",
+        "mode": "On-campus",
+        "fee": "AED 61,750"
+      },
+      {
+        "name": "BA Business Management & Marketing",
+        "duration": "36 months",
+        "mode": "Hybrid",
+        "fee": "AED 55,250"
+      }
+    ],
+    "whySuit": [
+      "KHDA Licensed Higher Education Provider",
+      "Established in 1995 with specialized branches",
+      "Located at primary campus area: Dubai Media City",
+      "Academic Quality Rating: 4.2 Stars"
+    ]
+  },
+  {
+    "id": "moscow-university-for-industry-and-finance-synergy",
+    "name": "Moscow University for Industry and Finance (Synergy)",
+    "type": "University",
+    "location": "Jumeirah Lake Towers, Dubai, UAE",
+    "reputation": "4.3 / 5",
+    "satisfaction": "87%",
+    "practicality": "85%",
+    "recognition": "KHDA Approved Higher Education (Est. 2022)",
+    "fee": "AED 70,000 – AED 110,000 per year",
+    "feeNum": 70000.0,
+    "duration": "1 - 2 Years",
+    "mode": "On-campus / Hybrid",
+    "tagline": "Undergraduate and Postgraduate Career Building Paths",
+    "about": "Moscow University for Industry and Finance (Synergy) is an approved higher education institution situated in Jumeirah Lake Towers, Dubai. Operating under KHDA supervision since 2022, it offers rich, accredited program paths, maintaining a high-fidelity 4.3 star rating in global performance frameworks.",
+    "courses": [
+      {
+        "name": "MSc Artificial Intelligence & Data Science",
+        "duration": "12 months",
+        "mode": "On-campus",
+        "fee": "AED 80,500"
+      },
+      {
+        "name": "BSc Computer Science & Software Engineering",
+        "duration": "36 months",
+        "mode": "On-campus",
+        "fee": "AED 66,500"
+      },
+      {
+        "name": "BA Business Management & Marketing",
+        "duration": "36 months",
+        "mode": "Hybrid",
+        "fee": "AED 59,500"
+      },
+      {
+        "name": "MSc Cybersecurity & Network Systems",
+        "duration": "12 months",
+        "mode": "Hybrid",
+        "fee": "AED 73,500"
+      },
+      {
+        "name": "MSc Finance & Digital Banking",
+        "duration": "12 months",
+        "mode": "Hybrid",
+        "fee": "AED 77,000"
+      }
+    ],
+    "whySuit": [
+      "KHDA Licensed Higher Education Provider",
+      "Established in 2022 with specialized branches",
+      "Located at primary campus area: Jumeirah Lake Towers",
+      "Academic Quality Rating: 4.3 Stars"
+    ]
+  },
+  {
+    "id": "plekhanov-russian-university-of-economics-dubai",
+    "name": "Plekhanov Russian University of Economics - Dubai",
+    "type": "University",
+    "location": "Dubai Knowledge Park, UAE",
+    "reputation": "4.4 / 5",
+    "satisfaction": "89%",
+    "practicality": "86%",
+    "recognition": "KHDA Approved Higher Education (Est. 1)",
+    "fee": "AED 75,000 – AED 90,000 per year",
+    "feeNum": 75000.0,
+    "duration": "1 - 2 Years",
+    "mode": "On-campus / Hybrid",
+    "tagline": "Undergraduate and Postgraduate Career Building Paths",
+    "about": "Plekhanov Russian University of Economics - Dubai is an approved higher education institution situated in Dubai Knowledge Park, Dubai. Operating under KHDA supervision since 1, it offers rich, accredited program paths, maintaining a high-fidelity 4.4 star rating in global performance frameworks.",
+    "courses": [
+      {
+        "name": "BSc Computer Science & Software Engineering",
+        "duration": "36 months",
+        "mode": "On-campus",
+        "fee": "AED 71,250"
+      },
+      {
+        "name": "BA Business Management & Marketing",
+        "duration": "36 months",
+        "mode": "Hybrid",
+        "fee": "AED 63,750"
+      },
+      {
+        "name": "MSc Cybersecurity & Network Systems",
+        "duration": "12 months",
+        "mode": "Hybrid",
+        "fee": "AED 78,750"
+      }
+    ],
+    "whySuit": [
+      "KHDA Licensed Higher Education Provider",
+      "Established in 1 with specialized branches",
+      "Located at primary campus area: Dubai Knowledge Park",
+      "Academic Quality Rating: 4.4 Stars"
+    ]
+  },
+  {
+    "id": "rochester-institute-of-technology-dubai",
+    "name": "Rochester Institute of Technology- Dubai",
+    "type": "University",
+    "location": "Dubai Silicon Oasis, UAE",
+    "reputation": "4.5 / 5",
+    "satisfaction": "91%",
+    "practicality": "88%",
+    "recognition": "KHDA Approved Higher Education (Est. 2008)",
+    "fee": "AED 80,000 – AED 100,000 per year",
+    "feeNum": 80000.0,
+    "duration": "1 - 2 Years",
+    "mode": "On-campus / Hybrid",
+    "tagline": "Undergraduate and Postgraduate Career Building Paths",
+    "about": "Rochester Institute of Technology- Dubai is an approved higher education institution situated in Dubai Silicon Oasis, Dubai. Operating under KHDA supervision since 2008, it offers rich, accredited program paths, maintaining a high-fidelity 4.5 star rating in global performance frameworks.",
+    "courses": [
+      {
+        "name": "BA Business Management & Marketing",
+        "duration": "36 months",
+        "mode": "Hybrid",
+        "fee": "AED 68,000"
+      },
+      {
+        "name": "MSc Cybersecurity & Network Systems",
+        "duration": "12 months",
+        "mode": "Hybrid",
+        "fee": "AED 84,000"
+      },
+      {
+        "name": "MSc Finance & Digital Banking",
+        "duration": "12 months",
+        "mode": "Hybrid",
+        "fee": "AED 88,000"
+      },
+      {
+        "name": "BA Digital Design & Creative Media",
+        "duration": "36 months",
+        "mode": "On-campus",
+        "fee": "AED 72,000"
+      }
+    ],
+    "whySuit": [
+      "KHDA Licensed Higher Education Provider",
+      "Established in 2008 with specialized branches",
+      "Located at primary campus area: Dubai Silicon Oasis",
+      "Academic Quality Rating: 4.5 Stars"
+    ]
+  },
+  {
+    "id": "abu-dhabi-university",
+    "name": "Abu Dhabi University",
+    "type": "University",
+    "location": "Dubai Knowledge Park, UAE",
+    "reputation": "4.6 / 5",
+    "satisfaction": "92%",
+    "practicality": "90%",
+    "recognition": "KHDA Approved Higher Education (Est. 2017)",
+    "fee": "AED 85,000 – AED 110,000 per year",
+    "feeNum": 85000.0,
+    "duration": "1 - 2 Years",
+    "mode": "On-campus / Hybrid",
+    "tagline": "Undergraduate and Postgraduate Career Building Paths",
+    "about": "Abu Dhabi University is an approved higher education institution situated in Dubai Knowledge Park, Dubai. Operating under KHDA supervision since 2017, it offers rich, accredited program paths, maintaining a high-fidelity 4.6 star rating in global performance frameworks.",
+    "courses": [
+      {
+        "name": "MSc Cybersecurity & Network Systems",
+        "duration": "12 months",
+        "mode": "Hybrid",
+        "fee": "AED 89,250"
+      },
+      {
+        "name": "MSc Finance & Digital Banking",
+        "duration": "12 months",
+        "mode": "Hybrid",
+        "fee": "AED 93,500"
+      },
+      {
+        "name": "BA Digital Design & Creative Media",
+        "duration": "36 months",
+        "mode": "On-campus",
+        "fee": "AED 76,500"
+      },
+      {
+        "name": "Global MBA",
+        "duration": "12-18 months",
+        "mode": "Hybrid",
+        "fee": "AED 106,250"
+      },
+      {
+        "name": "MSc Artificial Intelligence & Data Science",
+        "duration": "12 months",
+        "mode": "On-campus",
+        "fee": "AED 97,750"
+      }
+    ],
+    "whySuit": [
+      "KHDA Licensed Higher Education Provider",
+      "Established in 2017 with specialized branches",
+      "Located at primary campus area: Dubai Knowledge Park",
+      "Academic Quality Rating: 4.6 Stars"
+    ]
+  },
+  {
+    "id": "luiss-libera-universita-internazionale-degli-studi-sociali-guido-carli-dwtca-branch",
+    "name": "LUISS Libera Universita Internazionale degli Studi Sociali Guido Carli (DWTCA Branch)",
+    "type": "University",
+    "location": "TRADE CENTER FIRST, Dubai, UAE",
+    "reputation": "4.7 / 5",
+    "satisfaction": "94%",
+    "practicality": "91%",
+    "recognition": "KHDA Approved Higher Education (Est. 2024)",
+    "fee": "AED 90,000 – AED 120,000 per year",
+    "feeNum": 90000.0,
+    "duration": "1 - 2 Years",
+    "mode": "On-campus / Hybrid",
+    "tagline": "Undergraduate and Postgraduate Career Building Paths",
+    "about": "LUISS Libera Universita Internazionale degli Studi Sociali Guido Carli (DWTCA Branch) is an approved higher education institution situated in TRADE CENTER FIRST, Dubai. Operating under KHDA supervision since 2024, it offers rich, accredited program paths, maintaining a high-fidelity 4.7 star rating in global performance frameworks.",
+    "courses": [
+      {
+        "name": "MSc Finance & Digital Banking",
+        "duration": "12 months",
+        "mode": "Hybrid",
+        "fee": "AED 99,000"
+      },
+      {
+        "name": "BA Digital Design & Creative Media",
+        "duration": "36 months",
+        "mode": "On-campus",
+        "fee": "AED 81,000"
+      },
+      {
+        "name": "Global MBA",
+        "duration": "12-18 months",
+        "mode": "Hybrid",
+        "fee": "AED 112,500"
+      }
+    ],
+    "whySuit": [
+      "KHDA Licensed Higher Education Provider",
+      "Established in 2024 with specialized branches",
+      "Located at primary campus area: TRADE CENTER FIRST",
+      "Academic Quality Rating: 4.7 Stars"
+    ]
+  },
+  {
+    "id": "university-of-europe-for-applied-sciences",
+    "name": "University of Europe for Applied Sciences",
+    "type": "University",
+    "location": "TRADE CENTER FIRST, Dubai, UAE",
+    "reputation": "4.8 / 5",
+    "satisfaction": "96%",
+    "practicality": "93%",
+    "recognition": "KHDA Approved Higher Education (Est. 2000)",
+    "fee": "AED 95,000 – AED 130,000 per year",
+    "feeNum": 95000.0,
+    "duration": "1 - 2 Years",
+    "mode": "On-campus / Hybrid",
+    "tagline": "Undergraduate and Postgraduate Career Building Paths",
+    "about": "University of Europe for Applied Sciences is an approved higher education institution situated in TRADE CENTER FIRST, Dubai. Operating under KHDA supervision since 2000, it offers rich, accredited program paths, maintaining a high-fidelity 4.8 star rating in global performance frameworks.",
+    "courses": [
+      {
+        "name": "BA Digital Design & Creative Media",
+        "duration": "36 months",
+        "mode": "On-campus",
+        "fee": "AED 85,500"
+      },
+      {
+        "name": "Global MBA",
+        "duration": "12-18 months",
+        "mode": "Hybrid",
+        "fee": "AED 118,750"
+      },
+      {
+        "name": "MSc Artificial Intelligence & Data Science",
+        "duration": "12 months",
+        "mode": "On-campus",
+        "fee": "AED 109,250"
+      },
+      {
+        "name": "BSc Computer Science & Software Engineering",
+        "duration": "36 months",
+        "mode": "On-campus",
+        "fee": "AED 90,250"
+      }
+    ],
+    "whySuit": [
+      "KHDA Licensed Higher Education Provider",
+      "Established in 2000 with specialized branches",
+      "Located at primary campus area: TRADE CENTER FIRST",
+      "Academic Quality Rating: 4.8 Stars"
+    ]
+  },
+  {
+    "id": "georgetown-university-dubai",
+    "name": "Georgetown University Dubai",
+    "type": "University",
+    "location": "DIFC, Dubai, UAE",
+    "reputation": "4.9 / 5",
+    "satisfaction": "98%",
+    "practicality": "95%",
+    "recognition": "KHDA Approved Higher Education (Est. 2023)",
+    "fee": "AED 100,000 – AED 140,000 per year",
+    "feeNum": 100000.0,
+    "duration": "1 - 2 Years",
+    "mode": "On-campus / Hybrid",
+    "tagline": "Undergraduate and Postgraduate Career Building Paths",
+    "about": "Georgetown University Dubai is an approved higher education institution situated in DIFC, Dubai. Operating under KHDA supervision since 2023, it offers rich, accredited program paths, maintaining a high-fidelity 4.9 star rating in global performance frameworks.",
+    "courses": [
+      {
+        "name": "Global MBA",
+        "duration": "12-18 months",
+        "mode": "Hybrid",
+        "fee": "AED 125,000"
+      },
+      {
+        "name": "MSc Artificial Intelligence & Data Science",
+        "duration": "12 months",
+        "mode": "On-campus",
+        "fee": "AED 115,000"
+      },
+      {
+        "name": "BSc Computer Science & Software Engineering",
+        "duration": "36 months",
+        "mode": "On-campus",
+        "fee": "AED 95,000"
+      },
+      {
+        "name": "BA Business Management & Marketing",
+        "duration": "36 months",
+        "mode": "Hybrid",
+        "fee": "AED 85,000"
+      },
+      {
+        "name": "MSc Cybersecurity & Network Systems",
+        "duration": "12 months",
+        "mode": "Hybrid",
+        "fee": "AED 105,000"
+      }
+    ],
+    "whySuit": [
+      "KHDA Licensed Higher Education Provider",
+      "Established in 2023 with specialized branches",
+      "Located at primary campus area: DIFC",
+      "Academic Quality Rating: 4.9 Stars"
+    ]
+  },
+  {
+    "id": "university-of-wollongong-in-dubai",
+    "name": "University of Wollongong in Dubai",
+    "type": "University",
+    "location": "Dubai Knowledge Park, UAE",
+    "reputation": "3.8 / 5",
+    "satisfaction": "78%",
+    "practicality": "76%",
+    "recognition": "KHDA Approved Higher Education (Est. 2002)",
+    "fee": "AED 45,000 – AED 60,000 per year",
+    "feeNum": 45000.0,
+    "duration": "1 - 2 Years",
+    "mode": "On-campus / Hybrid",
+    "tagline": "Undergraduate and Postgraduate Career Building Paths",
+    "about": "University of Wollongong in Dubai is an approved higher education institution situated in Dubai Knowledge Park, Dubai. Operating under KHDA supervision since 2002, it offers rich, accredited program paths, maintaining a high-fidelity 3.8 star rating in global performance frameworks.",
+    "courses": [
+      {
+        "name": "MSc Artificial Intelligence & Data Science",
+        "duration": "12 months",
+        "mode": "On-campus",
+        "fee": "AED 51,750"
+      },
+      {
+        "name": "BSc Computer Science & Software Engineering",
+        "duration": "36 months",
+        "mode": "On-campus",
+        "fee": "AED 42,750"
+      },
+      {
+        "name": "BA Business Management & Marketing",
+        "duration": "36 months",
+        "mode": "Hybrid",
+        "fee": "AED 38,250"
+      }
+    ],
+    "whySuit": [
+      "KHDA Licensed Higher Education Provider",
+      "Established in 2002 with specialized branches",
+      "Located at primary campus area: Dubai Knowledge Park",
+      "Academic Quality Rating: 3.8 Stars"
+    ]
+  },
+  {
+    "id": "dubai-institute-of-design-and-innovation",
+    "name": "Dubai Institute of Design and Innovation",
+    "type": "University",
+    "location": "Dubai Design District, UAE",
+    "reputation": "3.9 / 5",
+    "satisfaction": "80%",
+    "practicality": "78%",
+    "recognition": "KHDA Approved Higher Education (Est. 2017)",
+    "fee": "AED 50,000 – AED 70,000 per year",
+    "feeNum": 50000.0,
+    "duration": "1 - 2 Years",
+    "mode": "On-campus / Hybrid",
+    "tagline": "Undergraduate and Postgraduate Career Building Paths",
+    "about": "Dubai Institute of Design and Innovation is an approved higher education institution situated in Dubai Design District, Dubai. Operating under KHDA supervision since 2017, it offers rich, accredited program paths, maintaining a high-fidelity 3.9 star rating in global performance frameworks.",
+    "courses": [
+      {
+        "name": "BSc Computer Science & Software Engineering",
+        "duration": "36 months",
+        "mode": "On-campus",
+        "fee": "AED 47,500"
+      },
+      {
+        "name": "BA Business Management & Marketing",
+        "duration": "36 months",
+        "mode": "Hybrid",
+        "fee": "AED 42,500"
+      },
+      {
+        "name": "MSc Cybersecurity & Network Systems",
+        "duration": "12 months",
+        "mode": "Hybrid",
+        "fee": "AED 52,500"
+      },
+      {
+        "name": "MSc Finance & Digital Banking",
+        "duration": "12 months",
+        "mode": "Hybrid",
+        "fee": "AED 55,000"
+      }
+    ],
+    "whySuit": [
+      "KHDA Licensed Higher Education Provider",
+      "Established in 2017 with specialized branches",
+      "Located at primary campus area: Dubai Design District",
+      "Academic Quality Rating: 3.9 Stars"
+    ]
+  },
+  {
+    "id": "hult-international-business-school",
+    "name": "Hult International Business School",
+    "type": "University",
+    "location": "Dubai Internet City, UAE",
+    "reputation": "5.0 / 5",
+    "satisfaction": "100%",
+    "practicality": "97%",
+    "recognition": "KHDA Approved Higher Education (Est. 2007)",
+    "fee": "AED 55,000 – AED 80,000 per year",
+    "feeNum": 55000.0,
+    "duration": "1 - 2 Years",
+    "mode": "On-campus / Hybrid",
+    "tagline": "Undergraduate and Postgraduate Career Building Paths",
+    "about": "Hult International Business School is an approved higher education institution situated in Dubai Internet City, Dubai. Operating under KHDA supervision since 2007, it offers rich, accredited program paths, maintaining a high-fidelity 5 star rating in global performance frameworks.",
+    "courses": [
+      {
+        "name": "BA Business Management & Marketing",
+        "duration": "36 months",
+        "mode": "Hybrid",
+        "fee": "AED 46,750"
+      },
+      {
+        "name": "MSc Cybersecurity & Network Systems",
+        "duration": "12 months",
+        "mode": "Hybrid",
+        "fee": "AED 57,750"
+      },
+      {
+        "name": "MSc Finance & Digital Banking",
+        "duration": "12 months",
+        "mode": "Hybrid",
+        "fee": "AED 60,500"
+      },
+      {
+        "name": "BA Digital Design & Creative Media",
+        "duration": "36 months",
+        "mode": "On-campus",
+        "fee": "AED 49,500"
+      },
+      {
+        "name": "Global MBA",
+        "duration": "12-18 months",
+        "mode": "Hybrid",
+        "fee": "AED 68,750"
+      }
+    ],
+    "whySuit": [
+      "KHDA Licensed Higher Education Provider",
+      "Established in 2007 with specialized branches",
+      "Located at primary campus area: Dubai Internet City",
+      "Academic Quality Rating: 5 Stars"
+    ]
+  }
+];
+
+export const mockMatches = [
+  {
+    id: 1,
+    title: "Public Policy & Governance Master's Program",
+    institutionId: "university-birmingham-dubai",
+    matchScore: 94,
+    reasons: [
+      "Strong fit for promotion goal",
+      "Relevant to Law & Public Policy",
+      "Available in hybrid format",
+      "Suitable for working professionals with 3-5 years experience"
+    ],
+    region: "Europe (UK curriculum in Dubai)",
+    format: "Hybrid",
+    duration: "1 Year",
+    fee: "AED 95,000",
+    pros: ["Russell Group prestige", "Intensive 1-year track", "Strong local government connections"],
+    cons: ["Higher tuition fees", "Requires minimum GPA to enter"]
+  },
+  {
+    id: 2,
+    title: "European Law & Regulation Professional Diploma",
+    institutionId: "coursera",
+    matchScore: 89,
+    reasons: [
+      "Affordable professional qualification",
+      "Strong regional relevance",
+      "Practical for career advancement",
+      "Flexible learning format fits 3-5 years work style"
+    ],
+    region: "Europe (Online)",
+    format: "100% Online",
+    duration: "4 Months",
+    fee: "AED 950",
+    pros: ["Extremely affordable", "Study fully self-paced", "Accredited globally"],
+    cons: ["No face-to-face networking", "Requires high self-discipline"]
+  },
+  {
+    id: 3,
+    title: "Leadership in Public Administration Certificate",
+    institutionId: "udemy",
+    matchScore: 84,
+    reasons: [
+      "Good for promotion readiness",
+      "Shorter completion timeline",
+      "Suitable for 3–5 years experience",
+      "Budget-friendly option"
+    ],
+    region: "Online / Worldwide",
+    format: "100% Online",
+    duration: "15 Hours",
+    fee: "AED 120",
+    pros: ["Extremely low cost", "Instant enrollment", "No qualification prerequisites"],
+    cons: ["Very brief credential", "No direct tutor support", "Lower industry weight"]
+  },
+  {
+    id: 4,
+    title: "Executive Master of Business Administration (EMBA)",
+    institutionId: "london-business-school-dubai",
+    matchScore: 78,
+    reasons: [
+      "Excellent fit for business & management goal",
+      "Prestigious executive program",
+      "Flexible hybrid modular format",
+      "Best suited for senior candidates with 5+ years experience"
+    ],
+    region: "Europe (UK curriculum in Dubai)",
+    format: "Hybrid",
+    duration: "20 Months",
+    fee: "AED 350,000",
+    pros: ["Top-tier global business school", "World-class alumni network", "Modular executive study"],
+    cons: ["Very high investment", "Rigorous selection process"]
+  },
+  {
+    id: 5,
+    title: "Data Science & AI Post-Graduate Program",
+    institutionId: "rochester-institute-technology-dubai",
+    matchScore: 72,
+    reasons: [
+      "Aimed at Technology & AI field",
+      "Practical project-based learning",
+      "Evening and weekend options available",
+      "Fits low to moderate budget options"
+    ],
+    region: "North America (US curriculum in Dubai)",
+    format: "Flexible Weekend/Evening",
+    duration: "9 Months",
+    fee: "AED 45,000",
+    pros: ["US accredited degree", "Hands-on lab training", "RIT sandbox access"],
+    cons: ["Requires programming background", "Heavy workload"]
+  },
+  {
+    id: 6,
+    title: "Healthcare Administration Management Course",
+    institutionId: "edx",
+    matchScore: 65,
+    reasons: [
+      "Specifically targeted at Healthcare & Sciences",
+      "Self-paced learning structure",
+      "Very affordable certificate program",
+      "No prior experience required"
+    ],
+    region: "Online / Worldwide",
+    format: "100% Online",
+    duration: "6 Weeks",
+    fee: "AED 450",
+    pros: ["Self-paced modules", "Verified certificate available", "Harvard/MIT faculty content"],
+    cons: ["Limited networking", "No live lectures"]
+  }
+];
