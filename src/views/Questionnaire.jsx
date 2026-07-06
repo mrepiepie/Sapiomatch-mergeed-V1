@@ -1024,9 +1024,9 @@ export default function Questionnaire({ setView, answers, setAnswers, completedQ
                               backgroundSize: '16px'
                             }}
                           >
-                            <option value="" disabled style={{ background: '#111827', color: 'var(--text-muted)' }}>Select your experience level...</option>
+                            <option value="" disabled style={{ color: 'var(--text-muted)' }}>Select your experience level...</option>
                             {activeQuestions[currentStep - 1].options.map((opt, idx) => (
-                              <option key={idx} value={opt} style={{ background: '#111827', color: 'white' }}>{opt}</option>
+                              <option key={idx} value={opt}>{opt}</option>
                             ))}
                           </select>
                         </div>
