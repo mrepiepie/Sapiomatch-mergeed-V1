@@ -500,7 +500,7 @@ export default function Results({ setView, answers, bookmarks = [], toggleBookma
                       <h4 style={{ fontSize: '18px', fontWeight: 800, color: 'white', margin: 0, letterSpacing: '0.05em', textShadow: '0 0 10px rgba(16, 185, 129, 0.5)' }}>
                         <span>🔒 Unlock Premium Matches</span>
                       </h4>
-                      <p style={{ fontSize: '12.5px', color: 'var(--text-muted)', lineHeight: '1.55', marginBottom: '14px' }}>
+                      <p style={{ fontSize: '12.5px', color: '#ffffff', lineHeight: '1.55', marginBottom: '14px' }}>
                         To access detailed match reasons, annual tuition fees, course durations, and apply or speak to an advisor, upgrade to premium.
                       </p>
                       <button 
