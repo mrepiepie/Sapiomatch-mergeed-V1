@@ -485,8 +485,8 @@ export default function Results({ setView, answers, bookmarks = [], toggleBookma
                     textAlign: 'center'
                   }}>
                     <div style={{
-                      background: 'rgba(124, 58, 237, 0.15)',
-                      border: '1px solid rgba(124, 58, 237, 0.35)',
+                      background: 'rgba(16, 185, 129, 0.15)',
+                      border: '1px solid rgba(16, 185, 129, 0.35)',
                       borderRadius: '12px',
                       padding: '20px 30px',
                       maxWidth: '420px',
@@ -497,8 +497,8 @@ export default function Results({ setView, answers, bookmarks = [], toggleBookma
                       alignItems: 'center',
                       gap: '12px'
                     }}>
-                      <h4 style={{ fontSize: '18px', fontWeight: 800, color: 'white', margin: 0, letterSpacing: '0.05em', textShadow: '0 0 10px rgba(251, 146, 60, 0.5)' }}>
-                        <span>🔒 PAY PREMIUM BRUHH</span>
+                      <h4 style={{ fontSize: '18px', fontWeight: 800, color: 'white', margin: 0, letterSpacing: '0.05em', textShadow: '0 0 10px rgba(16, 185, 129, 0.5)' }}>
+                        <span>🔒 Unlock Premium Matches</span>
                       </h4>
                       <p style={{ fontSize: '12.5px', color: 'var(--text-muted)', lineHeight: '1.55', marginBottom: '14px' }}>
                         To access detailed match reasons, annual tuition fees, course durations, and apply or speak to an advisor, upgrade to premium.
