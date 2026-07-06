@@ -1,6 +1,6 @@
-# SapioMatch Optimized Build
+# Learnova Optimized Build
 
-This folder is a performance-optimized copy of `Sapiomatch-mergeed-V1-main`, tuned for faster deployment and smaller initial page loads.
+This folder is a performance-optimized copy of `Learnova-mergeed-V1-main`, tuned for faster deployment and smaller initial page loads.
 
 ## What changed
 
@@ -9,7 +9,7 @@ This folder is a performance-optimized copy of `Sapiomatch-mergeed-V1-main`, tun
 - **Core match flow bundled** — `Questionnaire` and `Results` are statically imported because they are linked directly via `#questionnaire` / `#results` hash navigation; lazy chunks caused `ChunkLoadError` in dev.
 - **Lazy institution data** — The large `mockInstitutions` dataset (~1,800 lines) loads asynchronously after first paint instead of blocking the main chunk.
 - **Lazy AI fallback** — `aiEngine.js` loads only when the chat API is unavailable.
-- **3D globe deferred** — `SapioEarthGlobe` (Three.js) loads only when the home page renders it.
+- **3D globe deferred** — `LearnovaEarthGlobe` (Three.js) loads only when the home page renders it.
 - **Removed dead code** — ~460 lines of unused client-side mock fetch interceptor removed from `page.js`.
 
 ### Build configuration

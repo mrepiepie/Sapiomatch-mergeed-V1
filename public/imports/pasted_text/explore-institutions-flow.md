@@ -1,4 +1,4 @@
-Create the full **SapioMatch AI Explore Institutions flow** and connect it to the homepage **“Explore Institutions”** button.
+Create the full **Learnova AI Explore Institutions flow** and connect it to the homepage **“Explore Institutions”** button.
 
 Important correction:
 
@@ -17,7 +17,7 @@ The final result should include:
 * A sign-in call-to-action bar at the top of the Explore Institutions page
 * Full prototype navigation from homepage to listing page to institution profile pages
 
-Keep the same overall visual style used across SapioMatch AI:
+Keep the same overall visual style used across Learnova AI:
 
 * Futuristic AI SaaS interface
 * Dark navy / black background
@@ -728,7 +728,7 @@ Use:
 * Smooth visual hierarchy
 * Public browsing style without personalized match scores
 
-Make the UI feel consistent with the current SapioMatch AI homepage.
+Make the UI feel consistent with the current Learnova AI homepage.
 
 ---
 
@@ -774,4 +774,4 @@ The final output should include:
 * Search and filter UI
 * Clear institution detail pages
 * Navigation back to Explore Institutions and Home
-* Premium SapioMatch AI futuristic visual style
+* Premium Learnova AI futuristic visual style

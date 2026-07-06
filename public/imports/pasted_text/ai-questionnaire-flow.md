@@ -1,4 +1,4 @@
-Create a new AI questionnaire experience for the existing SapioMatch AI platform.
+Create a new AI questionnaire experience for the existing Learnova AI platform.
 
 This experience starts when the user clicks the homepage button:
 
@@ -7,12 +7,12 @@ This experience starts when the user clicks the homepage button:
 The goal is to create a ChatGPT-style / WhatsApp-style AI advisor flow where the AI asks the user questions one by one, and the user answers each question. Since Figma has no real logic, simulate the flow using separate frames/pages.
 
 The platform context:
-SapioMatch AI is a futuristic AI-powered education matching platform that helps students, working professionals, and future learners find the best universities, academies, training providers, and professional programs based on their goals, background, budget, preferred location, delivery mode, and career direction.
+Learnova AI is a futuristic AI-powered education matching platform that helps students, working professionals, and future learners find the best universities, academies, training providers, and professional programs based on their goals, background, budget, preferred location, delivery mode, and career direction.
 
 The current design style:
 Dark futuristic AI SaaS platform.
 Use deep navy / black background, electric blue, vibrant purple, cyan accents, glassmorphism cards, glowing gradients, subtle grid patterns, neon borders, floating particles, AI orb visuals, and modern premium UI.
-The design should match the existing SapioMatch AI theme, but this questionnaire section should be cleaner and more conversational.
+The design should match the existing Learnova AI theme, but this questionnaire section should be cleaner and more conversational.
 
 Important UX concept:
 The questionnaire should look like the user is chatting with an AI education advisor.
@@ -24,7 +24,7 @@ Create a full-page AI chat interface.
 
 Left or top area:
 
-* SapioMatch AI logo
+* Learnova AI logo
 * Small label: “AI Program Advisor”
 * Progress indicator: “Question X of 9”
 * Optional mini profile card showing: “Working Professional Profile”
@@ -70,7 +70,7 @@ Title:
 “Let’s find your best-fit program.”
 
 AI message:
-“Hi, I’m your SapioMatch AI advisor. I’ll ask you a few quick questions to understand your background, goals, budget, study preferences, and career direction. Ready to start?”
+“Hi, I’m your Learnova AI advisor. I’ll ask you a few quick questions to understand your background, goals, budget, study preferences, and career direction. Ready to start?”
 
 Button:
 “Start Matching”
@@ -189,7 +189,7 @@ Headline:
 “Analyzing your profile…”
 
 Subtext:
-“SapioMatch AI is comparing your goals, education background, budget, study format, preferred region, and work experience against available programs.”
+“Learnova AI is comparing your goals, education background, budget, study format, preferred region, and work experience against available programs.”
 
 Include a visible loading circle animation or animated-looking loader.
 Even if Figma cannot animate it, design it as if it is animated:
@@ -215,7 +215,7 @@ Headline:
 “Your AI match is ready.”
 
 Subtext:
-“Based on your profile, SapioMatch AI found programs that fit a 29-year-old working professional with a bachelor’s degree, 3–5 years of experience, interest in Law & Public Policy, a promotion goal, a Europe preference, hybrid study format, affordable budget, and a 6-month start timeline.”
+“Based on your profile, Learnova AI found programs that fit a 29-year-old working professional with a bachelor’s degree, 3–5 years of experience, interest in Law & Public Policy, a promotion goal, a Europe preference, hybrid study format, affordable budget, and a 6-month start timeline.”
 
 Show a user profile summary card:
 

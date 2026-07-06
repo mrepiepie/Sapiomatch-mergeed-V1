@@ -60,7 +60,7 @@ export async function GET() {
       alerts: alerts
     });
   } catch (err) {
-    console.error('[SapioMatch API] Error in GET stats route:', err);
+    console.error('[Learnova API] Error in GET stats route:', err);
     return NextResponse.json({ error: "Internal server error." }, { status: 500 });
   }
 }

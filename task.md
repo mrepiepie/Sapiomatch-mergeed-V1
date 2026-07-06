@@ -1,0 +1,54 @@
+# Antigravity Redesign — Task Tracker
+
+- `[x]` 1. Remove Houdini PaintWorklet registration in `layout.js` (keeping the flash-free theme init script).
+- `[x]` 2. Remove `<ParticlesBackground />` canvas-based loop from `LearnovaVisualShell.jsx`.
+- `[x]` 3. Clean up `Home.jsx` — completely stripped the dynamic globe imports, refs, effects, and styles.
+- `[x]` 4. Added a premium, widescreen Product Demonstration Video Row with play button overlay.
+- `[x]` 5. Added a clean, typographic text/quote section focusing on matching philosophy.
+- `[x]` 6. Styled "The Process: How Learnova Guides You" into a spacious minimalist 3-step grid.
+- `[x]` 7. Created an interactive "Find Your University" selector dashboard with search input, filter pills, and sample universities showing matching percentages.
+- `[x]` 8. Integrated the **Three-Color Cream/Off-White theme** (`#FFFDF5` background, emerald shapes/accents, black + emerald text) globally in `index.css` variables and `home-antigravity.css`.
+- `[x]` 9. Hardcoded `data-theme="light"` on the root `<html>` tag and updated layout inline script to always force light mode, preventing stuck localStorage state.
+- `[x]` 10. Removed `<ThemeToggle />` component entirely from the page header to prevent any dark/light mode switching tension.
+- `[x]` 11. Removed `<LearnovaLegacySections />` from the public home routing in `page.js` to ensure the redesigned page displays clean and standalone.
+- `[x]` 12. Corrected all white text bug elements (Go Back buttons, active menu states, header title, notifications panel text, and modal header) to `var(--text-primary)` to guarantee readability on `#FFFDF5` cream background.
+- `[x]` 13. Modified `.ag-hero` background block in `home-antigravity.css` to be `#FFFDF5` (instead of white `#ffffff`) and set the `.ag-h1` color to `#000000 !important` to force the text "Find Your Best-Fit Program with" to render in solid black on all browsers.
+- `[x]` 14. Reverted the GSAP ScrollTrigger video scaling animation to maintain the standard static widescreen video block layout.
+- `[x]` 15. Darkened the `.ag-h2` section headers (such as "Experience the Matching Engine in Action") by setting `color: #000000 !important` and `opacity: 1 !important` inside `home-antigravity.css` to prevent fade effects from making the heading text look grey.
+- `[x]` 16. Removed all `<hr className="ag-rule" />` divider lines across `Home.jsx` to create a seamless, uncluttered flow.
+- `[x]` 17. Changed step numbers (`01`, `02`, `03`) inside `.ag-step-num` to a darker soft grey (`rgba(0, 0, 0, 0.15)`) in `home-antigravity.css` to enhance contrast.
+- `[x]` 18. Set `background: #FFFDF5` for all page section containers (`ag-hero`, `ag-video-section`, `ag-text-section`, `ag-workflow`, `ag-find-section`, and `ag-pricing` gradient base) in `home-antigravity.css` to guarantee a completely uniform background.
+- `[x]` 19. Set `.ag-home` parent wrapper element `background-color` to `#FFFDF5` inside `home-antigravity.css` to cover the entire page canvas container.
+- `[x]` 20. Updated the footer background variable `--footer-bg` in `index.css` to `#FFFDF5` to align the page footer with the main page canvas.
+- `[x]` 21. Added light mode overrides for `.custom-input` and `.custom-select` inside `learnova-visual.css` to fix the dark charcoal inputs bug, providing clean white input fields with dark grey placeholder texts.
+- `[x]` 22. Force-darkened all inline white/light-grey text inside the main content viewport in light mode (e.g. stats numbers, live feed items, active menu indicators) using wildcard attribute selectors with `!important` inside `learnova-visual.css`.
+- `[x]` 23. Styled section headers ("Experience the Matching Engine in Action", "How Learnova Guides You", and "Find Your University") to the requested `#4b5563` (dark grey) color.
+- `[x]` 24. Styled morphing words ("AI", "Apply", "Live") and "Learnova" inside the hero title to solid green.
+- `[x]` 25. Forced timeline step titles ("Tell Us Your Goal", "AI Match Algorithm", "Apply & Connect") to solid black.
+- `[x]` 26. Styled the "Choose Your" part of the pricing header to have a modern outline/text-border effect.
+- `[x]` 27. Forced footer background to `#FFFDF5` in light mode within `learnova-visual.css`.
+- `[x]` 28. Removed the application loading page spinner overlay (`#site-loading-overlay`) entirely from `page.js` and set the initial loading state to false for an instantaneous page load experience.
+- `[x]` 29. Removed the "Product Tour" eyebrow and "Experience the Matching Engine in Action" header from the video section inside `Home.jsx` to reduce vertical footprint.
+- `[x]` 30. Implemented a horizontal hover-expanding accordion gallery (`.ag-uni-accordion-gallery`) for search explorer university results.
+- `[x]` 31. Forced all accordion text elements to render in pure white using high-specificity selectors with `!important` rules, resolving contrast concerns.
+- `[x]` 32. Programmed cinematic springy translations on accordion hover: collapsed vertical labels sink downwards while the expanded details (title, match badge, description, and footer metadata) glide up into view with a staggered parallax animation.
+- `[x]` 33. Integrated the **Skiper35 hover expand technique**: transitioned the accordion gallery to a dynamically controlled state hook (`activeIndex`), allowing GSAP to manage card flex sizing, background zooming, and staggered text slide-ups with spring-like easings.
+- `[x]` 34. Enlarged the mockup container `max-width` from `900px` to `1400px`, doubled the accordion height from `380px` to `640px`, and scaled up all text components (titles, labels, search bar, and badges) 1.5x to 2x for a spacious widescreen layout.
+- `[x]` 35. Resolved development server runtime chunk errors (MODULE_NOT_FOUND `./873.js`) caused by concurrent execution of the production build by completely clearing the `.next` directory and restarting the Next.js dev server.
+- `[x]` 36. Configured the collapsed accordion title labels to display in standard **horizontal format** centered at the bottom of the card, using `text-overflow: ellipsis` to cleanly handle varying width states when filtered.
+- `[x]` 37. Repositioned the collapsed university titles to the vertical center of the card, setting a responsive clamp-based H1 size (`clamp(20px, 2.3vw, 36px)`) with solid bold weight (`800`) and a text-shadow so they wrap dynamically to fill the card box on narrow states, and span beautifully on wide states.
+- `[x]` 38. Enabled CSS Container Queries (`container-type: inline-size`) on the individual `.ag-accordion-card` containers and configured the title `font-size` with CSS container width units (`clamp(11.5px, 13cqw, 32px)`) so font sizes scale down automatically to fit horizontal space when collapsed without word-clipping, and expand back to H1-scale when cards widen.
+- `[x]` 39. Replaced the simple circular video play button with a premium white pill-style overlay button (`Play intro`) that transitions to emerald on hover.
+- `[x]` 40. Added a horizontal "walkthrough feature list" directly under the video container (`180-Second Interactive Tour`, `AI Match Diagnostics Preview`, and `Direct Admissions Expert Walkthrough`).
+- `[x]` 41. Implemented **magnetic cursor tracking** on the video play pill overlay button (`Play intro`) inside the video container using GSAP coordinates tracking.
+- `[x]` 42. Removed the legacy pricing section ("Plans Choose Your Academic Advantage...") entirely from the homepage layout in `Home.jsx` and `home-antigravity.css`.
+- `[x]` 43. Created a premium **Bento Grid section** presenting different academic program streams: CS, BA, CA, Engineering, Medicine, Design, and Law.
+- `[x]` 44. Designed interactive CSS-only visual previews for each bento card: code block editor, dashboard tablet, index analytics sheet, grid blueprint, clinical pulse wave, slider portfolio, and legal badges.
+- `[x]` 45. Scaled the Bento Grid wrapper container to span **95% of the screen width** and configured the large CS, BA, and Design cards to adopt a wide **landscape side-by-side flex layout** (text on left, visual mockups on right) on desktop devices.
+- `[x]` 46. Centered the sub-header description paragraph ("Compare core paths from Computer Science to Chartered Accountancy...") under the Bento Grid header.
+- `[x]` 47. Forced all text and label elements inside the dark Bento Grid cards to display in solid white and custom colors.
+- `[x]` 48. Replaced the Engineering & Technology blueprint graph with a high-contrast **black and white graph** (pure white background panel `#ffffff`, black grid alignment dots, black coordinate axis lines, and black dashed circle) to represent mechanical diagrams.
+- `[x]` 49. Converted all Bento Grid card backgrounds from the blue-grey tint `#111827` to a neutral dark slate grey: **`#505152`**.
+- `[x]` 50. Styled the Bento Grid header's outlined text segment ("Explore Diverse") to render as solid **grey** (`#4b5563`).
+- `[x]` 51. Centered the Bento section's eyebrow text element (**"Programs"**) above the main heading.
+- `[x]` 52. Verified that the dev server builds and runs cleanly with zero errors.

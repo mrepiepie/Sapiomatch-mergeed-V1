@@ -48,7 +48,7 @@ function getInitialData() {
       {
         id: "usr_2",
         name: "AUS admissions",
-        email: "aus@sapiomatch.ai",
+        email: "aus@learnova.ai",
         password: "password",
         role: "University",
         contactNumber: "+971 6 515 5555",
@@ -60,7 +60,7 @@ function getInitialData() {
       {
         id: "usr_3",
         name: "Birmingham admissions",
-        email: "birmingham@sapiomatch.ai",
+        email: "birmingham@learnova.ai",
         password: "password",
         role: "University",
         contactNumber: "+971 4 249 2300",
@@ -72,7 +72,7 @@ function getInitialData() {
       {
         id: "usr_4",
         name: "Super Admin Operator",
-        email: "operator@sapiomatch.ai",
+        email: "operator@learnova.ai",
         password: "password",
         role: "Admin",
         contactNumber: "+971 4 111 2222",
@@ -101,14 +101,14 @@ function getInitialData() {
       }
     ],
     universities: [
-      { id: "uni_1", name: "American University of Sharjah", email: "aus@sapiomatch.ai" },
-      { id: "uni_2", name: "University of Birmingham Dubai", email: "birmingham@sapiomatch.ai" }
+      { id: "uni_1", name: "American University of Sharjah", email: "aus@learnova.ai" },
+      { id: "uni_2", name: "University of Birmingham Dubai", email: "birmingham@learnova.ai" }
     ],
     notifications: [
       {
         id: "not_1",
         userEmail: "sanji@example.com",
-        text: "Welcome to SapioMatch! You have been allocated 10 Standard credits.",
+        text: "Welcome to Learnova! You have been allocated 10 Standard credits.",
         date: "2026-06-13",
         read: false,
         link: ""

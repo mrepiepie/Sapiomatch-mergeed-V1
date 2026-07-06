@@ -65,7 +65,7 @@ export default function Questionnaire({ setView, answers, setAnswers, completedQ
   const handleResetQuestions = () => {
     if (window.confirm("Are you sure you want to reset all questions to the default template?")) {
       setQuestions(mockQuestions);
-      localStorage.removeItem('sapio_questions');
+      localStorage.removeItem('learnova_questions');
       alert("Questions reset to default template.");
     }
   };
@@ -80,7 +80,7 @@ export default function Questionnaire({ setView, answers, setAnswers, completedQ
       // Re-index steps
       const reindexed = updated.map((q, i) => ({ ...q, step: i + 1 }));
       setQuestions(reindexed);
-      localStorage.setItem('sapio_questions', JSON.stringify(reindexed));
+      localStorage.setItem('learnova_questions', JSON.stringify(reindexed));
       alert(`Step ${idx + 1} deleted successfully.`);
     }
   };
@@ -151,7 +151,7 @@ export default function Questionnaire({ setView, answers, setAnswers, completedQ
     }
 
     setQuestions(updatedList);
-    localStorage.setItem('sapio_questions', JSON.stringify(updatedList));
+    localStorage.setItem('learnova_questions', JSON.stringify(updatedList));
     setEditingQuestion(null);
     alert(isAdding ? "New question step added successfully!" : "Question step updated successfully!");
   };

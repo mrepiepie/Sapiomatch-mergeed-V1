@@ -176,7 +176,7 @@ export default function UserDashboard({
 
       <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 2fr', gap: '32px', alignItems: 'start' }}>
         
-        {/* Left Column: Sapio Student ID Passport */}
+        {/* Left Column: Learnova Student ID Passport */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
           <h3 style={{ fontSize: '18px', fontFamily: 'var(--font-display)' }}>Digital Student Passport</h3>
           
@@ -230,7 +230,7 @@ export default function UserDashboard({
                       letterSpacing: '0.1em', 
                       textTransform: 'uppercase' 
                     }}>
-                      SapioMatch {plan === 'Premium' ? 'Premium' : 'AI'}
+                      Learnova {plan === 'Premium' ? 'Premium' : 'AI'}
                     </div>
                     <div style={{ fontSize: '18px', fontWeight: 700, marginTop: '4px' }}>Student Passport</div>
                   </div>

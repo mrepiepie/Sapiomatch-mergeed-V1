@@ -1,6 +1,6 @@
 import { Inter, Space_Grotesk } from 'next/font/google';
 import '../index.css';
-import '../sapio-visual.css';
+import '../learnova-visual.css';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -17,43 +17,23 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 export const metadata = {
-  title: 'SapioMatch AI - Smart Academic Matching',
+  title: 'Learnova AI - Smart Academic Matching',
   description: 'AI-Powered Educational Recommendation Platform for Students and Working Professionals.',
 };
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className={`${inter.variable} ${spaceGrotesk.variable}`}>
+    <html lang="en" data-theme="light" className={`${inter.variable} ${spaceGrotesk.variable}`}>
       <head>
-        {/* CSS Houdini Ring Particles PaintWorklet — Chrome/Edge native, polyfill for others */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-(async function () {
-  if (typeof CSS === 'undefined' || !CSS.paintWorklet) {
-    try {
-      await import('https://unpkg.com/css-paint-polyfill');
-    } catch(e) { /* polyfill unavailable, dot-grid fallback stays active */ }
-  }
-  if (typeof CSS !== 'undefined' && CSS.paintWorklet) {
-    CSS.paintWorklet.addModule(
-      'https://unpkg.com/css-houdini-ringparticles/dist/ringparticles.js'
-    ).catch(function() { /* ring particles unavailable, dot-grid fallback stays active */ });
-  }
-})();
-`,
-          }}
-        />
-        {/* Theme init — reads from localStorage before first paint to avoid flash */}
+
+        {/* Theme init — force light theme for three-color base design */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
 (function() {
   try {
-    var saved = localStorage.getItem('sapio_theme');
-    if (saved === 'light') {
-      document.documentElement.setAttribute('data-theme', 'light');
-    }
+    document.documentElement.setAttribute('data-theme', 'light');
+    localStorage.setItem('learnova_theme', 'light');
   } catch(e) {}
 })();
 `,

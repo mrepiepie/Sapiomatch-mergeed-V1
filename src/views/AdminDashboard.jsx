@@ -895,7 +895,7 @@ export default function AdminDashboard({
                 <input 
                   type="email" 
                   className="custom-input"
-                  placeholder="e.g. aus@sapiomatch.ai"
+                  placeholder="e.g. aus@learnova.ai"
                   value={uniEmail}
                   onChange={(e) => setUniEmail(e.target.value)}
                   required
@@ -1041,7 +1041,7 @@ export default function AdminDashboard({
                         <button 
                           className="btn-premium-outline"
                           onClick={() => handleDeleteUser(user.id, user.name)}
-                          disabled={user.email === 'operator@sapiomatch.ai' || user.email === currentUser?.email}
+                          disabled={user.email === 'operator@learnova.ai' || user.email === currentUser?.email}
                           style={{ padding: '4px 8px', fontSize: '11px', borderColor: 'rgba(239, 68, 68, 0.2)', color: '#f87171' }}
                         >
                           <Trash size={12} />

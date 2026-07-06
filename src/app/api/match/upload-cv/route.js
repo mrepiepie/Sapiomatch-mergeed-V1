@@ -35,24 +35,24 @@ export async function POST(request) {
     fs.writeFileSync(tempFilePath, buffer);
 
     try {
-      const pythonPath = `c:\\Users\\iftkh\\Downloads\\Sapiomatch-mergeed-V1-main\\.venv\\Scripts\\python.exe`;
-      const scriptPath = `c:\\Users\\iftkh\\Downloads\\Sapiomatch-mergeed-V1-main\\ex.py`;
+      const pythonPath = `c:\\Users\\iftkh\\Downloads\\Learnova-mergeed-V1-main\\.venv\\Scripts\\python.exe`;
+      const scriptPath = `c:\\Users\\iftkh\\Downloads\\Learnova-mergeed-V1-main\\ex.py`;
       
       const { stdout } = await execAsync(`"${pythonPath}" "${scriptPath}" "${tempFilePath}"`);
       const parsedData = JSON.parse(stdout);
       if (parsedData.raw_text) {
         text = parsedData.raw_text;
-        console.log("[SapioMatch API] Successfully extracted text using ex.py");
+        console.log("[Learnova API] Successfully extracted text using ex.py");
       }
     } catch (err) {
-      console.error("[SapioMatch API] Python ex.py extractor error, falling back to node parsers:", err.message);
+      console.error("[Learnova API] Python ex.py extractor error, falling back to node parsers:", err.message);
     } finally {
       try {
         if (fs.existsSync(tempFilePath)) {
           fs.unlinkSync(tempFilePath);
         }
       } catch (cleanupErr) {
-        console.error("[SapioMatch API] Temp file cleanup error:", cleanupErr.message);
+        console.error("[Learnova API] Temp file cleanup error:", cleanupErr.message);
       }
     }
 
@@ -180,7 +180,7 @@ export async function POST(request) {
     });
 
   } catch (err) {
-    console.error('[SapioMatch API] CV parse error:', err);
+    console.error('[Learnova API] CV parse error:', err);
     return NextResponse.json({ success: false, error: err.message }, { status: 500 });
   }
 }

@@ -670,7 +670,7 @@ export default class SuperGlobeEngine {
   bindDirectoryCardEvents(contentArea) {
     contentArea.querySelectorAll("[data-globe-university]").forEach((button) => {
       button.addEventListener("click", () => {
-        window.dispatchEvent(new CustomEvent("sapio:navigate-institution", {
+        window.dispatchEvent(new CustomEvent("learnova:navigate-institution", {
           detail: {
             slug: button.dataset.slug || "",
             name: button.dataset.name || ""
@@ -681,7 +681,7 @@ export default class SuperGlobeEngine {
 
     contentArea.querySelectorAll("[data-globe-destination]").forEach((button) => {
       button.addEventListener("click", () => {
-        window.dispatchEvent(new CustomEvent("sapio:navigate-destination", {
+        window.dispatchEvent(new CustomEvent("learnova:navigate-destination", {
           detail: {
             country: button.dataset.country || ""
           }

@@ -6,11 +6,11 @@ import Questionnaire from '../views/Questionnaire';
 import Results from '../views/Results';
 import { mockQuestions } from '../data/mockQuestions';
 import ViewLoader from '../components/ViewLoader';
-import ThemeToggle from '../components/ThemeToggle';
+
 import {
   Compass, Sparkles, GraduationCap, ArrowRight, MessageSquare,
   Send, X, LogOut, LogIn, User, CheckCircle, ShieldAlert,
-  Settings, Bell, CheckSquare, Calendar, Phone, Mail, FileText, Check,
+  Settings, Bell, Calendar, Phone, Mail, FileText, Check,
   ArrowLeft
 } from 'lucide-react';
 
@@ -25,8 +25,8 @@ const About = dynamic(() => import('../views/About'), { loading: () => <ViewLoad
 const Contact = dynamic(() => import('../views/Contact'), { loading: () => <ViewLoader /> });
 const DestinationDetail = dynamic(() => import('../views/DestinationDetail'), { loading: () => <ViewLoader /> });
 const RoleSwitcher = dynamic(() => import('../components/RoleSwitcher'), { ssr: false });
-const SapioVisualShell = dynamic(() => import('../components/SapioVisualShell'), { loading: () => <ViewLoader /> });
-const SapioLegacySections = dynamic(() => import('../components/SapioLegacySections'), { loading: () => <ViewLoader /> });
+const LearnovaVisualShell = dynamic(() => import('../components/LearnovaVisualShell'), { loading: () => <ViewLoader /> });
+const LearnovaLegacySections = dynamic(() => import('../components/LearnovaLegacySections'), { loading: () => <ViewLoader /> });
 
 export default function App() {
   const institutionsRef = useRef([]);
@@ -42,8 +42,8 @@ export default function App() {
       }, 2500);
       return () => clearTimeout(timer);
     };
-    window.addEventListener('sapio_gmail_alert', handleGmailAlert);
-    return () => window.removeEventListener('sapio_gmail_alert', handleGmailAlert);
+    window.addEventListener('learnova_gmail_alert', handleGmailAlert);
+    return () => window.removeEventListener('learnova_gmail_alert', handleGmailAlert);
   }, []);
 
   const [view, setViewInternal] = useState('public-home');
@@ -79,7 +79,7 @@ export default function App() {
       
       // Redirect matching-connected hashes to questionnaire
       if (hash === 'tutoring-matching') {
-        localStorage.setItem('sapio_auth_redirect', 'questionnaire');
+        localStorage.setItem('learnova_auth_redirect', 'questionnaire');
         setViewInternal('questionnaire');
         window.location.hash = '#questionnaire';
         return;
@@ -98,7 +98,7 @@ export default function App() {
       if (hash && validViews.includes(hash)) {
         if (hash !== view) {
           if (hash === 'auth' && (view === 'questionnaire' || view === 'results')) {
-            localStorage.setItem('sapio_auth_redirect', view);
+            localStorage.setItem('learnova_auth_redirect', view);
           }
           setViewInternal(hash);
         }
@@ -175,7 +175,7 @@ export default function App() {
   };
   const [questions, setQuestions] = useState(() => {
     if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('sapio_questions');
+      const saved = localStorage.getItem('learnova_questions');
       if (saved) {
         try {
           return JSON.parse(saved);
@@ -187,7 +187,7 @@ export default function App() {
     return mockQuestions;
   });
 
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [loadingProgress, setLoadingProgress] = useState(0);
   const [loadingText, setLoadingText] = useState('Initializing AI Advisor Aria...');
 
@@ -198,35 +198,7 @@ export default function App() {
     });
   }, []);
 
-  useEffect(() => {
-    let progress = 0;
-    const interval = setInterval(() => {
-      progress += Math.floor(Math.random() * 8) + 4;
-      if (progress >= 100) {
-        progress = 100;
-        clearInterval(interval);
-        setLoadingProgress(100);
-        setLoadingText('Connection Established. Welcome!');
-        
-        setTimeout(() => {
-          setLoading(false);
-        }, 300);
-      } else {
-        setLoadingProgress(progress);
-        if (progress < 25) {
-          setLoadingText('Initializing SapioMatch AI Advisor...');
-        } else if (progress < 50) {
-          setLoadingText('Loading verified global institution templates...');
-        } else if (progress < 75) {
-          setLoadingText('Connecting to persistent database ledger...');
-        } else {
-          setLoadingText('Optimizing Next.js recommendation models...');
-        }
-      }
-    }, 40);
 
-    return () => clearInterval(interval);
-  }, []);
 
   const [selectedInstId, setSelectedInstId] = useState('university-birmingham-dubai');
   const [pendingGlobeInstId, setPendingGlobeInstId] = useState(null);
@@ -291,17 +263,17 @@ export default function App() {
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    const dbStr = localStorage.getItem('sapio_db');
+    const dbStr = localStorage.getItem('learnova_db');
     if (!dbStr) return;
     try {
       const db = JSON.parse(dbStr);
       if (view === 'institution-dashboard' && currentUser?.role !== 'University') {
-        const birmUser = db.users.find(u => u.email === 'birmingham@sapiomatch.ai');
+        const birmUser = db.users.find(u => u.email === 'birmingham@learnova.ai');
         if (birmUser) {
           setCurrentUser(birmUser);
         }
       } else if (view === 'admin-dashboard' && currentUser?.role !== 'Admin') {
-        const adminUser = db.users.find(u => u.email === 'operator@sapiomatch.ai');
+        const adminUser = db.users.find(u => u.email === 'operator@learnova.ai');
         if (adminUser) {
           setCurrentUser(adminUser);
         }
@@ -436,8 +408,8 @@ export default function App() {
       setView('auth');
     };
 
-    window.addEventListener('sapio:navigate-institution', handleGlobeInstitutionNavigation);
-    return () => window.removeEventListener('sapio:navigate-institution', handleGlobeInstitutionNavigation);
+    window.addEventListener('learnova:navigate-institution', handleGlobeInstitutionNavigation);
+    return () => window.removeEventListener('learnova:navigate-institution', handleGlobeInstitutionNavigation);
   }, [currentUser]);
 
   useEffect(() => {
@@ -466,8 +438,8 @@ export default function App() {
       setView('destination-detail');
     };
 
-    window.addEventListener('sapio:navigate-destination', handleGlobeDestinationNavigation);
-    return () => window.removeEventListener('sapio:navigate-destination', handleGlobeDestinationNavigation);
+    window.addEventListener('learnova:navigate-destination', handleGlobeDestinationNavigation);
+    return () => window.removeEventListener('learnova:navigate-destination', handleGlobeDestinationNavigation);
   }, []);
 
   useEffect(() => {
@@ -610,7 +582,7 @@ export default function App() {
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const savedKey = localStorage.getItem('sapio_gemini_api_key') || '';
+      const savedKey = localStorage.getItem('learnova_gemini_api_key') || '';
       setGeminiApiKey(savedKey);
       setTempApiKeyInput(savedKey);
     }
@@ -891,10 +863,7 @@ export default function App() {
     switch (view) {
       case 'public-home':
         return (
-          <>
-            <Home setView={setView} />
-            <SapioLegacySections setView={setView} setSelectedCountry={setSelectedCountry} />
-          </>
+          <Home setView={setView} />
         );
       case 'public-explore':
         return (
@@ -909,10 +878,7 @@ export default function App() {
       case 'destination-detail':
         if (!selectedCountry) {
           return (
-            <>
-              <Home setView={setView} />
-              <SapioLegacySections setView={setView} setSelectedCountry={setSelectedCountry} />
-            </>
+            <Home setView={setView} />
           );
         }
         return (
@@ -1032,31 +998,9 @@ export default function App() {
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
     >
-      <SapioVisualShell />
+      <LearnovaVisualShell />
 
-      {/* Loading Overlay */}
-      {loading && (
-        <div id="site-loading-overlay" className="loading-overlay">
-          <div className="loading-logo-container">
-            <div className="loading-logo-glow" />
-            <div className="loading-logo">
-              <Sparkles size={32} style={{ color: 'white' }} />
-            </div>
-          </div>
-          <h2 style={{ fontSize: '24px', fontFamily: 'var(--font-display)', marginBottom: '8px', color: 'white', fontWeight: 700 }}>
-            SapioMatch AI
-          </h2>
-          <p style={{ fontSize: '13px', color: 'var(--text-muted)', marginBottom: '32px', textAlign: 'center', maxWidth: '300px' }}>
-            A smarter bridge to trusted education
-          </p>
-          <div className="loading-progress-track">
-            <div className="loading-progress-bar" style={{ width: `${loadingProgress}%` }} />
-          </div>
-          <div className="loading-status-text">
-            {loadingProgress}% â€” {loadingText}
-          </div>
-        </div>
-      )}
+
 
       {/* Header / Navigation bar */}
       <header style={{
@@ -1088,7 +1032,7 @@ export default function App() {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                color: 'white',
+                color: 'var(--text-primary)',
                 cursor: 'pointer',
                 transition: 'all 0.2s ease',
               }}
@@ -1126,9 +1070,9 @@ export default function App() {
               fontWeight: 700,
               fontFamily: 'var(--font-display)',
               letterSpacing: '-0.01em',
-              color: 'white'
+              color: 'var(--text-primary)'
             }}>
-              SapioMatch AI
+              Learnova AI
             </span>
           </div>
         </div>
@@ -1154,7 +1098,7 @@ export default function App() {
             <a 
               href="#admin-dashboard" 
               style={{ 
-                color: view === 'admin-dashboard' ? 'white' : 'var(--text-muted)',
+                color: view === 'admin-dashboard' ? 'var(--text-primary)' : 'var(--text-muted)',
                 fontWeight: 600,
                 fontSize: '13px',
                 cursor: 'pointer',
@@ -1172,7 +1116,7 @@ export default function App() {
             <a 
               href="#institution-dashboard" 
               style={{ 
-                color: view === 'institution-dashboard' ? 'white' : 'var(--text-muted)',
+                color: view === 'institution-dashboard' ? 'var(--text-primary)' : 'var(--text-muted)',
                 fontWeight: 600,
                 fontSize: '13px',
                 cursor: 'pointer',
@@ -1191,8 +1135,6 @@ export default function App() {
         {/* Right Nav Action */}
         <div style={{ display: 'flex', gap: '12px', alignItems: 'center', position: 'relative' }}>
 
-          {/* Theme Switcher — always visible */}
-          <ThemeToggle />
 
           {/* Notification Center (Only visible when logged in) */}
           {currentUser && (
@@ -1260,7 +1202,7 @@ export default function App() {
                   gap: '12px'
                 }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--card-border)', paddingBottom: '8px' }}>
-                    <span style={{ fontSize: '13px', fontWeight: 700, color: 'white' }}>Inbox Notifications</span>
+                    <span style={{ fontSize: '13px', fontWeight: 700, color: 'var(--text-primary)' }}>Inbox Notifications</span>
                     <button 
                       onClick={() => setShowNotifications(false)} 
                       style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer' }}
@@ -1289,7 +1231,7 @@ export default function App() {
                               <span style={{ padding: '2px 6px', borderRadius: '4px', background: 'rgba(239, 68, 68, 0.15)', color: '#f87171', fontSize: '9px', fontWeight: 700 }}>Cancelled</span>
                             ) : null}
                           </div>
-                          <div style={{ color: 'white' }}>{n.text}</div>
+                          <div style={{ color: 'var(--text-primary)' }}>{n.text}</div>
                           {n.link && (
                             <a 
                               href={n.link} 
@@ -1394,7 +1336,7 @@ export default function App() {
               className="btn-premium-outline"
               onClick={() => {
                 if (view === 'questionnaire' || view === 'results') {
-                  localStorage.setItem('sapio_auth_redirect', view);
+                  localStorage.setItem('learnova_auth_redirect', view);
                 }
                 setView('auth');
               }}
@@ -1408,7 +1350,7 @@ export default function App() {
           <button 
             className="btn-premium"
             onClick={() => {
-              localStorage.setItem('sapio_auth_redirect', 'questionnaire');
+              localStorage.setItem('learnova_auth_redirect', 'questionnaire');
               setView('questionnaire');
             }}
             style={{ padding: '8px 14px', fontSize: '13px' }}
@@ -1435,13 +1377,13 @@ export default function App() {
         <div style={{ maxWidth: '1000px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '12px', alignItems: 'center' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
             <Sparkles size={14} style={{ color: 'var(--secondary)' }} />
-            <span style={{ fontSize: '14px', fontWeight: 600, color: 'white' }}>SapioMatch AI</span>
+            <span style={{ fontSize: '14px', fontWeight: 600, color: 'var(--text-primary)' }}>Learnova AI</span>
           </div>
           <p style={{ fontSize: '12px', color: 'var(--text-muted)', maxWidth: '500px' }}>
             Transforming educational search into structured, personalized fits for ambitious candidates.
           </p>
           <div style={{ display: 'flex', gap: '20px', fontSize: '11px', color: 'var(--text-muted)', marginTop: '4px' }}>
-            <span>Â© 2026 SapioMatch AI. All rights reserved.</span>
+            <span>Â© 2026 Learnova AI. All rights reserved.</span>
             <a href="#about">About Us</a>
             <a href="#contact">Contact Us</a>
           </div>
@@ -1480,7 +1422,7 @@ export default function App() {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
               <div>
                 <span style={{ fontSize: '10px', textTransform: 'uppercase', color: 'var(--secondary)', fontWeight: 700, letterSpacing: '0.05em' }}>Submit Application</span>
-                <h3 style={{ fontSize: '20px', color: 'white', fontWeight: 700, marginTop: '2px' }}>{activeApplyCourse.courseName}</h3>
+                <h3 style={{ fontSize: '20px', color: 'var(--text-primary)', fontWeight: 700, marginTop: '2px' }}>{activeApplyCourse.courseName}</h3>
                 <p style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '2px' }}>{activeApplyCourse.institution}</p>
               </div>
               <button 
@@ -1763,7 +1705,7 @@ export default function App() {
                     onClick={() => {
                       const key = tempApiKeyInput.trim();
                       setGeminiApiKey(key);
-                      localStorage.setItem('sapio_gemini_api_key', key);
+                      localStorage.setItem('learnova_gemini_api_key', key);
                       setShowChatSettings(false);
                       alert(key ? "Gemini API key saved! Aria is now live." : "API key cleared. Switched to local NLP mode.");
                     }}
@@ -1778,7 +1720,7 @@ export default function App() {
                       onClick={() => {
                         setGeminiApiKey('');
                         setTempApiKeyInput('');
-                        localStorage.removeItem('sapio_gemini_api_key');
+                        localStorage.removeItem('learnova_gemini_api_key');
                         setShowChatSettings(false);
                         alert("Gemini API key cleared. Running in local NLP mode.");
                       }}

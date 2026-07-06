@@ -11,7 +11,7 @@ export async function POST(request, { params }) {
     db.updateFormTemplate(institutionId, optional_sections || []);
     return NextResponse.json({ success: true, message: "Form updated successfully." });
   } catch (err) {
-    console.error('[SapioMatch API] Error in POST templates update route:', err);
+    console.error('[Learnova API] Error in POST templates update route:', err);
     return NextResponse.json({ error: "Internal server error." }, { status: 500 });
   }
 }

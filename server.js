@@ -19,7 +19,7 @@ async function getLiveCourses() {
     });
     return formattedText;
   } catch (err) {
-    console.error("[SapioMatch Server] Error reading courses database, using fallback:", err);
+    console.error("[Learnova Server] Error reading courses database, using fallback:", err);
     return `- University of Birmingham Dubai: Public Policy Master's (AED 95k, Hybrid), Global Executive MBA (AED 115k, Hybrid), Data Science MSc (AED 90k, On-Campus).
 - Middlesex University Dubai: MBA General (AED 75k, Hybrid), MA International Relations (AED 62k, Hybrid), MSc Cyber Security (AED 68k, Hybrid).
 - American University of Sharjah: Master of Public Policy (AED 88k, Hybrid), MBA (AED 95k, Hybrid), MSc Engineering Systems (AED 92k, On-Campus).
@@ -35,7 +35,7 @@ app.use(express.json());
 
 // Log incoming requests for dev visibility
 app.use((req, res, next) => {
-  console.log(`[SapioMatch Server] ${req.method} ${req.url} - ${new Date().toISOString()}`);
+  console.log(`[Learnova Server] ${req.method} ${req.url} - ${new Date().toISOString()}`);
   next();
 });
 
@@ -53,7 +53,7 @@ app.post('/api/chat', async (req, res) => {
       apiKey = process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY;
     }
     if (apiKey) {
-      console.log(`[SapioMatch Server] Querying Gemini API...`);
+      console.log(`[Learnova Server] Querying Gemini API...`);
       
       // Map history to Gemini API format
       const contents = [];
@@ -75,7 +75,7 @@ app.post('/api/chat', async (req, res) => {
 
       const systemInstruction = {
         parts: [{
-          text: `You are Aria, the premium AI Academic Advisor for SapioMatch. Your goal is to guide students and working professionals to find their best-fit programs.
+          text: `You are Aria, the premium AI Academic Advisor for Learnova. Your goal is to guide students and working professionals to find their best-fit programs.
 You must be conversational, warm, friendly, empathetic, and extremely helpful. Stick strictly to topics related to education, universities, vocational bootcamps, tuition fees, career upgrades, promotions, and study formats.
 Use the following partner database to suggest matches when asked:
 ${liveCoursesText}
@@ -98,7 +98,7 @@ Keep your responses concise, user-friendly, and formatted in markdown.`
         let success = false;
 
         for (const model of modelsToTry) {
-          console.log(`[SapioMatch Server] Trying Gemini model: ${model}...`);
+          console.log(`[Learnova Server] Trying Gemini model: ${model}...`);
           response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -110,16 +110,16 @@ Keep your responses concise, user-friendly, and formatted in markdown.`
             break;
           } else if (response.status !== 404) {
             const errText = await response.text();
-            console.error(`[SapioMatch Server] Gemini API returned error for model ${model}:`, response.status, errText);
+            console.error(`[Learnova Server] Gemini API returned error for model ${model}:`, response.status, errText);
             break;
           } else {
-            console.log(`[SapioMatch Server] Model ${model} not available (404). Trying next...`);
+            console.log(`[Learnova Server] Model ${model} not available (404). Trying next...`);
           }
         }
 
         // Standard legacy fallback if all newer models return 404
         if (!success) {
-          console.log(`[SapioMatch Server] Newer models not available. Trying legacy gemini-pro...`);
+          console.log(`[Learnova Server] Newer models not available. Trying legacy gemini-pro...`);
           const contentsWithSystem = [
             {
               role: 'user',
@@ -159,7 +159,7 @@ Keep your responses concise, user-friendly, and formatted in markdown.`
           const errText = await response.text();
           console.error("Gemini API returned error:", errText);
           if (clientApiKey) {
-            console.log(`[SapioMatch Server] Client API Key authentication error. Falling back to local AI...`);
+            console.log(`[Learnova Server] Client API Key authentication error. Falling back to local AI...`);
             const aiResult = generateAiResponse(message, history);
             return res.json({
               text: `⚠️ **Note: The Gemini API Key you provided returned an authentication error.**\n\n*Error details: ${errText.substring(0, 80)}...*\n\n${aiResult.text}`,
@@ -180,7 +180,7 @@ Keep your responses concise, user-friendly, and formatted in markdown.`
     }
 
     // Fallback to local NLP if API key is not configured or fails
-    console.log(`[SapioMatch Server] Falling back to local semantic AI Engine...`);
+    console.log(`[Learnova Server] Falling back to local semantic AI Engine...`);
     const aiResult = generateAiResponse(message, history);
     res.json(aiResult);
   } catch (err) {
@@ -219,7 +219,7 @@ async function readDatabaseFile() {
     const fileContent = await fs.readFile(filePath, 'utf8');
     return JSON.parse(fileContent);
   } catch (err) {
-    console.error("[SapioMatch Server] Error reading database.json, using fallback/initial data:", err);
+    console.error("[Learnova Server] Error reading database.json, using fallback/initial data:", err);
     // Initial data fallback matching db.js schema
     return {
       users: [
@@ -237,7 +237,7 @@ async function readDatabaseFile() {
         {
           id: "usr_2",
           name: "AUS admissions",
-          email: "aus@sapiomatch.ai",
+          email: "aus@learnova.ai",
           password: "password",
           role: "University",
           contactNumber: "+971 6 515 5555",
@@ -249,7 +249,7 @@ async function readDatabaseFile() {
         {
           id: "usr_3",
           name: "Birmingham admissions",
-          email: "birmingham@sapiomatch.ai",
+          email: "birmingham@learnova.ai",
           password: "password",
           role: "University",
           contactNumber: "+971 4 249 2300",
@@ -261,7 +261,7 @@ async function readDatabaseFile() {
         {
           id: "usr_4",
           name: "Super Admin Operator",
-          email: "operator@sapiomatch.ai",
+          email: "operator@learnova.ai",
           password: "password",
           role: "Admin",
           contactNumber: "+971 4 111 2222",
@@ -290,14 +290,14 @@ async function readDatabaseFile() {
         }
       ],
       universities: [
-        { id: "uni_1", name: "American University of Sharjah", email: "aus@sapiomatch.ai" },
-        { id: "uni_2", name: "University of Birmingham Dubai", email: "birmingham@sapiomatch.ai" }
+        { id: "uni_1", name: "American University of Sharjah", email: "aus@learnova.ai" },
+        { id: "uni_2", name: "University of Birmingham Dubai", email: "birmingham@learnova.ai" }
       ],
       notifications: [
         {
           id: "not_1",
           userEmail: "sanji@example.com",
-          text: "Welcome to SapioMatch! You have been allocated 10 Standard credits.",
+          text: "Welcome to Learnova! You have been allocated 10 Standard credits.",
           date: "2026-06-13",
           read: false,
           link: ""
@@ -452,12 +452,12 @@ app.get('/api/platform-stats', async (req, res) => {
 
 // Simple health check endpoint
 app.get('/api/health', (req, res) => {
-  res.json({ status: "healthy", service: "SapioMatch AI Engine", timestamp: new Date() });
+  res.json({ status: "healthy", service: "Learnova AI Engine", timestamp: new Date() });
 });
 
 app.listen(PORT, () => {
   console.log(`\n======================================================`);
-  console.log(`🚀 SapioMatch AI Backend Server running on port ${PORT}`);
+  console.log(`🚀 Learnova AI Backend Server running on port ${PORT}`);
   console.log(`🔗 Health check: http://localhost:${PORT}/api/health`);
   console.log(`======================================================\n`);
 });

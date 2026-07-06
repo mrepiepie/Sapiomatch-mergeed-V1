@@ -214,7 +214,7 @@ export default function Contact({ setView, alert }) {
                   </div>
                   <div>
                     <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Email</div>
-                    <div style={{ fontSize: '14px', color: 'white', fontWeight: 500 }}>support@sapiomatch.ai</div>
+                    <div style={{ fontSize: '14px', color: 'white', fontWeight: 500 }}>support@learnova.ai</div>
                   </div>
                 </div>
 
@@ -299,7 +299,7 @@ export default function Contact({ setView, alert }) {
                   <span style={{ fontSize: '13px', fontWeight: 500 }}>Institution Onboarding</span>
                 </div>
 
-                <div className="spotlight-card" style={{ padding: '12px 16px', display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer', background: 'rgba(255,255,255,0.01)', '--spotlight-color': 'rgba(153, 27, 27, 0.08)' }} onMouseMove={handleMouseMove} onMouseLeave={handleMouseLeave} onClick={() => alert('For corporate partnerships, please email partnerships@sapiomatch.ai')}>
+                <div className="spotlight-card" style={{ padding: '12px 16px', display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer', background: 'rgba(255,255,255,0.01)', '--spotlight-color': 'rgba(153, 27, 27, 0.08)' }} onMouseMove={handleMouseMove} onMouseLeave={handleMouseLeave} onClick={() => alert('For corporate partnerships, please email partnerships@learnova.ai')}>
                   <div style={{ width: '32px', height: '32px', borderRadius: '6px', background: 'rgba(153, 27, 27, 0.1)', color: 'var(--accent)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }} className="icon-container">
                     <Briefcase size={16} />
                   </div>

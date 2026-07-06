@@ -1,6 +1,6 @@
-Update the existing SapioMatch AI prototype by adding the missing Application / Admission / Enrollment tracking system properly across the User Dashboard, Institution Dashboard, Admin Dashboard, and Super Admin Dashboard.
+Update the existing Learnova AI prototype by adding the missing Application / Admission / Enrollment tracking system properly across the User Dashboard, Institution Dashboard, Admin Dashboard, and Super Admin Dashboard.
 
-Do not redesign the whole website. Keep the existing SapioMatch AI visual style exactly as it is:
+Do not redesign the whole website. Keep the existing Learnova AI visual style exactly as it is:
 
 * Futuristic AI SaaS interface
 * Dark navy / black background
@@ -764,7 +764,7 @@ Super Admin Dashboard sidebar should include:
 12. IMPORTANT UI STYLE RULES
 ============================
 
-Keep the existing SapioMatch AI theme:
+Keep the existing Learnova AI theme:
 
 * Dark futuristic AI SaaS style
 * Animated background if already present
@@ -812,4 +812,4 @@ Before finishing, make sure:
 * Super Admin can manage application form templates.
 * Each institution sees only its own application data.
 * All new buttons are clickable.
-* All pages match the original SapioMatch AI visual design.
+* All pages match the original Learnova AI visual design.

@@ -37,7 +37,7 @@ export async function POST(request, { params }) {
       new_balance: newBalance
     });
   } catch (err) {
-    console.error('[SapioMatch API] Error in POST credits route:', err);
+    console.error('[Learnova API] Error in POST credits route:', err);
     return NextResponse.json({ error: "Internal server error." }, { status: 500 });
   }
 }

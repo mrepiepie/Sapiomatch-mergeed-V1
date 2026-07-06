@@ -87,7 +87,7 @@ export default function InstitutionDashboard({ currentUser, alert, appliedCourse
         alert(`Reply sent successfully to ${selectedAppForReply.studentName}!`);
         
         // Dispatch simulated Gmail alert event
-        window.dispatchEvent(new CustomEvent('sapio_gmail_alert', {
+        window.dispatchEvent(new CustomEvent('learnova_gmail_alert', {
           detail: {
             to: selectedAppForReply.studentEmail,
             subject: `New Response: ${selectedAppForReply.courseName} - ${selectedAppForReply.universityName}`,
@@ -114,7 +114,7 @@ export default function InstitutionDashboard({ currentUser, alert, appliedCourse
     let defaultMeetingDate = 'Tomorrow, 3:00 PM GST';
     
     if (lead.counselorPreference === '15-Min Live Chat') {
-      defaultMeetingLink = 'https://sapiomatch.ai/chat/live';
+      defaultMeetingLink = 'https://learnova.ai/chat/live';
       defaultMeetingDate = lead.chatSlot || 'Today, 2:15 PM - 2:30 PM';
     } else if (lead.counselorPreference === 'No Counselor') {
       defaultMeetingLink = '';
@@ -138,10 +138,10 @@ export default function InstitutionDashboard({ currentUser, alert, appliedCourse
         alert(`Application Approved! Email invitation sent to ${lead.studentEmail}.`);
         
         // Dispatch simulated Gmail alert event
-        window.dispatchEvent(new CustomEvent('sapio_gmail_alert', {
+        window.dispatchEvent(new CustomEvent('learnova_gmail_alert', {
           detail: {
             to: lead.studentEmail,
-            subject: `[SapioMatch] Application Approved - ${lead.universityName}`,
+            subject: `[Learnova] Application Approved - ${lead.universityName}`,
             body: `Dear ${lead.studentName},\n\nWe are pleased to inform you that your application for "${lead.courseName}" at ${lead.universityName} has been APPROVED!\n\nCounselor Preference: ${lead.counselorPreference}\nMeeting Date/Time: ${defaultMeetingDate}\nVideo Link: ${defaultMeetingLink || 'N/A'}\n\nWe look forward to meeting you.\n\nWarm regards,\nAdmissions Representative\n${lead.universityName}`
           }
         }));
@@ -176,10 +176,10 @@ export default function InstitutionDashboard({ currentUser, alert, appliedCourse
         alert(`Application Cancelled. Notification sent to ${lead.studentName}.`);
 
         // Dispatch simulated Gmail alert event
-        window.dispatchEvent(new CustomEvent('sapio_gmail_alert', {
+        window.dispatchEvent(new CustomEvent('learnova_gmail_alert', {
           detail: {
             to: lead.studentEmail,
-            subject: `[SapioMatch] Application Update - ${lead.universityName}`,
+            subject: `[Learnova] Application Update - ${lead.universityName}`,
             body: `Dear ${lead.studentName},\n\nWe regret to inform you that your application for "${lead.courseName}" at ${lead.universityName} has been Cancelled.\n\nPlease check your student dashboard for feedback or to submit a new inquiry.\n\nWarm regards,\nAdmissions Representative\n${lead.universityName}`
           }
         }));

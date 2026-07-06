@@ -62,7 +62,7 @@ export function generateAiResponse(message, history = []) {
 
   if (matchedGreeting) {
     return {
-      text: "Yo! What's up, bro? 👋 I'm Aria, your SapioMatch AI Advisor. I'm doing great, thank you! I'm here and ready to help you match with premium universities, compare tuition fees, or find flexible courses.\n\n" +
+      text: "Yo! What's up, bro? 👋 I'm Aria, your Learnova AI Advisor. I'm doing great, thank you! I'm here and ready to help you match with premium universities, compare tuition fees, or find flexible courses.\n\n" +
             "Are you looking to upgrade your skills, switch careers, or check out some budget options today? Let me know, or just ask me any question!"
     };
   }
@@ -70,7 +70,7 @@ export function generateAiResponse(message, history = []) {
   // Identity / Capabilities Small Talk
   if (query.includes('who are you') || query.includes('your name') || query.includes('what are you') || query.includes('who made you') || query.includes('created you') || query.includes('what is your name')) {
     return {
-      text: "I am Aria, the SapioMatch conversational AI advisor. I was created by the development team to help students and professionals navigate educational pathways.\n\n" +
+      text: "I am Aria, the Learnova conversational AI advisor. I was created by the development team to help students and professionals navigate educational pathways.\n\n" +
             "If you configure a Gemini API key (via the gear icon above), I connect directly to Gemini 1.5 Flash to act as your personal academic assistant. Without a key, I run on my local semantic rule engine. How can I help you today, bro?"
     };
   }

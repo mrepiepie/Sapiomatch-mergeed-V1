@@ -62,7 +62,7 @@ export async function POST(request) {
       }
     });
   } catch (err) {
-    console.error('[SapioMatch API] Error in profile update API:', err);
+    console.error('[Learnova API] Error in profile update API:', err);
     return NextResponse.json({ error: 'Internal server error.' }, { status: 500 });
   }
 }

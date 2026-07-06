@@ -1,6 +1,6 @@
-Create the **SapioMatch AI Admin Dashboard** interface and connect it correctly to the public website login flow.
+Create the **Learnova AI Admin Dashboard** interface and connect it correctly to the public website login flow.
 
-Keep the same overall visual style used across the SapioMatch AI dashboards:
+Keep the same overall visual style used across the Learnova AI dashboards:
 
 * Futuristic AI SaaS interface
 * Dark navy / black background
@@ -438,4 +438,4 @@ The final Admin Dashboard should clearly communicate:
 * Admin cannot edit campaign details
 * Admin cannot directly apply sensitive changes
 * Super Admin approval is required for add/delete/update actions
-* The UI must remain premium, futuristic, clean, and consistent with the rest of SapioMatch AI
+* The UI must remain premium, futuristic, clean, and consistent with the rest of Learnova AI

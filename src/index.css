@@ -1,54 +1,53 @@
 :root {
   /* ============================================================
-     SAPIOMATCH — DEEP EARTH DESIGN SYSTEM (Single Source of Truth)
-     Palette: Forest Night bg · Emerald primary · Terracotta secondary
-     No blue, no purple, no cyan in this app.
+     LEARNOVA — THREE-COLOR BASE THEME
+     White background · Emerald accents · Black + Emerald text
      ============================================================ */
 
   /* Backgrounds */
-  --bg-color: #080c09;           /* Deep Forest Night */
+  --bg-color: #FFFDF5;           /* Custom Warm Pale Cream */
   --bg-gradient: none;
-  --card-bg: #0f1410;            /* Dark Moss Slate cards */
-  --card-border: #1a2219;        /* Soft dark moss border */
-  --card-hover-border: #34d399;  /* Glowing Emerald on hover */
+  --card-bg: #ffffff;            /* Crisp White cards on cream */
+  --card-border: rgba(16, 185, 129, 0.15); /* Soft emerald border shapes */
+  --card-hover-border: #10b981;  /* Glowing Emerald on hover */
 
   /* Text */
-  --text-primary: #e8ede9;       /* Warm off-white with green cast */
-  --text-muted: #6b7b6e;         /* Muted forest gray */
-  --text-dark: #080c09;          /* Dark forest for light-bg badges */
-  --text-heading: #ffffff;       /* Pure white headings */
+  --text-primary: #111827;       /* Black / near-black */
+  --text-muted: #4b5563;         /* Dark gray / muted */
+  --text-dark: #ffffff;          /* White text inside dark pills/badges if any */
+  --text-heading: #000000;       /* Pure Black headings */
 
   /* Brand Palette — 2 accents max */
-  --primary: #34d399;            /* Emerald / Mint Green */
-  --primary-dim: rgba(52, 211, 153, 0.12);
-  --primary-glow: rgba(52, 211, 153, 0.18);
-  --secondary: #fb923c;          /* Terracotta / Amber Orange */
-  --secondary-dim: rgba(251, 146, 60, 0.12);
-  --secondary-glow: rgba(251, 146, 60, 0.18);
-  --accent: #fb923c;             /* Alias secondary for legacy references */
+  --primary: #10b981;            /* Emerald Green */
+  --primary-dim: rgba(16, 185, 129, 0.08);
+  --primary-glow: rgba(16, 185, 129, 0.15);
+  --secondary: #10b981;          /* Emerald Green */
+  --secondary-dim: rgba(16, 185, 129, 0.08);
+  --secondary-glow: rgba(16, 185, 129, 0.15);
+  --accent: #10b981;
 
   /* Functional (semantic-only, never decorative) */
-  --color-success: #22c55e;
+  --color-success: #10b981;
   --color-error: #ef4444;
   --color-warning: #f59e0b;
 
   /* Institution type coding — categorical only, not decorative */
-  --uni-color: #34d399;          /* University → primary emerald */
-  --academy-color: #fb923c;      /* Academy → secondary terracotta */
-  --online-color: #a3c4bc;       /* Online → muted sage */
-  --local-color: #22c55e;        /* Local/Active → success green */
+  --uni-color: #10b981;          /* University → primary emerald */
+  --academy-color: #059669;      /* Academy → deep emerald */
+  --online-color: #047857;       /* Online → darker emerald */
+  --local-color: #10b981;        /* Local/Active → success green */
 
   /* Shell */
-  --header-bg: rgba(8, 12, 9, 0.92);
-  --footer-bg: #0b0f0c;
-  --input-bg: #111813;
+  --header-bg: rgba(255, 253, 245, 0.94);
+  --footer-bg: #FFFDF5;
+  --input-bg: #f3f4f6;
 
   /* Chat */
-  --chat-toggle-bg: #0f1410;
-  --chat-window-bg: #0c1009;
-  --chat-header-bg: #0f1410;
-  --chat-input-area-bg: #080c09;
-  --chat-bubble-ai-bg: #141c16;
+  --chat-toggle-bg: #ffffff;
+  --chat-window-bg: #ffffff;
+  --chat-header-bg: #ffffff;
+  --chat-input-area-bg: #f3f4f6;
+  --chat-bubble-ai-bg: #f3f4f6;
 
   /* Radius */
   --border-radius-sm: 8px;
@@ -62,88 +61,36 @@
   --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 
   /* Shadows */
-  --shadow-sm: 0 1px 4px rgba(0, 0, 0, 0.35);
-  --shadow-md: 0 4px 22px rgba(0, 0, 0, 0.45);
-  --shadow-lg: 0 10px 42px rgba(0, 0, 0, 0.65);
+  --shadow-sm: 0 1px 4px rgba(16, 185, 129, 0.08);
+  --shadow-md: 0 4px 22px rgba(16, 185, 129, 0.12);
+  --shadow-lg: 0 10px 42px rgba(16, 185, 129, 0.15);
 
   /* Typography */
   --font-display: 'Space Grotesk', sans-serif;
   --font-body: 'Inter', sans-serif;
   --font-sans: 'Inter', sans-serif;
 
-  /* Radius aliases used by sapio-visual.css */
+  /* Radius aliases used by learnova-visual.css */
   --radius: 14px;
   --radius-sm: 8px;
   --radius-lg: 20px;
 
   /* Foreground aliases */
-  --foreground: #e8ede9;
-  --muted-foreground: #6b7b6e;
-  --background: #080c09;
-  --card: rgba(15, 20, 16, 0.85);
-  --border: #1a2219;
+  --foreground: #111827;
+  --muted-foreground: #4b5563;
+  --background: #FFFDF5;
+  --card: #ffffff;
+  --border: rgba(16, 185, 129, 0.15);
 
   /* Antigravity ink color (near-black, softer than pure #000) */
-  --ink: #202124;
+  --ink: #000000;
 
   /* Typewriter cursor gradient — OKLCH for smooth perceptual blending */
-  --typewriter-cursor-start: oklch(80% 0.3 34);   /* warm orange-red */
-  --typewriter-cursor-end:   oklch(90% 0.3 200);  /* cool cyan */
+  --typewriter-cursor-start: oklch(75% 0.25 150);   /* emerald light */
+  --typewriter-cursor-end:   oklch(60% 0.3 140);    /* emerald deep */
 
   /* Theme transition speed */
   --theme-transition: background-color 0.35s ease, color 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
-}
-
-/* ============================================================
-   LIGHT THEME — data-theme="light" on <html>
-   Antigravity philosophy: flat white surfaces, one accent, near-black ink
-   ============================================================ */
-[data-theme="light"] {
-  /* Backgrounds */
-  --bg-color: #f8faf9;
-  --card-bg: #ffffff;
-  --card-border: #d1dbd4;
-  --card-hover-border: #34d399;
-
-  /* Text */
-  --text-primary: #2d3a31;
-  --text-muted: #5a7263;
-  --text-dark: #f8faf9;
-  --text-heading: #202124;        /* Antigravity near-black ink */
-
-  /* Keep brand unchanged — emerald reads on light */
-  --primary: #16a972;
-  --primary-dim: rgba(22, 169, 114, 0.10);
-  --primary-glow: rgba(22, 169, 114, 0.16);
-  --secondary: #e07020;
-  --secondary-dim: rgba(224, 112, 32, 0.10);
-  --secondary-glow: rgba(224, 112, 32, 0.16);
-  --accent: #e07020;
-
-  /* Shell */
-  --header-bg: rgba(248, 250, 249, 0.94);
-  --footer-bg: #eef2ef;
-  --input-bg: #f0f4f1;
-
-  /* Chat */
-  --chat-toggle-bg: #ffffff;
-  --chat-window-bg: #f8faf9;
-  --chat-header-bg: #ffffff;
-  --chat-input-area-bg: #f0f4f1;
-  --chat-bubble-ai-bg: #eef2ef;
-
-  /* Shadows — lighter on light bg */
-  --shadow-sm: 0 1px 4px rgba(0, 0, 0, 0.08);
-  --shadow-md: 0 4px 22px rgba(0, 0, 0, 0.10);
-  --shadow-lg: 0 10px 42px rgba(0, 0, 0, 0.14);
-
-  /* Aliases */
-  --foreground: #2d3a31;
-  --muted-foreground: #5a7263;
-  --background: #f8faf9;
-  --card: rgba(255, 255, 255, 0.95);
-  --border: #d1dbd4;
-  --ink: #202124;
 }
 
 /* Reset and Global Styles */
@@ -970,7 +917,7 @@ button, input, select, textarea {
 }
 
 /* Exempt transforms and opacity from the global theme transition to avoid killing animation performance */
-*:not(.loading-progress-bar):not(.sapio-moving-globe-shell):not(.guide-img):not(.sapio-morph-word) {
+*:not(.loading-progress-bar):not(.learnova-moving-globe-shell):not(.guide-img):not(.learnova-morph-word) {
   transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease,
               box-shadow 0.3s ease;
 }
@@ -1255,7 +1202,7 @@ button, input, select, textarea {
   /* Houdini ring particle — Chrome/Edge native */
   background-image: paint(ringparticles);
 
-  /* Ring tuning for SapioMatch emerald palette */
+  /* Ring tuning for Learnova emerald palette */
   --ring-radius: 160;
   --ring-thickness: 140;
   --particle-count: 90;
@@ -1266,7 +1213,7 @@ button, input, select, textarea {
   --particle-max-alpha: 0.85;
 }
 
-/* Dot-grid fallback for Safari/Firefox (body::before in sapio-visual.css) */
+/* Dot-grid fallback for Safari/Firefox (body::before in learnova-visual.css) */
 @supports not (background: paint(ringparticles)) {
   .ag-ring-hero {
     background-image: none;
@@ -1284,7 +1231,7 @@ button, input, select, textarea {
    Replaces the entire GSAP IntersectionObserver card animation.
    ============================================================ */
 
-.sapio-hero-feature-card {
+.learnova-hero-feature-card {
   transition:
     opacity 0.55s cubic-bezier(0.16, 1, 0.3, 1),
     translate 0.55s cubic-bezier(0.16, 1, 0.3, 1),
@@ -1299,7 +1246,7 @@ button, input, select, textarea {
 
 /* Stagger via sibling-index */
 @supports (animation-timeline: view()) {
-  .sapio-hero-cards-row > .sapio-hero-feature-card {
+  .learnova-hero-cards-row > .learnova-hero-feature-card {
     animation-delay: calc(sibling-index() * 120ms);
   }
 }
@@ -1345,18 +1292,18 @@ button, input, select, textarea {
   opacity: 0.15;
 }
 
-[data-theme="light"] .sapio-globe-focus-section {
+[data-theme="light"] .learnova-globe-focus-section {
   background: radial-gradient(circle at 50% 16%, rgba(22, 169, 114, 0.07), transparent 34%),
               radial-gradient(circle at 22% 72%, rgba(224, 112, 32, 0.05), transparent 34%),
               rgba(248, 250, 249, 0.85);
 }
 
-[data-theme="light"] .sapio-globe-focus-copy h2,
-[data-theme="light"] .sapio-globe-typewriter-text {
+[data-theme="light"] .learnova-globe-focus-copy h2,
+[data-theme="light"] .learnova-globe-typewriter-text {
   color: var(--ink);
 }
 
-[data-theme="light"] .sapio-globe-focus-kicker {
+[data-theme="light"] .learnova-globe-focus-kicker {
   background: rgba(22, 169, 114, 0.08);
   border-color: rgba(22, 169, 114, 0.2);
 }

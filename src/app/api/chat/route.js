@@ -17,7 +17,7 @@ async function getLiveCourses() {
     });
     return formattedText;
   } catch (err) {
-    console.error("[SapioMatch API Route] Error reading courses database, using fallback:", err);
+    console.error("[Learnova API Route] Error reading courses database, using fallback:", err);
     return `- University of Birmingham Dubai: Public Policy Master's (AED 95k, Hybrid), Global Executive MBA (AED 115k, Hybrid), Data Science MSc (AED 90k, On-Campus).
 - Middlesex University Dubai: MBA General (AED 75k, Hybrid), MA International Relations (AED 62k, Hybrid), MSc Cyber Security (AED 68k, Hybrid).
 - American University of Sharjah: Master of Public Policy (AED 88k, Hybrid), MBA (AED 95k, Hybrid), MSc Engineering Systems (AED 92k, On-Campus).
@@ -39,7 +39,7 @@ export async function POST(request) {
     }
     
     if (apiKey) {
-      console.log(`[SapioMatch API Route] Querying Gemini 1.5 Flash API...`);
+      console.log(`[Learnova API Route] Querying Gemini 1.5 Flash API...`);
       
       const contents = [];
       if (history && history.length > 0) {
@@ -59,7 +59,7 @@ export async function POST(request) {
 
       const systemInstruction = {
         parts: [{
-          text: `You are Aria, the premium AI Academic Advisor for SapioMatch. Your goal is to guide students and working professionals to find their best-fit programs.
+          text: `You are Aria, the premium AI Academic Advisor for Learnova. Your goal is to guide students and working professionals to find their best-fit programs.
 You must be conversational, warm, friendly, empathetic, and extremely helpful. Stick strictly to topics related to education, universities, vocational bootcamps, tuition fees, career upgrades, promotions, and study formats.
 Use the following partner database to suggest matches when asked:
 ${liveCoursesText}
@@ -82,7 +82,7 @@ Keep your responses concise, user-friendly, and formatted in markdown.`
         let success = false;
 
         for (const model of modelsToTry) {
-          console.log(`[SapioMatch API Route] Trying Gemini model: ${model}...`);
+          console.log(`[Learnova API Route] Trying Gemini model: ${model}...`);
           response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -95,10 +95,10 @@ Keep your responses concise, user-friendly, and formatted in markdown.`
           } else if (response.status !== 404) {
             // If it's a non-404 error (e.g. 400, 403), log it and break to fallback to avoid multiple failed requests
             const errText = await response.text();
-            console.error(`[SapioMatch API Route] Gemini API returned error for model ${model}:`, response.status, errText);
+            console.error(`[Learnova API Route] Gemini API returned error for model ${model}:`, response.status, errText);
             break;
           } else {
-            console.log(`[SapioMatch API Route] Model ${model} not available (404). Trying next...`);
+            console.log(`[Learnova API Route] Model ${model} not available (404). Trying next...`);
           }
         }
 
@@ -120,7 +120,7 @@ Keep your responses concise, user-friendly, and formatted in markdown.`
     }
 
     // Fallback to local AI Engine
-    console.log(`[SapioMatch API Route] Falling back to local semantic AI Engine...`);
+    console.log(`[Learnova API Route] Falling back to local semantic AI Engine...`);
     const aiResult = generateAiResponse(message, history);
     return NextResponse.json(aiResult);
   } catch (err) {

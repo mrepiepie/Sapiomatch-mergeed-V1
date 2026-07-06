@@ -18,7 +18,7 @@ export async function POST(request) {
     db.deleteUser(user.id);
     return NextResponse.json({ success: true, message: "Account deletion confirmed." });
   } catch (err) {
-    console.error('[SapioMatch API] Error in admin delete user route:', err);
+    console.error('[Learnova API] Error in admin delete user route:', err);
     return NextResponse.json({ error: "Internal server error." }, { status: 500 });
   }
 }

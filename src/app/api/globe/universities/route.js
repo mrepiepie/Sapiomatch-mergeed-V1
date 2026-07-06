@@ -1,6 +1,6 @@
 export async function GET() {
   return Response.json({
-    source: "sapiomatch-next-directory",
+    source: "learnova-next-directory",
     countries: {
       uae: {
         universities: [

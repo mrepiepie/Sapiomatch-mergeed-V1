@@ -14,7 +14,7 @@ export async function POST(request) {
       experience: "3–5 years"
     });
   } catch (err) {
-    console.error('[SapioMatch API] Error in parse-resume route:', err);
+    console.error('[Learnova API] Error in parse-resume route:', err);
     return NextResponse.json({ error: "Internal server error." }, { status: 500 });
   }
 }

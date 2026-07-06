@@ -25,7 +25,7 @@ export async function POST(request) {
       }
     });
   } catch (err) {
-    console.error('[SapioMatch API] Error in admin find user route:', err);
+    console.error('[Learnova API] Error in admin find user route:', err);
     return NextResponse.json({ error: "Internal server error." }, { status: 500 });
   }
 }

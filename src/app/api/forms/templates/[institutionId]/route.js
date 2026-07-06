@@ -10,7 +10,7 @@ export async function GET(request, { params }) {
     const template = db.getFormTemplate(institutionId);
     return NextResponse.json(template);
   } catch (err) {
-    console.error('[SapioMatch API] Error in GET templates route:', err);
+    console.error('[Learnova API] Error in GET templates route:', err);
     return NextResponse.json({ error: "Internal server error." }, { status: 500 });
   }
 }

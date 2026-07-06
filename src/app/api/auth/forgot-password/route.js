@@ -17,7 +17,7 @@ export async function POST(request) {
       message: `A password reset link and instructions have been simulated and sent to ${cleanEmail}.`
     });
   } catch (err) {
-    console.error('[SapioMatch API] Error in forgot-password API:', err);
+    console.error('[Learnova API] Error in forgot-password API:', err);
     return NextResponse.json({ error: 'Internal server error.' }, { status: 500 });
   }
 }

@@ -9,7 +9,7 @@ export default function Results({ setView, answers, bookmarks = [], toggleBookma
 
   const handleUpgradeClick = () => {
     if (!currentUser) {
-      localStorage.setItem('sapio_auth_redirect', 'results');
+      localStorage.setItem('learnova_auth_redirect', 'results');
       setView('auth');
     } else {
       setIsProcessingUpgrade(true);
@@ -96,7 +96,7 @@ export default function Results({ setView, answers, bookmarks = [], toggleBookma
           Your <span className="gradient-text">AI Match results</span> are ready
         </h1>
         <p style={{ color: 'var(--text-muted)', maxWidth: '750px', margin: '0 auto' }}>
-          Based on your profile, SapioMatch AI has found these programs matching a {answers.age || '29'}-year-old working professional with a {answers.education || "Bachelor's degree"} background and {answers.experience || "3-5 years"} of experience.
+          Based on your profile, Learnova AI has found these programs matching a {answers.age || '29'}-year-old working professional with a {answers.education || "Bachelor's degree"} background and {answers.experience || "3-5 years"} of experience.
         </p>
       </div>
 

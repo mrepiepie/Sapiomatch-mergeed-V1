@@ -72,7 +72,7 @@ export default function About({ setView }) {
               A smarter bridge between learners and <span className="gradient-text">trusted education providers</span>
             </h1>
             <p style={{ color: 'var(--text-muted)', fontSize: '17px', lineHeight: '1.7', maxWidth: '540px' }}>
-              SapioMatch AI helps users make confident education decisions by matching them with suitable programs using AI, verified institution data, and transparent comparison logic.
+              Learnova AI helps users make confident education decisions by matching them with suitable programs using AI, verified institution data, and transparent comparison logic.
             </p>
           </div>
           <div style={{ position: 'relative' }}>
@@ -393,7 +393,7 @@ export default function About({ setView }) {
         <div className="glass-card" style={{ maxWidth: '850px', margin: '0 auto', padding: '50px 40px', background: 'radial-gradient(circle at center, rgba(43, 92, 70, 0.05) 0%, var(--card-bg) 100%)' }}>
           <h2 style={{ fontSize: '30px', marginBottom: '18px', fontFamily: 'var(--font-display)' }}>We believe education decisions should be informed, transparent, and empowering</h2>
           <p style={{ color: 'var(--text-muted)', fontSize: '15.5px', marginBottom: '32px', maxWidth: '600px', margin: '0 auto 32px auto', lineHeight: 1.6 }}>
-            Whether you're a learner seeking your next step or an institution looking to reach the right students, SapioMatch AI is built to serve you better.
+            Whether you're a learner seeking your next step or an institution looking to reach the right students, Learnova AI is built to serve you better.
           </p>
           <button className="btn-premium" onClick={() => setView('questionnaire')} style={{ padding: '12px 28px', fontSize: '14px' }}>
             Get Started Today

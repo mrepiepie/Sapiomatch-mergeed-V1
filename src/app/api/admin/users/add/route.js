@@ -24,7 +24,7 @@ export async function POST(request) {
 
     return NextResponse.json({ success: true, message: "Successfully added." });
   } catch (err) {
-    console.error('[SapioMatch API] Error in admin add user route:', err);
+    console.error('[Learnova API] Error in admin add user route:', err);
     return NextResponse.json({ error: "Internal server error." }, { status: 500 });
   }
 }

@@ -1,4 +1,4 @@
-Update the SapioMatch AI Institution Dashboard by adding a new section in the left sidebar called:
+Update the Learnova AI Institution Dashboard by adding a new section in the left sidebar called:
 
 Requests
 
@@ -196,7 +196,7 @@ Add a small info note above or below the table:
 
 DESIGN STYLE
 
-Keep the page consistent with the SapioMatch AI Institution Dashboard:
+Keep the page consistent with the Learnova AI Institution Dashboard:
 
 * Dark navy / black background
 * Electric blue, purple, and cyan accents

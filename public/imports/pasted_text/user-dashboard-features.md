@@ -1,6 +1,6 @@
-Update the SapioMatch AI prototype by adding the full **logged-in User Dashboard**, the complete **Application / Admission Tracking Flow** across User, Institution, Admin, and Super Admin dashboards, and the **Apple Pay payment option** inside the Institution Dashboard Top Up Credits payment flow.
+Update the Learnova AI prototype by adding the full **logged-in User Dashboard**, the complete **Application / Admission Tracking Flow** across User, Institution, Admin, and Super Admin dashboards, and the **Apple Pay payment option** inside the Institution Dashboard Top Up Credits payment flow.
 
-Keep the same SapioMatch AI visual identity across all new and updated pages:
+Keep the same Learnova AI visual identity across all new and updated pages:
 
 * Futuristic AI SaaS interface
 * Dark navy / black background
@@ -851,11 +851,11 @@ The prototype should clearly show:
 
 # 16. Add Apple Pay to Institution Dashboard Payment Flow
 
-Update the **SapioMatch AI Institution Dashboard** payment flow by adding **Apple Pay** as a payment option in the **Top Up Credits / Secure Payment** section.
+Update the **Learnova AI Institution Dashboard** payment flow by adding **Apple Pay** as a payment option in the **Top Up Credits / Secure Payment** section.
 
 Use the uploaded Apple Pay image as the Apple Pay logo/button visual.
 
-Keep the same SapioMatch AI dashboard visual style:
+Keep the same Learnova AI dashboard visual style:
 
 * Futuristic AI SaaS interface
 * Dark navy / black background
@@ -1047,13 +1047,13 @@ The Institution Dashboard payment flow should now include:
 * Payment Success page showing Apple Pay as payment method
 * Existing credit top-up logic preserved
 * Existing credit balance display preserved
-* Premium SapioMatch AI futuristic dashboard style maintained
+* Premium Learnova AI futuristic dashboard style maintained
 
 ---
 
 # FINAL OVERALL EXPECTED RESULT
 
-The final SapioMatch AI prototype should include:
+The final Learnova AI prototype should include:
 
 1. A complete logged-in User Dashboard.
 2. A working user AI matching flow.
@@ -1068,4 +1068,4 @@ The final SapioMatch AI prototype should include:
 11. Clear separation between Filled Applications and Successful Admissions.
 12. Apple Pay added to Institution Dashboard Top Up Credits / Secure Payment flow.
 13. Uploaded Apple Pay image used directly as the Apple Pay logo/button visual.
-14. All designs should remain visually consistent with SapioMatch AI’s premium futuristic SaaS style.
+14. All designs should remain visually consistent with Learnova AI’s premium futuristic SaaS style.

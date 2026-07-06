@@ -6,7 +6,7 @@ export async function POST() {
     db.incrementStat("total_visitors", 1);
     return NextResponse.json({ success: true });
   } catch (err) {
-    console.error('[SapioMatch API] Error in track-visitor API:', err);
+    console.error('[Learnova API] Error in track-visitor API:', err);
     return NextResponse.json({ error: "Internal server error." }, { status: 500 });
   }
 }
