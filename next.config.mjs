@@ -9,6 +9,7 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
+  serverExternalPackages: ["pdf-parse"],
   experimental: {
     optimizePackageImports: [
       'lucide-react',
