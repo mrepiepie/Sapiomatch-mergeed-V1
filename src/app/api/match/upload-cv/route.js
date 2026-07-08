@@ -5,10 +5,10 @@ import { exec } from 'child_process';
 import { promisify } from 'util';
 import fs from 'fs';
 import path from 'path';
+import os from 'os';
 
 const execAsync = promisify(exec);
 const require = createRequire(import.meta.url);
-const pdfParse = require('pdf-parse');
 
 export async function POST(request) {
   try {
@@ -27,14 +27,12 @@ export async function POST(request) {
     let text = "";
 
     // 1. Attempt to run ex.py Python extractor
-    const tempDir = path.join(process.cwd(), 'temp_uploads');
-    if (!fs.existsSync(tempDir)) {
-      fs.mkdirSync(tempDir, { recursive: true });
-    }
-    const tempFilePath = path.join(tempDir, `${Date.now()}_${filename}`);
-    fs.writeFileSync(tempFilePath, buffer);
-
+    let tempFilePath = null;
     try {
+      const tempDir = os.tmpdir();
+      tempFilePath = path.join(tempDir, `${Date.now()}_${filename}`);
+      fs.writeFileSync(tempFilePath, buffer);
+
       const pythonPath = `c:\\Users\\iftkh\\Downloads\\Learnova-mergeed-V1-main\\.venv\\Scripts\\python.exe`;
       const scriptPath = `c:\\Users\\iftkh\\Downloads\\Learnova-mergeed-V1-main\\ex.py`;
       
@@ -45,14 +43,16 @@ export async function POST(request) {
         console.log("[Learnova API] Successfully extracted text using ex.py");
       }
     } catch (err) {
-      console.error("[Learnova API] Python ex.py extractor error, falling back to node parsers:", err.message);
+      console.error("[Learnova API] Python ex.py extractor error (or filesystem write error), falling back to node parsers:", err.message);
     } finally {
-      try {
-        if (fs.existsSync(tempFilePath)) {
-          fs.unlinkSync(tempFilePath);
+      if (tempFilePath) {
+        try {
+          if (fs.existsSync(tempFilePath)) {
+            fs.unlinkSync(tempFilePath);
+          }
+        } catch (cleanupErr) {
+          console.error("[Learnova API] Temp file cleanup error:", cleanupErr.message);
         }
-      } catch (cleanupErr) {
-        console.error("[Learnova API] Temp file cleanup error:", cleanupErr.message);
       }
     }
 
@@ -60,10 +60,15 @@ export async function POST(request) {
     if (!text || !text.trim()) {
       if (filenameLower.endsWith(".pdf") || file.type === "application/pdf") {
         try {
-          let pdfFn = pdfParse;
-          if (pdfFn && typeof pdfFn.default === 'function') {
-            pdfFn = pdfFn.default;
+          let pdfParseModule = null;
+          try {
+            pdfParseModule = require('pdf-parse');
+          } catch (loadErr) {
+            console.error("[Learnova API] Failed to require pdf-parse, trying dynamic import:", loadErr.message);
+            pdfParseModule = await import('pdf-parse');
           }
+          
+          let pdfFn = pdfParseModule.default || pdfParseModule;
           if (typeof pdfFn === 'function') {
             const result = await pdfFn(buffer);
             text = result.text;
@@ -72,18 +77,6 @@ export async function POST(request) {
           }
         } catch (err) {
           console.error("Standard PDF parse error:", err.message);
-          try {
-            const pdfParseModule = await import('pdf-parse');
-            let pdfFn2 = pdfParseModule.default || pdfParseModule;
-            if (typeof pdfFn2 === 'function') {
-              const result = await pdfFn2(buffer);
-              text = result.text;
-            } else {
-              throw new Error("Dynamic import of pdf-parse is not a function");
-            }
-          } catch (innerErr) {
-            console.error("Secondary PDF parse error:", innerErr.message);
-          }
         }
       } else if (
         filenameLower.endsWith(".docx") || 
