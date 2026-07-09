@@ -9,8 +9,8 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
-  serverExternalPackages: ["pdf-parse"],
   experimental: {
+    serverComponentsExternalPackages: ["pdf-parse-fork"],
     optimizePackageImports: [
       'lucide-react',
       '@react-three/drei',

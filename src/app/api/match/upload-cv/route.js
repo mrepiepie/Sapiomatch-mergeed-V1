@@ -62,10 +62,10 @@ export async function POST(request) {
         try {
           let pdfParseModule = null;
           try {
-            pdfParseModule = require('pdf-parse');
+            pdfParseModule = require('pdf-parse-fork');
           } catch (loadErr) {
-            console.error("[Learnova API] Failed to require pdf-parse, trying dynamic import:", loadErr.message);
-            pdfParseModule = await import('pdf-parse');
+            console.error("[Learnova API] Failed to require pdf-parse-fork, trying dynamic import:", loadErr.message);
+            pdfParseModule = await import('pdf-parse-fork');
           }
           
           let pdfFn = pdfParseModule.default || pdfParseModule;
@@ -73,7 +73,7 @@ export async function POST(request) {
             const result = await pdfFn(buffer);
             text = result.text;
           } else {
-            throw new Error("pdf-parse is not loaded as a function");
+            throw new Error("pdf-parse-fork is not loaded as a function");
           }
         } catch (err) {
           console.error("Standard PDF parse error:", err.message);
