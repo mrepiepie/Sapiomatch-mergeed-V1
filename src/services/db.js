@@ -1,7 +1,14 @@
 import fs from 'fs';
 import path from 'path';
+import os from 'os';
 
-const DB_PATH = path.resolve(process.cwd(), 'database.json');
+// Determine a writable DB path. In serverless/Vercel environments, we must write to os.tmpdir()
+const isServerless = process.env.VERCEL || process.env.LAMBDA_TASK_ROOT || !process.env.HOME;
+let DB_PATH = path.resolve(process.cwd(), 'database.json');
+
+if (isServerless) {
+  DB_PATH = path.join(os.tmpdir(), 'database.json');
+}
 
 // Helper to get raw data
 function readData() {
@@ -14,7 +21,13 @@ function readData() {
     const content = fs.readFileSync(DB_PATH, 'utf-8');
     return JSON.parse(content);
   } catch (err) {
-    console.error("Error reading database file:", err);
+    console.error(`Error reading database file at ${DB_PATH}:`, err.message);
+    const tempPath = path.join(os.tmpdir(), 'database.json');
+    if (DB_PATH !== tempPath) {
+      console.warn(`Falling back database path to: ${tempPath}`);
+      DB_PATH = tempPath;
+      return readData();
+    }
     return getInitialData();
   }
 }
@@ -25,7 +38,13 @@ function writeData(data) {
     fs.writeFileSync(DB_PATH, JSON.stringify(data, null, 2), 'utf-8');
     return true;
   } catch (err) {
-    console.error("Error writing database file:", err);
+    console.error(`Error writing database file at ${DB_PATH}:`, err.message);
+    const tempPath = path.join(os.tmpdir(), 'database.json');
+    if (DB_PATH !== tempPath) {
+      console.warn(`Falling back database path to: ${tempPath} on write error`);
+      DB_PATH = tempPath;
+      return writeData(data);
+    }
     return false;
   }
 }
@@ -48,7 +67,7 @@ function getInitialData() {
       {
         id: "usr_2",
         name: "AUS admissions",
-        email: "aus@sapiomatch.ai",
+        email: "aus@learnova.ai",
         password: "password",
         role: "University",
         contactNumber: "+971 6 515 5555",
@@ -60,7 +79,7 @@ function getInitialData() {
       {
         id: "usr_3",
         name: "Birmingham admissions",
-        email: "birmingham@sapiomatch.ai",
+        email: "birmingham@learnova.ai",
         password: "password",
         role: "University",
         contactNumber: "+971 4 249 2300",
@@ -72,7 +91,7 @@ function getInitialData() {
       {
         id: "usr_4",
         name: "Super Admin Operator",
-        email: "operator@sapiomatch.ai",
+        email: "operator@learnova.ai",
         password: "password",
         role: "Admin",
         contactNumber: "+971 4 111 2222",
@@ -101,14 +120,14 @@ function getInitialData() {
       }
     ],
     universities: [
-      { id: "uni_1", name: "American University of Sharjah", email: "aus@sapiomatch.ai" },
-      { id: "uni_2", name: "University of Birmingham Dubai", email: "birmingham@sapiomatch.ai" }
+      { id: "uni_1", name: "American University of Sharjah", email: "aus@learnova.ai" },
+      { id: "uni_2", name: "University of Birmingham Dubai", email: "birmingham@learnova.ai" }
     ],
     notifications: [
       {
         id: "not_1",
         userEmail: "sanji@example.com",
-        text: "Welcome to SapioMatch! You have been allocated 10 Standard credits.",
+        text: "Welcome to Learnova! You have been allocated 10 Standard credits.",
         date: "2026-06-13",
         read: false,
         link: ""
@@ -126,7 +145,37 @@ function getInitialData() {
         date: "2026-06-15"
       }
     ],
-    aiInteractions: []
+    formTemplates: [
+      {
+        institutionId: "uni_1",
+        fixed_sections: [
+          { name: "Personal Information", fields: ["Full name", "Date of birth", "Nationality", "Email", "Phone number", "Current country of residence"] },
+          { name: "Academic Background", fields: ["Highest qualification", "Institution attended", "Graduation year", "GPA / grade", "Field of study"] },
+          { name: "Programme Selection", fields: ["Preferred programme", "Study mode", "Intake / start date", "Campus / online preference"] },
+          { name: "Work Experience", fields: ["Current job title", "Employer", "Years of experience", "Industry"] },
+          { name: "Declaration and Consent", fields: ["Confirmation checkbox"] }
+        ],
+        optional_sections: []
+      },
+      {
+        institutionId: "uni_2",
+        fixed_sections: [
+          { name: "Personal Information", fields: ["Full name", "Date of birth", "Nationality", "Email", "Phone number", "Current country of residence"] },
+          { name: "Academic Background", fields: ["Highest qualification", "Institution attended", "Graduation year", "GPA / grade", "Field of study"] },
+          { name: "Programme Selection", fields: ["Preferred programme", "Study mode", "Intake / start date", "Campus / online preference"] },
+          { name: "Work Experience", fields: ["Current job title", "Employer", "Years of experience", "Industry"] },
+          { name: "Declaration and Consent", fields: ["Confirmation checkbox"] }
+        ],
+        optional_sections: []
+      }
+    ],
+    platformStats: {
+      total_visitors: 14205,
+      total_clicks: 9842,
+      completed_matches: 2431,
+      confirmed_enrollments: 342,
+      chatbot_started_journeys: 624
+    }
   };
 }
 
@@ -329,18 +378,148 @@ export const db = {
     return true;
   },
 
-  // --- AI INTERACTIONS ---
-  getAiInteractions: () => readData().aiInteractions || [],
-  addAiInteraction: (interaction) => {
+  // --- FORM TEMPLATES ---
+  getFormTemplate: (institutionId) => {
     const data = readData();
-    if (!data.aiInteractions) data.aiInteractions = [];
-    const newInteraction = {
-      id: `ai_${Date.now()}`,
-      date: new Date().toISOString(),
-      ...interaction
-    };
-    data.aiInteractions.push(newInteraction);
+    if (!data.formTemplates) data.formTemplates = [];
+    
+    // Support numeric index mapping or string IDs
+    let lookupId = String(institutionId);
+    if (lookupId === "1") lookupId = "uni_1";
+    if (lookupId === "2") lookupId = "uni_2";
+
+    let ft = data.formTemplates.find(t => String(t.institutionId) === lookupId);
+    if (!ft) {
+      const fixedSects = [
+        { name: "Personal Information", fields: ["Full name", "Date of birth", "Nationality", "Email", "Phone number", "Current country of residence"] },
+        { name: "Academic Background", fields: ["Highest qualification", "Institution attended", "Graduation year", "GPA / grade", "Field of study"] },
+        { name: "Programme Selection", fields: ["Preferred programme", "Study mode", "Intake / start date", "Campus / online preference"] },
+        { name: "Work Experience", fields: ["Current job title", "Employer", "Years of experience", "Industry"] },
+        { name: "Declaration and Consent", fields: ["Confirmation checkbox"] }
+      ];
+      ft = {
+        institutionId: lookupId,
+        fixed_sections: fixedSects,
+        optional_sections: []
+      };
+      data.formTemplates.push(ft);
+      writeData(data);
+    }
+    return ft;
+  },
+  updateFormTemplate: (institutionId, optionalSections) => {
+    const data = readData();
+    if (!data.formTemplates) data.formTemplates = [];
+    
+    let lookupId = String(institutionId);
+    if (lookupId === "1") lookupId = "uni_1";
+    if (lookupId === "2") lookupId = "uni_2";
+
+    let idx = data.formTemplates.findIndex(t => String(t.institutionId) === lookupId);
+    if (idx === -1) {
+      const fixedSects = [
+        { name: "Personal Information", fields: ["Full name", "Date of birth", "Nationality", "Email", "Phone number", "Current country of residence"] },
+        { name: "Academic Background", fields: ["Highest qualification", "Institution attended", "Graduation year", "GPA / grade", "Field of study"] },
+        { name: "Programme Selection", fields: ["Preferred programme", "Study mode", "Intake / start date", "Campus / online preference"] },
+        { name: "Work Experience", fields: ["Current job title", "Employer", "Years of experience", "Industry"] },
+        { name: "Declaration and Consent", fields: ["Confirmation checkbox"] }
+      ];
+      const ft = {
+        institutionId: lookupId,
+        fixed_sections: fixedSects,
+        optional_sections: optionalSections
+      };
+      data.formTemplates.push(ft);
+    } else {
+      data.formTemplates[idx].optional_sections = optionalSections;
+    }
     writeData(data);
-    return newInteraction;
+    return true;
+  },
+
+  // --- PLATFORM TELEMETRY STATS ---
+  getPlatformStats: () => {
+    const data = readData();
+    if (!data.platformStats) {
+      data.platformStats = {
+        total_visitors: 14205,
+        total_clicks: 9842,
+        completed_matches: 2431,
+        confirmed_enrollments: 342,
+        chatbot_started_journeys: 624
+      };
+      writeData(data);
+    }
+    return data.platformStats;
+  },
+  incrementStat: (key, amount = 1) => {
+    const data = readData();
+    if (!data.platformStats) {
+      data.platformStats = {
+        total_visitors: 14205,
+        total_clicks: 9842,
+        completed_matches: 2431,
+        confirmed_enrollments: 342,
+        chatbot_started_journeys: 624
+      };
+    }
+    if (data.platformStats[key] === undefined) {
+      data.platformStats[key] = 0;
+    }
+    data.platformStats[key] += amount;
+    writeData(data);
+    return data.platformStats[key];
+  },
+  getStatValue: (key, defaultValue = 0) => {
+    const data = readData();
+    if (!data.platformStats || data.platformStats[key] === undefined) {
+      return defaultValue;
+    }
+    return data.platformStats[key];
+  },
+  updateInstitutionCredits: (institutionId, amount) => {
+    const data = readData();
+    let lookupId = String(institutionId);
+    if (lookupId === "1") lookupId = "uni_1";
+    if (lookupId === "2") lookupId = "uni_2";
+
+    let uniName = "";
+    if (lookupId.startsWith("uni_")) {
+      const uni = data.universities.find(u => String(u.id) === lookupId);
+      if (uni) {
+        uniName = uni.name;
+      }
+    } else if (lookupId.startsWith("usr_")) {
+      const user = data.users.find(u => String(u.id) === lookupId);
+      if (user && user.role === 'University') {
+        uniName = user.universityName;
+      }
+    } else {
+      // Fallback: search if lookupId is actually a name
+      const uni = data.universities.find(u => u.name.toLowerCase().includes(lookupId.toLowerCase()));
+      if (uni) {
+        uniName = uni.name;
+      }
+    }
+
+    if (!uniName) {
+      // Try resolving directly by user email or name
+      const user = data.users.find(u => String(u.id) === lookupId || u.email?.toLowerCase() === lookupId.toLowerCase());
+      if (user && user.role === 'University') {
+        user.credits = (user.credits || 0) + amount;
+        writeData(data);
+        return user.credits;
+      }
+      return false;
+    }
+
+    const userIdx = data.users.findIndex(u => u.role === 'University' && u.universityName === uniName);
+    if (userIdx !== -1) {
+      data.users[userIdx].credits = (data.users[userIdx].credits || 0) + amount;
+      writeData(data);
+      return data.users[userIdx].credits;
+    }
+    return false;
   }
 };
+
