@@ -1,7 +1,14 @@
 import fs from 'fs';
 import path from 'path';
+import os from 'os';
 
-const DB_PATH = path.resolve(process.cwd(), 'database.json');
+// Determine a writable DB path. In serverless/Vercel environments, we must write to os.tmpdir()
+const isServerless = process.env.VERCEL || process.env.LAMBDA_TASK_ROOT || !process.env.HOME;
+let DB_PATH = path.resolve(process.cwd(), 'database.json');
+
+if (isServerless) {
+  DB_PATH = path.join(os.tmpdir(), 'database.json');
+}
 
 // Helper to get raw data
 function readData() {
@@ -14,7 +21,13 @@ function readData() {
     const content = fs.readFileSync(DB_PATH, 'utf-8');
     return JSON.parse(content);
   } catch (err) {
-    console.error("Error reading database file:", err);
+    console.error(`Error reading database file at ${DB_PATH}:`, err.message);
+    const tempPath = path.join(os.tmpdir(), 'database.json');
+    if (DB_PATH !== tempPath) {
+      console.warn(`Falling back database path to: ${tempPath}`);
+      DB_PATH = tempPath;
+      return readData();
+    }
     return getInitialData();
   }
 }
@@ -25,7 +38,13 @@ function writeData(data) {
     fs.writeFileSync(DB_PATH, JSON.stringify(data, null, 2), 'utf-8');
     return true;
   } catch (err) {
-    console.error("Error writing database file:", err);
+    console.error(`Error writing database file at ${DB_PATH}:`, err.message);
+    const tempPath = path.join(os.tmpdir(), 'database.json');
+    if (DB_PATH !== tempPath) {
+      console.warn(`Falling back database path to: ${tempPath} on write error`);
+      DB_PATH = tempPath;
+      return writeData(data);
+    }
     return false;
   }
 }
