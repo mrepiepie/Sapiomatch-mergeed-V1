@@ -10,7 +10,6 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   experimental: {
-    serverComponentsExternalPackages: ["pdf-parse-fork"],
     optimizePackageImports: [
       'lucide-react',
       '@react-three/drei',

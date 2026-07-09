@@ -1,14 +1,6 @@
 import { NextResponse } from 'next/server';
-import { createRequire } from 'module';
 import mammoth from 'mammoth';
-import { exec } from 'child_process';
-import { promisify } from 'util';
-import fs from 'fs';
-import path from 'path';
-import os from 'os';
-
-const execAsync = promisify(exec);
-const require = createRequire(import.meta.url);
+import { extractText, getDocumentProxy } from 'unpdf';
 
 export async function POST(request) {
   try {
@@ -26,107 +18,64 @@ export async function POST(request) {
 
     let text = "";
 
-    // 1. Attempt to run ex.py Python extractor
-    let tempFilePath = null;
-    try {
-      const tempDir = os.tmpdir();
-      tempFilePath = path.join(tempDir, `${Date.now()}_${filename}`);
-      fs.writeFileSync(tempFilePath, buffer);
-
-      const pythonPath = `c:\\Users\\iftkh\\Downloads\\Learnova-mergeed-V1-main\\.venv\\Scripts\\python.exe`;
-      const scriptPath = `c:\\Users\\iftkh\\Downloads\\Learnova-mergeed-V1-main\\ex.py`;
-      
-      const { stdout } = await execAsync(`"${pythonPath}" "${scriptPath}" "${tempFilePath}"`);
-      const parsedData = JSON.parse(stdout);
-      if (parsedData.raw_text) {
-        text = parsedData.raw_text;
-        console.log("[Learnova API] Successfully extracted text using ex.py");
+    // Parse file based on type
+    if (filenameLower.endsWith(".pdf") || file.type === "application/pdf") {
+      try {
+        const uint8Array = new Uint8Array(arrayBuffer);
+        const pdf = await getDocumentProxy(uint8Array);
+        const { text: pdfText } = await extractText(pdf, { mergePages: true });
+        text = pdfText || "";
+        console.log("[Learnova API] Successfully extracted text using unpdf");
+      } catch (err) {
+        console.error("[Learnova API] unpdf PDF parse error:", err.message);
       }
-    } catch (err) {
-      console.error("[Learnova API] Python ex.py extractor error (or filesystem write error), falling back to node parsers:", err.message);
-    } finally {
-      if (tempFilePath) {
-        try {
-          if (fs.existsSync(tempFilePath)) {
-            fs.unlinkSync(tempFilePath);
-          }
-        } catch (cleanupErr) {
-          console.error("[Learnova API] Temp file cleanup error:", cleanupErr.message);
-        }
+    } else if (
+      filenameLower.endsWith(".docx") ||
+      file.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    ) {
+      try {
+        const result = await mammoth.extractRawText({ buffer: buffer });
+        text = result.value || "";
+        console.log("[Learnova API] Successfully extracted text using mammoth");
+      } catch (err) {
+        console.error("[Learnova API] mammoth DOCX parse error:", err.message);
       }
     }
 
-    // 2. Node-based Fallback if ex.py failed or returned empty text
+    // Last resort: try reading raw UTF-8 text (e.g. plain text CVs)
     if (!text || !text.trim()) {
-      if (filenameLower.endsWith(".pdf") || file.type === "application/pdf") {
-        try {
-          let pdfParseModule = null;
-          try {
-            pdfParseModule = require('pdf-parse-fork');
-          } catch (loadErr) {
-            console.error("[Learnova API] Failed to require pdf-parse-fork, trying dynamic import:", loadErr.message);
-            pdfParseModule = await import('pdf-parse-fork');
-          }
-          
-          let pdfFn = pdfParseModule.default || pdfParseModule;
-          if (typeof pdfFn === 'function') {
-            const result = await pdfFn(buffer);
-            text = result.text;
-          } else {
-            throw new Error("pdf-parse-fork is not loaded as a function");
-          }
-        } catch (err) {
-          console.error("Standard PDF parse error:", err.message);
-        }
-      } else if (
-        filenameLower.endsWith(".docx") || 
-        file.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-      ) {
-        try {
-          const result = await mammoth.extractRawText({ buffer: buffer });
-          text = result.value;
-        } catch (err) {
-          console.error("Error parsing DOCX:", err.message);
-        }
-      }
-
-      if (!text || !text.trim()) {
-        text = buffer.toString("utf8");
-      }
+      text = buffer.toString("utf8");
     }
 
-    // Clean up binary characters
+    // Clean up binary/non-printable characters
     text = text.replace(/[^\x20-\x7E\s]/g, " ");
     const textLower = text.toLowerCase();
 
-    // 0. Name Detection
-    let name = "Verified Candidate"; // Default fallback
+    // --- Name Detection ---
+    let name = "Verified Candidate";
     const rawLines = text.split(/\r?\n/).map(line => line.trim()).filter(line => line.length > 0);
-    
-    // Look at first few lines (up to 8 lines) to find a candidate name
+
     for (let i = 0; i < Math.min(rawLines.length, 8); i++) {
       const line = rawLines[i];
-      // Skip if line has email, phone, website, or common section headers
       if (
         line.includes("@") ||
         line.includes(".com") ||
         line.includes("http") ||
         line.includes("|") ||
-        line.match(/\d{4,}/) || // Skip lines with long numbers (like phone numbers or zip codes)
+        line.match(/\d{4,}/) ||
         /^(resume|cv|curriculum|vitae|contact|profile|summary|education|experience|skills|about|projects|languages|objectives)/i.test(line) ||
         line.length < 3 ||
         line.length > 40
       ) {
         continue;
       }
-      // First line that matches basic name criteria (usually 2 or 3 words, letters, spaces, dots, hyphens only)
       if (/^[a-zA-Z\s.-]+$/.test(line)) {
         name = line;
         break;
       }
     }
 
-    // Default parsed candidate profile mapping to mockQuestions options
+    // --- Build Profile ---
     const profile = {
       name: name,
       age: "21-30",
@@ -134,7 +83,7 @@ export async function POST(request) {
       field: "Technology & AI"
     };
 
-    // 1. Age Detection
+    // Age Detection
     const ageMatch = textLower.match(/(?:age|dob|born|birth)[\s:-]*(\d{2})/i) || textLower.match(/\b(1[89]|[2345]\d)\b/);
     if (ageMatch) {
       const ageNum = parseInt(ageMatch[1]);
@@ -145,7 +94,7 @@ export async function POST(request) {
       else if (ageNum > 50) profile.age = "50+";
     }
 
-    // 2. Education Detection
+    // Education Detection
     if (textLower.includes("phd") || textLower.includes("doctorate") || textLower.includes("ph.d")) {
       profile.education = "Other / Professional";
     } else if (textLower.includes("master") || textLower.includes("msc") || textLower.includes("mba") || textLower.includes("m.s") || textLower.includes("postgraduate")) {
@@ -156,7 +105,7 @@ export async function POST(request) {
       profile.education = "High School";
     }
 
-    // 3. Field of Interest Detection
+    // Field of Interest Detection
     if (textLower.includes("computer") || textLower.includes("software") || textLower.includes("tech") || textLower.includes("data science") || textLower.includes("artificial intelligence") || textLower.includes("developer")) {
       profile.field = "Technology & AI";
     } else if (textLower.includes("business") || textLower.includes("mba") || textLower.includes("finance") || textLower.includes("economics") || textLower.includes("accounting") || textLower.includes("management")) {
