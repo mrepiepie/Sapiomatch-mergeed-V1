@@ -1,480 +1,181 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from 'react';
-import Home from '../views/Home';
-import Explore from '../views/Explore';
-import InstitutionDetail from '../views/InstitutionDetail';
+import dynamic from 'next/dynamic';
 import Questionnaire from '../views/Questionnaire';
 import Results from '../views/Results';
-import UserDashboard from '../views/UserDashboard';
-import InstitutionDashboard from '../views/InstitutionDashboard';
-import AdminDashboard from '../views/AdminDashboard';
-import Auth from '../views/Auth';
-import About from '../views/About';
-import Contact from '../views/Contact';
-import RoleSwitcher from '../components/RoleSwitcher';
-import SapioVisualShell from '../components/SapioVisualShell';
-import CheckoutModal from '../components/CheckoutModal';
-import { mockInstitutions, mockQuestions } from '../mockData';
-import { generateAiResponse } from '../services/aiEngine';
-import { 
-  Compass, Sparkles, GraduationCap, ArrowRight, MessageSquare, 
-  Send, X, LogOut, LogIn, User, CheckCircle, ShieldAlert, 
-  Settings, Bell, CheckSquare, Calendar, Phone, Mail, FileText, Check 
+import { mockQuestions } from '../data/mockQuestions';
+import ViewLoader from '../components/ViewLoader';
+
+import {
+  Compass, Sparkles, GraduationCap, ArrowRight, MessageSquare,
+  Send, X, LogOut, LogIn, User, CheckCircle, ShieldAlert,
+  Settings, Bell, Calendar, Phone, Mail, FileText, Check,
+  ArrowLeft
 } from 'lucide-react';
 
-// --- BROWSER LOCALSTORAGE MOCK DATABASE & FETCH INTERCEPTOR ---
-const handleMockFetch = async (url, init) => {
-  if (typeof window === 'undefined') return new Response(JSON.stringify({}), { status: 200 });
-
-  if (!localStorage.getItem('sapio_db')) {
-    localStorage.setItem('sapio_db', JSON.stringify({
-      users: [
-        {
-          id: "usr_1",
-          name: "Sanji",
-          email: "sanji@example.com",
-          password: "password",
-          role: "Student",
-          contactNumber: "+971 50 123 4567",
-          plan: "Standard",
-          credits: 10,
-          status: "Active"
-        },
-        {
-          id: "usr_2",
-          name: "AUS admissions",
-          email: "aus@sapiomatch.ai",
-          password: "password",
-          role: "University",
-          contactNumber: "+971 6 515 5555",
-          plan: "Premium",
-          credits: 0,
-          status: "Active",
-          universityName: "American University of Sharjah"
-        },
-        {
-          id: "usr_3",
-          name: "Birmingham admissions",
-          email: "birmingham@sapiomatch.ai",
-          password: "password",
-          role: "University",
-          contactNumber: "+971 4 249 2300",
-          plan: "Premium",
-          credits: 0,
-          status: "Active",
-          universityName: "University of Birmingham Dubai"
-        },
-        {
-          id: "usr_4",
-          name: "Super Admin Operator",
-          email: "operator@sapiomatch.ai",
-          password: "password",
-          role: "Admin",
-          contactNumber: "+971 4 111 2222",
-          plan: "Premium",
-          credits: 9999,
-          status: "Active"
-        }
-      ],
-      applications: [
-        {
-          id: "app_1",
-          studentName: "Sanji",
-          studentEmail: "sanji@example.com",
-          studentContact: "+971 50 123 4567",
-          cgpa: "3.75",
-          sop: "I want to apply for Data Science because of career promotions and expanding my machine learning credentials.",
-          universityName: "University of Birmingham Dubai",
-          courseName: "Data Science MSc",
-          counselorPreference: "Video Meeting",
-          chatSlot: "",
-          status: "Under Review",
-          date: "2026-06-08",
-          replyText: "",
-          meetingLink: "",
-          meetingDate: ""
-        }
-      ],
-      universities: [
-        { id: "uni_1", name: "American University of Sharjah", email: "aus@sapiomatch.ai" },
-        { id: "uni_2", name: "University of Birmingham Dubai", email: "birmingham@sapiomatch.ai" }
-      ],
-      notifications: [
-        {
-          id: "not_1",
-          userEmail: "sanji@example.com",
-          text: "Welcome to SapioMatch! You have been allocated 10 Standard credits.",
-          date: "2026-06-13",
-          read: false,
-          link: ""
-        }
-      ],
-      contacts: [
-        {
-          id: "con_1",
-          fullName: "John Doe",
-          email: "john@example.com",
-          phone: "+971 50 999 8888",
-          inquiryType: "student",
-          message: "Hi, I need assistance matching with a hybrid master's program.",
-          status: "New",
-          date: "2026-06-15"
-        }
-      ]
-    }));
-  }
-
-  const getDb = () => JSON.parse(localStorage.getItem('sapio_db'));
-  const saveDb = (db) => localStorage.setItem('sapio_db', JSON.stringify(db));
-
-  const makeResponse = (data, status = 200) => {
-    return new Response(JSON.stringify(data), {
-      status,
-      headers: { 'Content-Type': 'application/json' }
-    });
-  };
-
-  const db = getDb();
-  const method = init?.method?.toUpperCase() || 'GET';
-  const body = init?.body ? JSON.parse(init.body) : null;
-
-  // Route: /api/auth/login
-  if (url.includes('/api/auth/login')) {
-    const { email, password } = body || {};
-    const user = db.users.find(u => u.email.toLowerCase() === email?.toLowerCase());
-    if (!user || user.password !== password) {
-      return makeResponse({ error: 'Invalid email or password.' }, 401);
-    }
-    return makeResponse({
-      name: user.name,
-      email: user.email,
-      role: user.role,
-      contactNumber: user.contactNumber,
-      plan: user.plan,
-      credits: user.credits,
-      universityName: user.universityName || ''
-    });
-  }
-
-  // Route: /api/auth/register
-  if (url.includes('/api/auth/register')) {
-    const { name, email, password, contactNumber, role } = body || {};
-    if (db.users.some(u => u.email.toLowerCase() === email?.toLowerCase())) {
-      return makeResponse({ error: 'User already exists.' }, 400);
-    }
-    const newUser = {
-      id: `usr_${Date.now()}`,
-      name,
-      email,
-      password,
-      contactNumber,
-      role,
-      plan: role === 'Student' ? 'Standard' : 'Premium',
-      credits: role === 'Student' ? 10 : 0,
-      status: "Active",
-      universityName: role === 'University' ? 'University of Birmingham Dubai' : '' // fallback default
-    };
-    db.users.push(newUser);
-    
-    db.notifications.push({
-      id: `not_${Date.now()}`,
-      userEmail: email,
-      text: "Welcome to SapioMatch! You have been allocated 10 Standard credits.",
-      date: new Date().toISOString().split('T')[0],
-      read: false,
-      link: ""
-    });
-
-    saveDb(db);
-    return makeResponse({
-      name: newUser.name,
-      email: newUser.email,
-      role: newUser.role,
-      contactNumber: newUser.contactNumber,
-      plan: newUser.plan,
-      credits: newUser.credits,
-      universityName: newUser.universityName || ''
-    });
-  }
-
-  // Route: /api/applications/[id]/reply (POST)
-  const replyMatch = url.match(/\/api\/applications\/([^/?#]+)\/reply/);
-  if (replyMatch && method === 'POST') {
-    const appId = replyMatch[1];
-    const { replyText, meetingLink, meetingDate, status } = body || {};
-    const appIdx = db.applications.findIndex(a => a.id === appId);
-    if (appIdx === -1) {
-      return makeResponse({ error: 'Application not found.' }, 404);
-    }
-    const app = db.applications[appIdx];
-    
-    if (replyText || meetingLink || meetingDate) {
-      app.replyText = replyText || '';
-      app.meetingLink = meetingLink || '';
-      app.meetingDate = meetingDate || '';
-    }
-    if (status) {
-      app.status = status;
-    }
-
-    const textStatus = status === 'Accepted' ? 'Approved' : (status === 'Cancelled' ? 'Cancelled' : status);
-    
-    // Add notification for the student
-    const meetingType = app.counselorPreference || "Consultation";
-    const text = `Your application for ${app.courseName} status updated: ${textStatus}. Reply: "${replyText || 'No custom notes'}" - Scheduled: ${meetingDate || 'N/A'} (${meetingType}).`;
-    db.notifications.push({
-      id: `not_${Date.now()}`,
-      userEmail: app.studentEmail,
-      text,
-      date: new Date().toISOString().split('T')[0],
-      read: false,
-      link: meetingLink || ""
-    });
-
-    saveDb(db);
-    return makeResponse({ success: true, application: app });
-  }
-
-  // Route: /api/applications (GET or POST)
-  if (url.includes('/api/applications')) {
-    if (method === 'GET') {
-      const urlObj = new URL(url, window.location.origin);
-      const role = urlObj.searchParams.get('role');
-      const email = urlObj.searchParams.get('email');
-      const universityName = urlObj.searchParams.get('universityName');
-
-      if (role === 'Student') {
-        const filtered = db.applications.filter(app => app.studentEmail?.toLowerCase() === email?.toLowerCase());
-        return makeResponse(filtered);
-      } else if (role === 'University') {
-        if (!universityName || universityName.trim() === '') {
-          return makeResponse([]);
-        }
-        const filtered = db.applications.filter(app => app.universityName?.toLowerCase() === universityName?.toLowerCase());
-        return makeResponse(filtered);
-      } else if (role === 'Admin') {
-        return makeResponse(db.applications);
-      }
-      return makeResponse({ error: 'Unauthorized or missing role.' }, 401);
-    }
-
-    if (method === 'POST') {
-      const {
-        studentName,
-        studentEmail,
-        studentContact,
-        cgpa,
-        sop,
-        universityName,
-        courseName,
-        counselorPreference,
-        chatSlot
-      } = body || {};
-
-      const studentIdx = db.users.findIndex(u => u.email.toLowerCase() === studentEmail?.toLowerCase());
-      if (studentIdx === -1) {
-        return makeResponse({ error: 'Student account not found.' }, 404);
-      }
-      const student = db.users[studentIdx];
-      if (student.role !== 'Admin' && student.credits < 2) {
-        return makeResponse({ error: 'Insufficient credits.' }, 400);
-      }
-
-      if (student.role !== 'Admin') {
-        student.credits = Math.max(0, student.credits - 2);
-      }
-
-      const newApp = {
-        id: `app_${Date.now()}`,
-        studentName: studentName || student.name,
-        studentEmail,
-        studentContact: studentContact || student.contactNumber,
-        cgpa: cgpa || '1.0',
-        sop: sop || '',
-        universityName,
-        courseName,
-        counselorPreference: counselorPreference || 'No Counselor',
-        chatSlot: chatSlot || '',
-        status: 'Under Review',
-        date: new Date().toISOString().split('T')[0],
-        replyText: "",
-        meetingLink: "",
-        meetingDate: ""
-      };
-      db.applications.push(newApp);
-
-      // Create notification for student
-      db.notifications.push({
-        id: `not_${Date.now()}`,
-        userEmail: studentEmail,
-        text: `Your application for "${courseName}" at ${universityName} has been submitted. Status: Waiting for Approval.`,
-        date: new Date().toISOString().split('T')[0],
-        read: false,
-        link: ""
-      });
-
-      // Trigger standard Gmail Notification
-      window.dispatchEvent(new CustomEvent('sapio_gmail_alert', {
-        detail: {
-          to: studentEmail,
-          subject: `Application Submitted: ${courseName} - ${universityName}`,
-          body: `Dear ${studentName || student.name},\n\nYour application has been received by ${universityName}.\n\nPrior CGPA: ${cgpa}\nPreference: ${counselorPreference}\n\nStatus: Waiting for Approval.\n\nThank you for using SapioMatch.`
-        }
-      }));
-
-      saveDb(db);
-      return makeResponse({
-        success: true,
-        application: newApp,
-        creditsRemaining: student.credits
-      });
-    }
-  }
-
-  // Route: /api/notifications (GET or POST)
-  if (url.includes('/api/notifications')) {
-    if (method === 'GET') {
-      const urlObj = new URL(url, window.location.origin);
-      const email = urlObj.searchParams.get('email');
-      const filtered = db.notifications.filter(n => n.userEmail.toLowerCase() === email?.toLowerCase());
-      filtered.sort((a, b) => b.id.localeCompare(a.id));
-      return makeResponse(filtered);
-    }
-    if (method === 'POST') {
-      const { email } = body || {};
-      db.notifications = db.notifications.map(n => {
-        if (n.userEmail.toLowerCase() === email?.toLowerCase()) {
-          return { ...n, read: true };
-        }
-        return n;
-      });
-      saveDb(db);
-      return makeResponse({ success: true });
-    }
-  }
-
-  // Route: /api/users (GET or DELETE)
-  if (url.includes('/api/users')) {
-    const urlObj = new URL(url, window.location.origin);
-    const id = urlObj.searchParams.get('id');
-    if (method === 'GET') {
-      return makeResponse(db.users);
-    }
-    if (method === 'DELETE') {
-      db.users = db.users.filter(u => u.id !== id);
-      saveDb(db);
-      return makeResponse({ success: true });
-    }
-  }
-
-  // Route: /api/universities (POST)
-  if (url.includes('/api/universities')) {
-    if (method === 'POST') {
-      const { name, email } = body || {};
-      const newUni = { id: `uni_${Date.now()}`, name, email };
-      db.universities.push(newUni);
-
-      const uniUser = {
-        id: `usr_${Date.now()}`,
-        name: `${name} representative`,
-        email,
-        password: "password",
-        role: "University",
-        contactNumber: "",
-        plan: "Premium",
-        credits: 0,
-        status: "Active",
-        universityName: name
-      };
-      db.users.push(uniUser);
-
-      saveDb(db);
-      return makeResponse({ success: true, university: newUni });
-    }
-  }
-
-  // Route: /api/contact (GET, POST, or DELETE)
-  if (url.includes('/api/contact')) {
-    const urlObj = new URL(url, typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000');
-    const id = urlObj.searchParams.get('id');
-    
-    if (method === 'GET') {
-      return makeResponse(db.contacts || []);
-    }
-    
-    if (method === 'POST') {
-      const { fullName, email, phone, inquiryType, message } = body || {};
-      if (!fullName || !email || !inquiryType || !message) {
-        return makeResponse({ error: 'Missing required fields.' }, 400);
-      }
-      const newContact = {
-        id: `con_${Date.now()}`,
-        fullName,
-        email,
-        phone: phone || '',
-        inquiryType,
-        message,
-        status: "New",
-        date: new Date().toISOString().split('T')[0]
-      };
-      if (!db.contacts) db.contacts = [];
-      db.contacts.push(newContact);
-      saveDb(db);
-      return makeResponse({ success: true, contact: newContact }, 201);
-    }
-    
-    if (method === 'DELETE') {
-      if (!id) {
-        return makeResponse({ error: 'Inquiry ID is required.' }, 400);
-      }
-      if (!db.contacts) db.contacts = [];
-      db.contacts = db.contacts.filter(c => c.id !== id);
-      saveDb(db);
-      return makeResponse({ success: true });
-    }
-  }
-
-  return makeResponse({ error: 'Endpoint not mocked client-side.' }, 404);
-};
-
-if (typeof window !== 'undefined') {
-  if (!window.originalFetch) {
-    window.originalFetch = window.fetch;
-    window.fetch = async function (input, init) {
-      const url = typeof input === 'string' ? input : input.url;
-      if (url.includes('/api/') && !url.includes('/api/chat') && !url.includes('/api/parse-resume')) {
-        try {
-          return await handleMockFetch(url, init);
-        } catch (err) {
-          console.error("Mock fetch intercept failed:", url, err);
-        }
-      }
-      return window.originalFetch.apply(this, arguments);
-    };
-  }
-}
+const Home = dynamic(() => import('../views/Home'), { loading: () => <ViewLoader /> });
+const Explore = dynamic(() => import('../views/Explore'), { loading: () => <ViewLoader /> });
+const InstitutionDetail = dynamic(() => import('../views/InstitutionDetail'), { loading: () => <ViewLoader /> });
+const UserDashboard = dynamic(() => import('../views/UserDashboard'), { loading: () => <ViewLoader /> });
+const InstitutionDashboard = dynamic(() => import('../views/InstitutionDashboard'), { loading: () => <ViewLoader /> });
+const AdminDashboard = dynamic(() => import('../views/AdminDashboard'), { loading: () => <ViewLoader /> });
+const Auth = dynamic(() => import('../views/Auth'), { loading: () => <ViewLoader /> });
+const About = dynamic(() => import('../views/About'), { loading: () => <ViewLoader /> });
+const Contact = dynamic(() => import('../views/Contact'), { loading: () => <ViewLoader /> });
+const DestinationDetail = dynamic(() => import('../views/DestinationDetail'), { loading: () => <ViewLoader /> });
+const RoleSwitcher = dynamic(() => import('../components/RoleSwitcher'), { ssr: false });
+const LearnovaVisualShell = dynamic(() => import('../components/LearnovaVisualShell'), { loading: () => <ViewLoader /> });
+const LearnovaLegacySections = dynamic(() => import('../components/LearnovaLegacySections'), { loading: () => <ViewLoader /> });
 
 export default function App() {
+  const institutionsRef = useRef([]);
+  const [institutions, setInstitutions] = useState([]);
   const [gmailToast, setGmailToast] = useState(null);
 
   useEffect(() => {
     const handleGmailAlert = (e) => {
       setGmailToast(e.detail);
-      // Auto close after 7 seconds
+      // Auto close after 2.5 seconds
       const timer = setTimeout(() => {
         setGmailToast(null);
-      }, 7000);
+      }, 2500);
       return () => clearTimeout(timer);
     };
-    window.addEventListener('sapio_gmail_alert', handleGmailAlert);
-    return () => window.removeEventListener('sapio_gmail_alert', handleGmailAlert);
+    window.addEventListener('learnova_gmail_alert', handleGmailAlert);
+    return () => window.removeEventListener('learnova_gmail_alert', handleGmailAlert);
   }, []);
 
-  const [view, setView] = useState('public-home');
+  const [view, setViewInternal] = useState('public-home');
+
+  // Sync view state to URL hash
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const currentHash = window.location.hash.replace('#', '');
+      const validViews = [
+        'public-home', 'public-explore', 'about', 'contact', 'questionnaire',
+        'results', 'auth', 'user-dashboard', 'institution-dashboard',
+        'admin-dashboard', 'destination-detail', 'institution-detail'
+      ];
+      const homeSubSections = [
+        'study-destinations', 'visa-readiness',
+        'worldwide-universities', 'hear-from-our-students'
+      ];
+      // If we are on public-home and hash is a sub-section of the homepage, keep it
+      if (view === 'public-home' && homeSubSections.includes(currentHash)) {
+        return;
+      }
+      if (view && validViews.includes(view) && view !== currentHash) {
+        window.location.hash = `#${view}`;
+      }
+    }
+  }, [view]);
+
+  // Sync URL hash to view state
+  useEffect(() => {
+    const handleHashChange = () => {
+      if (typeof window === 'undefined') return;
+      const hash = window.location.hash.replace('#', '');
+      
+      // Redirect matching-connected hashes to questionnaire
+      if (hash === 'tutoring-matching') {
+        localStorage.setItem('learnova_auth_redirect', 'questionnaire');
+        setViewInternal('questionnaire');
+        window.location.hash = '#questionnaire';
+        return;
+      }
+
+      const validViews = [
+        'public-home', 'public-explore', 'about', 'contact', 'questionnaire',
+        'results', 'auth', 'user-dashboard', 'institution-dashboard',
+        'admin-dashboard', 'destination-detail', 'institution-detail'
+      ];
+      const homeSubSections = [
+        'study-destinations', 'visa-readiness',
+        'worldwide-universities', 'hear-from-our-students'
+      ];
+
+      if (hash && validViews.includes(hash)) {
+        if (hash !== view) {
+          if (hash === 'auth' && (view === 'questionnaire' || view === 'results')) {
+            localStorage.setItem('learnova_auth_redirect', view);
+          }
+          setViewInternal(hash);
+        }
+      } else if (hash && homeSubSections.includes(hash)) {
+        if (view !== 'public-home') {
+          setViewInternal('public-home');
+        }
+        // Force scroll to the element
+        setTimeout(() => {
+          const el = document.getElementById(hash);
+          if (el) {
+            el.scrollIntoView({ behavior: 'smooth' });
+          }
+        }, 150);
+      } else if (!hash) {
+        setViewInternal('public-home');
+      }
+    };
+
+    window.addEventListener('hashchange', handleHashChange);
+    // Handle initial load
+    handleHashChange();
+
+    return () => {
+      window.removeEventListener('hashchange', handleHashChange);
+    };
+  }, [view]);
+
+  const [viewHistory, setViewHistory] = useState(['public-home']);
+
+  const setView = (nextViewOrFunc) => {
+    setViewInternal(prev => {
+      const nextView = typeof nextViewOrFunc === 'function' ? nextViewOrFunc(prev) : nextViewOrFunc;
+      setViewHistory(history => {
+        if (history[history.length - 1] === nextView) return history;
+        if (history.length > 1 && history[history.length - 2] === nextView) {
+          return history.slice(0, -1);
+        }
+        return [...history, nextView];
+      });
+      return nextView;
+    });
+  };
+
+  const navigateBack = () => {
+    setViewHistory(history => {
+      if (history.length <= 1) return history;
+      const newHistory = history.slice(0, -1);
+      const prevView = newHistory[newHistory.length - 1];
+      setViewInternal(prevView);
+      return newHistory;
+    });
+  };
+
+  const [touchStart, setTouchStart] = useState(null);
+  const [touchEnd, setTouchEnd] = useState(null);
+
+  const handleTouchStart = (e) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchMove = (e) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    const distance = touchStart - touchEnd;
+    const isRightSwipe = distance < -80; // horizontal swipe right (left to right) to go back
+    if (isRightSwipe) {
+      navigateBack();
+    }
+  };
   const [questions, setQuestions] = useState(() => {
     if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('sapio_questions');
+      const saved = localStorage.getItem('learnova_questions');
       if (saved) {
         try {
           return JSON.parse(saved);
@@ -486,41 +187,23 @@ export default function App() {
     return mockQuestions;
   });
 
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [loadingProgress, setLoadingProgress] = useState(0);
   const [loadingText, setLoadingText] = useState('Initializing AI Advisor Aria...');
 
   useEffect(() => {
-    let progress = 0;
-    const interval = setInterval(() => {
-      progress += Math.floor(Math.random() * 8) + 4;
-      if (progress >= 100) {
-        progress = 100;
-        clearInterval(interval);
-        setLoadingProgress(100);
-        setLoadingText('Connection Established. Welcome!');
-        
-        setTimeout(() => {
-          setLoading(false);
-        }, 300);
-      } else {
-        setLoadingProgress(progress);
-        if (progress < 25) {
-          setLoadingText('Initializing SapioMatch AI Advisor...');
-        } else if (progress < 50) {
-          setLoadingText('Loading verified global institution templates...');
-        } else if (progress < 75) {
-          setLoadingText('Connecting to persistent database ledger...');
-        } else {
-          setLoadingText('Optimizing Next.js recommendation models...');
-        }
-      }
-    }, 40);
-
-    return () => clearInterval(interval);
+    import('../mockData').then((mod) => {
+      institutionsRef.current = mod.mockInstitutions;
+      setInstitutions(mod.mockInstitutions);
+    });
   }, []);
 
+
+
   const [selectedInstId, setSelectedInstId] = useState('university-birmingham-dubai');
+  const [pendingGlobeInstId, setPendingGlobeInstId] = useState(null);
+  const [selectedCountry, setSelectedCountry] = useState('australia');
+  const [exploreSearchTerm, setExploreSearchTerm] = useState('');
   const [bookmarks, setBookmarks] = useState([1]);
   const [completedQuiz, setCompletedQuiz] = useState(false);
   const [answers, setAnswers] = useState({
@@ -539,19 +222,58 @@ export default function App() {
   // Global Auth State
   const [currentUser, setCurrentUser] = useState(null); // null means logged out
 
+  const resolveInstitutionId = (detail = {}) => {
+    const normalize = (value) => String(value || '')
+      .toLowerCase()
+      .replace(/&/g, 'and')
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '');
+
+    const slug = normalize(detail.slug);
+    const name = normalize(detail.name);
+    const aliases = {
+      'university-of-birmingham-dubai': 'university-birmingham-dubai',
+      'birmingham-dubai': 'university-birmingham-dubai',
+      'american-university-of-sharjah': 'american-university-sharjah',
+      'aus': 'american-university-sharjah',
+      'middlesex-university-dubai': 'middlesex-university-dubai',
+      'astrolabs': 'astrolabs-academy',
+      'astrolabs-academy': 'astrolabs-academy',
+      'coursera': 'coursera',
+      'udemy': 'udemy'
+    };
+
+    const aliasMatch = aliases[slug] || aliases[name];
+    const institutionList = institutionsRef.current;
+    if (aliasMatch && institutionList.some(inst => inst.id === aliasMatch)) return aliasMatch;
+
+    const institutionMatch = institutionList.find(inst => {
+      const instId = normalize(inst.id);
+      const instName = normalize(inst.name);
+      return instId === slug || instName === slug || instName === name || instName.includes(name) || name.includes(instName);
+    });
+
+    return institutionMatch?.id || null;
+  };
+
+  useEffect(() => {
+    fetch('/api/stats/track-visitor', { method: 'POST' })
+      .catch(err => console.error("Failed to track visitor:", err));
+  }, []);
+
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    const dbStr = localStorage.getItem('sapio_db');
+    const dbStr = localStorage.getItem('learnova_db');
     if (!dbStr) return;
     try {
       const db = JSON.parse(dbStr);
       if (view === 'institution-dashboard' && currentUser?.role !== 'University') {
-        const birmUser = db.users.find(u => u.email === 'birmingham@sapiomatch.ai');
+        const birmUser = db.users.find(u => u.email === 'birmingham@learnova.ai');
         if (birmUser) {
           setCurrentUser(birmUser);
         }
       } else if (view === 'admin-dashboard' && currentUser?.role !== 'Admin') {
-        const adminUser = db.users.find(u => u.email === 'operator@sapiomatch.ai');
+        const adminUser = db.users.find(u => u.email === 'operator@learnova.ai');
         if (adminUser) {
           setCurrentUser(adminUser);
         }
@@ -569,63 +291,9 @@ export default function App() {
   // Monetization & Credit System States
   const [credits, setCredits] = useState(10); // Default standard = 10 (reduced from 100)
   const [plan, setPlan] = useState('Standard');
-  const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
+  const [activeTemplateOptional, setActiveTemplateOptional] = useState([]);
 
-  const handleCheckoutSuccess = async () => {
-    const nextPlan = 'Premium';
-    const nextCredits = (currentUser ? currentUser.credits : credits) + 700;
-
-    setPlan(nextPlan);
-    setCredits(nextCredits);
-
-    const updates = { plan: nextPlan, credits: nextCredits };
-
-    if (currentUser) {
-      setCurrentUser(prev => (prev ? { ...prev, ...updates } : prev));
-
-      // Update in backend database
-      try {
-        await fetch('/api/users', {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            email: currentUser.email,
-            updates
-          })
-        });
-      } catch (err) {
-        console.error("Failed to sync membership update to backend:", err);
-      }
-
-      // Update in client local storage
-      try {
-        const dbStr = localStorage.getItem('sapio_db');
-        if (dbStr) {
-          const localDb = JSON.parse(dbStr);
-          localDb.users = (localDb.users || []).map(user => (
-            user.email?.toLowerCase() === currentUser.email.toLowerCase()
-              ? { ...user, ...updates }
-              : user
-          ));
-          localStorage.setItem('sapio_db', JSON.stringify(localDb));
-        }
-      } catch (err) {
-        console.error("Failed to persist membership update locally:", err);
-      }
-      
-      triggerAlert("Successfully upgraded to Premium! 700 credits added to your balance.", "Upgrade Successful", "success");
-    } else {
-      triggerAlert("Successfully upgraded to Premium! 700 credits added to guest balance.", "Upgrade Successful", "success");
-    }
-  };
-
-  const updateCurrentUserMembership = ({ plan: nextPlan, credits: nextCredits }) => {
-    // If they want to upgrade to Premium, open the CheckoutModal!
-    if (nextPlan === 'Premium') {
-      setIsCheckoutOpen(true);
-      return;
-    }
-
+  const updateCurrentUserMembership = async ({ plan: nextPlan, credits: nextCredits }) => {
     const updates = {};
     if (nextPlan !== undefined) {
       updates.plan = nextPlan;
@@ -636,22 +304,19 @@ export default function App() {
       setCredits(nextCredits);
     }
 
-    if (!currentUser?.email || Object.keys(updates).length === 0) return;
+    if (!currentUser?.id || Object.keys(updates).length === 0) return;
 
     setCurrentUser(prev => (prev ? { ...prev, ...updates } : prev));
 
-    if (typeof window === 'undefined') return;
     try {
-      const dbStr = localStorage.getItem('sapio_db');
-      if (!dbStr) return;
-
-      const db = JSON.parse(dbStr);
-      db.users = (db.users || []).map(user => (
-        user.email?.toLowerCase() === currentUser.email.toLowerCase()
-          ? { ...user, ...updates }
-          : user
-      ));
-      localStorage.setItem('sapio_db', JSON.stringify(db));
+      const res = await fetch('/api/users/profile/update', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: currentUser.id, ...updates })
+      });
+      if (!res.ok) {
+        console.error("Failed to persist membership update on server.");
+      }
     } catch (err) {
       console.error("Failed to persist membership update:", err);
     }
@@ -712,6 +377,92 @@ export default function App() {
     
     triggerAlert(msg, title, type);
   };
+
+  useEffect(() => {
+    const handleGlobeInstitutionNavigation = (event) => {
+      const institutionId = resolveInstitutionId(event.detail || {});
+
+      if (currentUser?.role === 'Student') {
+        if (!institutionId) {
+          triggerAlert(
+            "This university is listed in the globe directory, but a full profile page has not been added yet. Please browse the Explore page for available profiles.",
+            "Profile Coming Soon",
+            "info"
+          );
+          setView('public-explore');
+          return;
+        }
+
+        setSelectedInstId(institutionId);
+        setPendingGlobeInstId(null);
+        setView('institution-detail');
+        return;
+      }
+
+      setPendingGlobeInstId(institutionId || 'public-explore');
+      triggerAlert(
+        "Please sign in with a learner account to view this university profile.",
+        "Learner Sign-In Required",
+        "warning"
+      );
+      setView('auth');
+    };
+
+    window.addEventListener('learnova:navigate-institution', handleGlobeInstitutionNavigation);
+    return () => window.removeEventListener('learnova:navigate-institution', handleGlobeInstitutionNavigation);
+  }, [currentUser]);
+
+  useEffect(() => {
+    if (!pendingGlobeInstId || currentUser?.role !== 'Student') return;
+
+    if (pendingGlobeInstId === 'public-explore') {
+      setPendingGlobeInstId(null);
+      triggerAlert(
+        "This university is listed in the globe directory, but a full profile page has not been added yet. Please browse the Explore page for available profiles.",
+        "Profile Coming Soon",
+        "info"
+      );
+      setView('public-explore');
+      return;
+    }
+
+    setSelectedInstId(pendingGlobeInstId);
+    setPendingGlobeInstId(null);
+    setView('institution-detail');
+  }, [currentUser, pendingGlobeInstId]);
+
+  useEffect(() => {
+    const handleGlobeDestinationNavigation = (e) => {
+      const country = e.detail?.country || 'australia';
+      setSelectedCountry(country);
+      setView('destination-detail');
+    };
+
+    window.addEventListener('learnova:navigate-destination', handleGlobeDestinationNavigation);
+    return () => window.removeEventListener('learnova:navigate-destination', handleGlobeDestinationNavigation);
+  }, []);
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        setCustomAlert(prev => prev.isOpen ? { ...prev, isOpen: false } : prev);
+        setShowApplyModal(prev => prev ? false : prev);
+      } else if (e.key === 'Enter') {
+        setCustomAlert(prev => prev.isOpen ? { ...prev, isOpen: false } : prev);
+        
+        const isTyping = document.activeElement && (
+          document.activeElement.tagName === 'INPUT' || 
+          document.activeElement.tagName === 'TEXTAREA'
+        );
+        if (!isTyping) {
+          setShowApplyModal(prev => prev ? false : prev);
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   useEffect(() => {
     // Hijack browser native alert globally as a fallback
@@ -815,9 +566,7 @@ export default function App() {
   };
 
   // Global Stateful Database (read from mock but synced to backend)
-  const [institutions, setInstitutions] = useState(mockInstitutions);
   const [appliedCourses, setAppliedCourses] = useState([]);
-  const [exploreSearchTerm, setExploreSearchTerm] = useState('');
 
   // Live Chat Widget States
   const [isChatOpen, setIsChatOpen] = useState(false);
@@ -833,7 +582,7 @@ export default function App() {
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const savedKey = localStorage.getItem('sapio_gemini_api_key') || '';
+      const savedKey = localStorage.getItem('learnova_gemini_api_key') || '';
       setGeminiApiKey(savedKey);
       setTempApiKeyInput(savedKey);
     }
@@ -855,7 +604,7 @@ export default function App() {
   };
 
   // Initial trigger for applying to a course (opens application form modal)
-  const applyForCourse = (institution, courseName, requestAiRecommend = false) => {
+  const applyForCourse = async (institution, courseName, requestAiRecommend = false) => {
     if (!currentUser) {
       alert("Please sign in or register to submit an application.");
       setView('auth');
@@ -874,6 +623,36 @@ export default function App() {
       return;
     }
 
+    // Track course click
+    fetch('/api/stats/track-click', { method: 'POST' }).catch(err => console.error("Failed to track click:", err));
+
+    // Map institution name to ID
+    let instId = "uni_1";
+    try {
+      const uRes = await fetch('/api/universities');
+      if (uRes.ok) {
+        const uList = await uRes.json();
+        const match = uList.find(u => u.name?.toLowerCase() === institution?.toLowerCase());
+        if (match) instId = match.id;
+      }
+    } catch (err) {
+      console.warn("Error fetching universities list:", err);
+    }
+
+    // Fetch template optional sections
+    try {
+      const tRes = await fetch(`/api/forms/templates/${instId}`);
+      if (tRes.ok) {
+        const data = await tRes.json();
+        setActiveTemplateOptional(data.optional_sections || []);
+      } else {
+        setActiveTemplateOptional([]);
+      }
+    } catch (err) {
+      console.warn("Failed to fetch template optional sections:", err);
+      setActiveTemplateOptional([]);
+    }
+
     setActiveApplyCourse({ institution, courseName, requestAiRecommend });
     setApplyForm(prev => ({
       ...prev,
@@ -881,6 +660,8 @@ export default function App() {
       contact: currentUser.contactNumber || '',
       cgpa: '',
       sop: '',
+      ieltsScore: '',
+      resumeFile: null,
       counselorPreference: 'No Counselor',
       chatSlot: ''
     }));
@@ -901,11 +682,17 @@ export default function App() {
           studentEmail: applyForm.email,
           studentContact: applyForm.contact,
           cgpa: applyForm.cgpa,
-          sop: applyForm.sop,
+          sop: activeTemplateOptional.includes("Personal Statement") ? applyForm.sop : 'N/A',
+          ieltsScore: activeTemplateOptional.includes("English / Language Proficiency") ? applyForm.ieltsScore : 'N/A',
+          resumeAttached: activeTemplateOptional.includes("Documents Upload") ? (applyForm.resumeFile ? applyForm.resumeFile.name : 'No file chosen') : 'N/A',
           universityName: activeApplyCourse.institution,
           courseName: activeApplyCourse.courseName,
           counselorPreference: applyForm.counselorPreference,
-          chatSlot: applyForm.counselorPreference === '15-Min Live Chat' ? applyForm.chatSlot : ''
+          chatSlot: applyForm.counselorPreference === '15-Min Live Chat' ? applyForm.chatSlot : '',
+          isInternational: true,
+          preferredDestination: "International",
+          nationality: "International",
+          countryOfResidence: "International"
         })
       });
 
@@ -949,7 +736,7 @@ export default function App() {
     if (plan === 'Standard' && chatQueryCount >= 3) {
       setChatMessages(prev => [...prev, 
         { sender: 'user', text: chatInput.trim() },
-        { sender: 'ai', text: "⚠️ **System Overcrowding Limit:** You have reached your limit of 3 free counselor queries for this session to ensure a fair chance for all users. Please upgrade to **Premium Plan** in your dashboard to unlock unlimited live advisor consultations!" }
+        { sender: 'ai', text: "âš ï¸ **System Overcrowding Limit:** You have reached your limit of 3 free counselor queries for this session to ensure a fair chance for all users. Please upgrade to **Premium Plan** in your dashboard to unlock unlimited live advisor consultations!" }
       ]);
       setChatInput('');
       return;
@@ -1007,7 +794,8 @@ export default function App() {
       console.warn("Backend API offline. Using client engine.");
     }
 
-    // Fallback to local AI Engine
+    // Fallback to local AI Engine (lazy-loaded to keep initial bundle smaller)
+    const { generateAiResponse } = await import('../services/aiEngine');
     const localResult = generateAiResponse(userText, chatMessages);
     setTimeout(() => {
       setChatMessages(prev => [...prev, { sender: 'ai', text: localResult.text }]);
@@ -1034,7 +822,7 @@ export default function App() {
 
   // Render content according to the active view
   const renderView = () => {
-    // Route guard: Questionnaire and Results are restricted to student accounts (or guests)
+    // Route guard: Questionnaire and Results are restricted to student/guest accounts
     if (view === 'questionnaire' || view === 'results') {
       if (currentUser && currentUser.role !== 'Student') {
         if (currentUser.role === 'Admin' && view === 'questionnaire') {
@@ -1075,11 +863,7 @@ export default function App() {
     switch (view) {
       case 'public-home':
         return (
-          <Home 
-            setView={setView} 
-            setExploreSearchTerm={setExploreSearchTerm} 
-            onUpgradePremium={() => setIsCheckoutOpen(true)} 
-          />
+          <Home setView={setView} />
         );
       case 'public-explore':
         return (
@@ -1091,7 +875,32 @@ export default function App() {
             setSearchTerm={setExploreSearchTerm}
           />
         );
+      case 'destination-detail':
+        if (!selectedCountry) {
+          return (
+            <Home setView={setView} />
+          );
+        }
+        return (
+          <DestinationDetail 
+            countryCode={selectedCountry} 
+            setView={setView} 
+            setAnswers={setAnswers} 
+            setExploreSearchTerm={setExploreSearchTerm}
+          />
+        );
       case 'institution-detail':
+        if (!selectedInstId) {
+          return (
+            <Explore 
+              setView={setView} 
+              setSelectedInstId={setSelectedInstId} 
+              institutions={institutions} 
+              searchTerm={exploreSearchTerm}
+              setSearchTerm={setExploreSearchTerm}
+            />
+          );
+        }
         return (
           <InstitutionDetail 
             instId={selectedInstId} 
@@ -1126,6 +935,8 @@ export default function App() {
             alert={alert}
             currentUser={currentUser}
             questions={questions}
+            plan={plan}
+            onUpdateMembership={updateCurrentUserMembership}
           />
         );
       case 'user-dashboard':
@@ -1174,45 +985,22 @@ export default function App() {
       case 'contact':
         return <Contact setView={setView} alert={alert} />;
       default:
-        return (
-          <Home 
-            setView={setView} 
-            setExploreSearchTerm={setExploreSearchTerm} 
-            onUpgradePremium={() => setIsCheckoutOpen(true)} 
-          />
-        );
+        return <Home setView={setView} />;
     }
   };
 
   const unreadNotifCount = notifications.filter(n => !n.read).length;
 
   return (
-    <div className="app-container">
-      <SapioVisualShell />
+    <div 
+      className="app-container"
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+    >
+      <LearnovaVisualShell />
 
-      {/* Loading Overlay */}
-      {loading && (
-        <div id="site-loading-overlay" className="loading-overlay">
-          <div className="loading-logo-container">
-            <div className="loading-logo-glow" />
-            <div className="loading-logo">
-              <Sparkles size={32} style={{ color: 'white' }} />
-            </div>
-          </div>
-          <h2 style={{ fontSize: '24px', fontFamily: 'var(--font-display)', marginBottom: '8px', color: 'white', fontWeight: 700 }}>
-            SapioMatch AI
-          </h2>
-          <p style={{ fontSize: '13px', color: 'var(--text-muted)', marginBottom: '32px', textAlign: 'center', maxWidth: '300px' }}>
-            A smarter bridge to trusted education
-          </p>
-          <div className="loading-progress-track">
-            <div className="loading-progress-bar" style={{ width: `${loadingProgress}%` }} />
-          </div>
-          <div className="loading-status-text">
-            {loadingProgress}% — {loadingText}
-          </div>
-        </div>
-      )}
+
 
       {/* Header / Navigation bar */}
       <header style={{
@@ -1230,89 +1018,124 @@ export default function App() {
         justifyContent: 'space-between',
         padding: '0 40px'
       }}>
-        {/* Logo */}
-        <div 
-          onClick={() => setView('public-home')} 
-          style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer' }}
-        >
-          <div style={{
-            background: 'var(--primary)',
-            width: '36px',
-            height: '36px',
-            borderRadius: 'var(--border-radius-sm)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}>
-            <Sparkles size={18} style={{ color: 'white' }} />
+        {/* Logo & Back Button */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+          {view !== 'public-home' && viewHistory.length > 1 && (
+            <button
+              onClick={navigateBack}
+              style={{
+                background: 'rgba(255, 255, 255, 0.03)',
+                border: '1px solid var(--card-border)',
+                borderRadius: '50%',
+                width: '36px',
+                height: '36px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: 'var(--text-primary)',
+                cursor: 'pointer',
+                transition: 'all 0.2s ease',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.08)';
+                e.currentTarget.style.borderColor = 'var(--secondary)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.03)';
+                e.currentTarget.style.borderColor = 'var(--card-border)';
+              }}
+              title="Go Back"
+            >
+              <ArrowLeft size={16} />
+            </button>
+          )}
+
+          <div 
+            onClick={() => setView('public-home')} 
+            style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer' }}
+          >
+            <div style={{
+              background: 'var(--primary)',
+              width: '36px',
+              height: '36px',
+              borderRadius: 'var(--border-radius-sm)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}>
+              <Sparkles size={18} style={{ color: 'white' }} />
+            </div>
+            <span style={{
+              fontSize: '18px',
+              fontWeight: 700,
+              fontFamily: 'var(--font-display)',
+              letterSpacing: '-0.01em',
+              color: 'var(--text-primary)'
+            }}>
+              Learnova AI
+            </span>
           </div>
-          <span style={{
-            fontSize: '18px',
-            fontWeight: 700,
-            fontFamily: 'var(--font-display)',
-            letterSpacing: '-0.01em',
-            color: 'white'
-          }}>
-            SapioMatch AI
-          </span>
         </div>
 
         {/* Navigation links */}
         <nav style={{ display: 'flex', gap: '30px', alignItems: 'center' }}>
-          <button onClick={() => setView('public-home')} className={`nav-link ${view === 'public-home' ? 'active' : ''}`}>
+          <a href="#public-home" className={`nav-link ${view === 'public-home' ? 'active' : ''}`}>
             Home
-          </button>
-          <button onClick={() => setView('about')} className={`nav-link ${view === 'about' ? 'active' : ''}`}>
+          </a>
+          <a href="#about" className={`nav-link ${view === 'about' ? 'active' : ''}`}>
             About Us
-          </button>
-          <button onClick={() => setView('contact')} className={`nav-link ${view === 'contact' ? 'active' : ''}`}>
+          </a>
+          <a href="#contact" className={`nav-link ${view === 'contact' ? 'active' : ''}`}>
             Contact Us
-          </button>
-          <button onClick={() => setView('public-explore')} className={`nav-link ${(view === 'public-explore' || view === 'institution-detail') ? 'active' : ''}`}>
+          </a>
+          <a href="#public-explore" className={`nav-link ${(view === 'public-explore' || view === 'institution-detail') ? 'active' : ''}`}>
             Explore Courses
-          </button>
-          <button onClick={() => setView('questionnaire')} className={`nav-link ${(view === 'questionnaire' || view === 'results') ? 'active' : ''}`}>
+          </a>
+          <a href="#questionnaire" className={`nav-link ${(view === 'questionnaire' || view === 'results') ? 'active' : ''}`}>
             AI Matching
-          </button>
+          </a>
           {currentUser && currentUser.role === 'Admin' && (
-            <button 
-              onClick={() => setView('admin-dashboard')} 
+            <a 
+              href="#admin-dashboard" 
               style={{ 
-                color: view === 'admin-dashboard' ? 'white' : 'var(--text-muted)',
+                color: view === 'admin-dashboard' ? 'var(--text-primary)' : 'var(--text-muted)',
                 fontWeight: 600,
                 fontSize: '13px',
                 cursor: 'pointer',
                 border: '1px solid var(--accent)',
                 padding: '4px 8px',
                 borderRadius: '4px',
-                background: 'rgba(153, 27, 27, 0.05)'
+                background: 'rgba(153, 27, 27, 0.05)',
+                textDecoration: 'none'
               }}
             >
               Admin Controls
-            </button>
+            </a>
           )}
           {currentUser && currentUser.role === 'University' && (
-            <button 
-              onClick={() => setView('institution-dashboard')} 
+            <a 
+              href="#institution-dashboard" 
               style={{ 
-                color: view === 'institution-dashboard' ? 'white' : 'var(--text-muted)',
+                color: view === 'institution-dashboard' ? 'var(--text-primary)' : 'var(--text-muted)',
                 fontWeight: 600,
                 fontSize: '13px',
                 cursor: 'pointer',
                 border: '1px solid var(--secondary)',
                 padding: '4px 8px',
                 borderRadius: '4px',
-                background: 'rgba(180, 83, 9, 0.05)'
+                background: 'rgba(180, 83, 9, 0.05)',
+                textDecoration: 'none'
               }}
             >
               University Panel
-            </button>
+            </a>
           )}
         </nav>
 
         {/* Right Nav Action */}
         <div style={{ display: 'flex', gap: '12px', alignItems: 'center', position: 'relative' }}>
-          
+
+
           {/* Notification Center (Only visible when logged in) */}
           {currentUser && (
             <div style={{ position: 'relative' }}>
@@ -1331,7 +1154,8 @@ export default function App() {
                   display: 'flex', 
                   alignItems: 'center', 
                   justifyContent: 'center',
-                  borderColor: unreadNotifCount > 0 ? 'var(--secondary)' : 'var(--card-border)'
+                  borderColor: unreadNotifCount > 0 ? 'var(--secondary)' : 'var(--card-border)',
+                  overflow: 'visible'
                 }}
                 title="Notifications"
               >
@@ -1339,14 +1163,24 @@ export default function App() {
                 {unreadNotifCount > 0 && (
                   <span style={{
                     position: 'absolute',
-                    top: '-2px',
-                    right: '-2px',
-                    width: '8px',
-                    height: '8px',
-                    borderRadius: '50%',
+                    top: '-5px',
+                    right: '-5px',
+                    minWidth: '16px',
+                    height: '16px',
+                    borderRadius: '9999px',
                     background: 'var(--secondary)',
-                    boxShadow: '0 0 8px var(--secondary)'
-                  }} />
+                    boxShadow: '0 0 8px var(--secondary)',
+                    color: 'white',
+                    fontSize: '9px',
+                    fontWeight: 'bold',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    padding: '0 4px',
+                    lineHeight: 1
+                  }}>
+                    {unreadNotifCount}
+                  </span>
                 )}
               </button>
 
@@ -1368,7 +1202,7 @@ export default function App() {
                   gap: '12px'
                 }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--card-border)', paddingBottom: '8px' }}>
-                    <span style={{ fontSize: '13px', fontWeight: 700, color: 'white' }}>Inbox Notifications</span>
+                    <span style={{ fontSize: '13px', fontWeight: 700, color: 'var(--text-primary)' }}>Inbox Notifications</span>
                     <button 
                       onClick={() => setShowNotifications(false)} 
                       style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer' }}
@@ -1397,7 +1231,7 @@ export default function App() {
                               <span style={{ padding: '2px 6px', borderRadius: '4px', background: 'rgba(239, 68, 68, 0.15)', color: '#f87171', fontSize: '9px', fontWeight: 700 }}>Cancelled</span>
                             ) : null}
                           </div>
-                          <div style={{ color: 'white' }}>{n.text}</div>
+                          <div style={{ color: 'var(--text-primary)' }}>{n.text}</div>
                           {n.link && (
                             <a 
                               href={n.link} 
@@ -1500,7 +1334,12 @@ export default function App() {
           ) : (
             <button 
               className="btn-premium-outline"
-              onClick={() => setView('auth')}
+              onClick={() => {
+                if (view === 'questionnaire' || view === 'results') {
+                  localStorage.setItem('learnova_auth_redirect', view);
+                }
+                setView('auth');
+              }}
               style={{ padding: '8px 14px', fontSize: '13px', gap: '6px' }}
             >
               <LogIn size={14} />
@@ -1510,7 +1349,10 @@ export default function App() {
           
           <button 
             className="btn-premium"
-            onClick={() => setView('questionnaire')}
+            onClick={() => {
+              localStorage.setItem('learnova_auth_redirect', 'questionnaire');
+              setView('questionnaire');
+            }}
             style={{ padding: '8px 14px', fontSize: '13px' }}
           >
             Match Now
@@ -1535,15 +1377,15 @@ export default function App() {
         <div style={{ maxWidth: '1000px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '12px', alignItems: 'center' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
             <Sparkles size={14} style={{ color: 'var(--secondary)' }} />
-            <span style={{ fontSize: '14px', fontWeight: 600, color: 'white' }}>SapioMatch AI</span>
+            <span style={{ fontSize: '14px', fontWeight: 600, color: 'var(--text-primary)' }}>Learnova AI</span>
           </div>
           <p style={{ fontSize: '12px', color: 'var(--text-muted)', maxWidth: '500px' }}>
             Transforming educational search into structured, personalized fits for ambitious candidates.
           </p>
           <div style={{ display: 'flex', gap: '20px', fontSize: '11px', color: 'var(--text-muted)', marginTop: '4px' }}>
-            <span>© 2026 SapioMatch AI. All rights reserved.</span>
-            <a href="#about" onClick={(e) => { e.preventDefault(); setView('about'); }}>About Us</a>
-            <a href="#contact" onClick={(e) => { e.preventDefault(); setView('contact'); }}>Contact Us</a>
+            <span>Â© 2026 Learnova AI. All rights reserved.</span>
+            <a href="#about">About Us</a>
+            <a href="#contact">Contact Us</a>
           </div>
         </div>
       </footer>
@@ -1580,7 +1422,7 @@ export default function App() {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
               <div>
                 <span style={{ fontSize: '10px', textTransform: 'uppercase', color: 'var(--secondary)', fontWeight: 700, letterSpacing: '0.05em' }}>Submit Application</span>
-                <h3 style={{ fontSize: '20px', color: 'white', fontWeight: 700, marginTop: '2px' }}>{activeApplyCourse.courseName}</h3>
+                <h3 style={{ fontSize: '20px', color: 'var(--text-primary)', fontWeight: 700, marginTop: '2px' }}>{activeApplyCourse.courseName}</h3>
                 <p style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '2px' }}>{activeApplyCourse.institution}</p>
               </div>
               <button 
@@ -1641,21 +1483,56 @@ export default function App() {
               </div>
 
               {/* Row 3: SOP */}
-              <div>
-                <label style={{ display: 'block', fontSize: '11px', color: 'var(--text-muted)', marginBottom: '6px' }}>Statement of Purpose (Why join this program?)</label>
-                <div style={{ position: 'relative' }}>
-                  <textarea 
+              {activeTemplateOptional.includes("Personal Statement") && (
+                <div>
+                  <label style={{ display: 'block', fontSize: '11px', color: 'var(--text-muted)', marginBottom: '6px' }}>Statement of Purpose (Why join this program?)</label>
+                  <div style={{ position: 'relative' }}>
+                    <textarea 
+                      className="custom-input"
+                      rows="3"
+                      placeholder="Write a brief summary of your goals..."
+                      value={applyForm.sop}
+                      onChange={(e) => setApplyForm(prev => ({ ...prev, sop: e.target.value }))}
+                      style={{ resize: 'none', paddingRight: '36px' }}
+                      required
+                    />
+                    <FileText size={14} style={{ position: 'absolute', right: '12px', top: '16px', color: 'var(--text-muted)' }} />
+                  </div>
+                </div>
+              )}
+
+              {/* Conditional Row: English Proficiency */}
+              {activeTemplateOptional.includes("English / Language Proficiency") && (
+                <div>
+                  <label style={{ display: 'block', fontSize: '11px', color: 'var(--text-muted)', marginBottom: '6px' }}>
+                    English Proficiency score (IELTS / TOEFL / Duolingo)
+                  </label>
+                  <input
+                    type="text"
                     className="custom-input"
-                    rows="3"
-                    placeholder="Write a brief summary of your goals..."
-                    value={applyForm.sop}
-                    onChange={(e) => setApplyForm(prev => ({ ...prev, sop: e.target.value }))}
-                    style={{ resize: 'none', paddingRight: '36px' }}
+                    placeholder="e.g. IELTS 7.5 or TOEFL 100"
+                    value={applyForm.ieltsScore || ''}
+                    onChange={(e) => setApplyForm(prev => ({ ...prev, ieltsScore: e.target.value }))}
                     required
                   />
-                  <FileText size={14} style={{ position: 'absolute', right: '12px', top: '16px', color: 'var(--text-muted)' }} />
                 </div>
-              </div>
+              )}
+
+              {/* Conditional Row: Documents Upload */}
+              {activeTemplateOptional.includes("Documents Upload") && (
+                <div>
+                  <label style={{ display: 'block', fontSize: '11px', color: 'var(--text-muted)', marginBottom: '6px' }}>
+                    Upload CV / Resume
+                  </label>
+                  <input
+                    type="file"
+                    className="custom-input"
+                    accept=".pdf,.docx,.doc"
+                    onChange={(e) => setApplyForm(prev => ({ ...prev, resumeFile: e.target.files?.[0] || null }))}
+                    required
+                  />
+                </div>
+              )}
 
               {/* Row 4: Counselor Selection */}
               <div style={{ borderTop: '1px solid var(--card-border)', paddingTop: '16px' }}>
@@ -1805,7 +1682,7 @@ export default function App() {
                   rel="noreferrer" 
                   style={{ fontSize: '11px', color: '#22d3ee', textDecoration: 'underline', width: 'fit-content' }}
                 >
-                  Get free API key ↗
+                  Get free API key â†—
                 </a>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginTop: '2px' }}>
@@ -1828,7 +1705,7 @@ export default function App() {
                     onClick={() => {
                       const key = tempApiKeyInput.trim();
                       setGeminiApiKey(key);
-                      localStorage.setItem('sapio_gemini_api_key', key);
+                      localStorage.setItem('learnova_gemini_api_key', key);
                       setShowChatSettings(false);
                       alert(key ? "Gemini API key saved! Aria is now live." : "API key cleared. Switched to local NLP mode.");
                     }}
@@ -1843,7 +1720,7 @@ export default function App() {
                       onClick={() => {
                         setGeminiApiKey('');
                         setTempApiKeyInput('');
-                        localStorage.removeItem('sapio_gemini_api_key');
+                        localStorage.removeItem('learnova_gemini_api_key');
                         setShowChatSettings(false);
                         alert("Gemini API key cleared. Running in local NLP mode.");
                       }}
@@ -1950,51 +1827,39 @@ export default function App() {
       )}
 
       {gmailToast && (
-        <div className="gmail-notification-alert">
+        <div className="gmail-notification-alert" style={{ 
+          borderLeft: '4px solid var(--primary)',
+          borderColor: 'rgba(43, 92, 70, 0.25)',
+          boxShadow: '0 10px 30px rgba(0, 0, 0, 0.6), 0 0 15px rgba(43, 92, 70, 0.15)',
+          background: '#0a0d0b',
+          width: '360px',
+          padding: '12px 16px',
+          alignItems: 'center',
+          gap: '12px'
+        }}>
           <div style={{
-            width: '36px',
-            height: '36px',
+            width: '32px',
+            height: '32px',
             borderRadius: '50%',
-            background: 'rgba(234, 67, 53, 0.1)',
+            background: 'rgba(43, 92, 70, 0.15)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             flexShrink: 0
           }}>
-            <Mail size={18} style={{ color: '#ea4335' }} />
+            <Check size={16} style={{ color: 'var(--primary)' }} />
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '3px', flexGrow: 1, overflow: 'hidden' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', flexGrow: 1, overflow: 'hidden' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span style={{ fontSize: '11.5px', fontWeight: 800, color: 'white', fontFamily: 'var(--font-display)' }}>Gmail Alert</span>
+              <span style={{ fontSize: '13px', fontWeight: 700, color: 'white', fontFamily: 'var(--font-display)' }}>Message Sent</span>
               <span style={{ fontSize: '9px', color: 'var(--text-muted)' }}>Just now</span>
             </div>
-            <div style={{ fontSize: '10.5px', color: '#e5e7eb', fontWeight: 600 }}>
-              To: {gmailToast.to}
-            </div>
-            <div style={{ fontSize: '10.5px', color: 'var(--secondary)', fontWeight: 600 }}>
-              Subject: {gmailToast.subject}
-            </div>
-            <div style={{ 
-              fontSize: '11px', 
-              color: 'var(--text-muted)', 
-              whiteSpace: 'pre-line',
-              marginTop: '4px',
-              borderTop: '1px solid rgba(255,255,255,0.05)',
-              paddingTop: '6px',
-              lineHeight: '1.4'
-            }}>
-              {gmailToast.body}
+            <div style={{ fontSize: '11px', color: 'var(--text-muted)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+              Email confirmation routed to: <strong style={{ color: 'white' }}>{gmailToast.to}</strong>
             </div>
           </div>
         </div>
       )}
-
-      {/* Payment Gateway Checkout Simulator */}
-      <CheckoutModal 
-        isOpen={isCheckoutOpen} 
-        onClose={() => setIsCheckoutOpen(false)} 
-        onSuccess={handleCheckoutSuccess} 
-      />
     </div>
   );
 }
