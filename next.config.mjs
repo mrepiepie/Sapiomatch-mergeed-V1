@@ -12,9 +12,6 @@ const nextConfig = {
   experimental: {
     optimizePackageImports: [
       'lucide-react',
-      '@react-three/drei',
-      '@react-three/fiber',
-      'three',
     ],
   },
   compiler: {
