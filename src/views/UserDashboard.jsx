@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { mockMatches } from '../mockData';
+import { getDynamicMatches } from '../services/matchEngine';
 import { Award, Landmark, User, FileText, CheckCircle, Clock, Calendar, ShieldAlert, RotateCw, Sparkles, X, Send } from 'lucide-react';
 
 export default function UserDashboard({ 
@@ -22,7 +22,8 @@ export default function UserDashboard({
   const [paymentTab, setPaymentTab] = useState('upgrade'); // 'upgrade' or 'buy'
   const [selectedBundle, setSelectedBundle] = useState(null);
 
-  const matchedBookmarks = mockMatches.filter(m => bookmarks.includes(m.id));
+  const matches = getDynamicMatches(answers);
+  const matchedBookmarks = matches.filter(m => bookmarks.includes(m.id));
 
   const applyMembershipUpdate = ({ nextPlan = plan, addedCredits = 0 }) => {
     const nextCredits = credits + addedCredits;

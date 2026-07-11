@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { mockMatches, mockInstitutions } from '../mockData';
+import { mockInstitutions } from '../mockData';
+import { getDynamicMatches } from '../services/matchEngine';
 import { Award, Check, ArrowRight, Bookmark, BookmarkCheck, PhoneCall, HelpCircle, AlertCircle, X } from 'lucide-react';
 
 export default function Results({ setView, answers, bookmarks = [], toggleBookmark, applyForCourse, appliedCourses = [], alert, currentUser, plan = 'Standard', onUpdateMembership }) {
@@ -69,7 +70,8 @@ export default function Results({ setView, answers, bookmarks = [], toggleBookma
     return inst ? inst.name : "Partner Institution";
   };
 
-  const selectedMatches = mockMatches.filter(m => compareList.includes(m.id));
+  const matches = getDynamicMatches(answers);
+  const selectedMatches = matches.filter(m => compareList.includes(m.id));
 
   return (
     <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '40px 24px' }} className="page-fade-enter">
@@ -253,7 +255,7 @@ export default function Results({ setView, answers, bookmarks = [], toggleBookma
 
       {/* Matches Listing */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-        {mockMatches.map((match, index) => {
+        {matches.map((match, index) => {
           const isBookmarked = bookmarks.includes(match.id);
           const isApplied = appliedCourses.some(app => app.courseName === match.title && (app.universityName === getInstitutionName(match.institutionId) || app.institution === getInstitutionName(match.institutionId)));
           const isSelectedForCompare = compareList.includes(match.id);
