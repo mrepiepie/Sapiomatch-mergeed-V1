@@ -1307,3 +1307,23 @@ button, input, select, textarea {
   background: rgba(22, 169, 114, 0.08);
   border-color: rgba(22, 169, 114, 0.2);
 }
+
+/* Custom Overrides to defeat aggressive light-theme dashboard overrides */
+[data-theme="light"] .main-content .force-white-text,
+.force-white-text {
+  color: #ffffff !important;
+}
+
+[data-theme="light"] .main-content .force-gradient-text,
+.force-gradient-text {
+  background: linear-gradient(135deg, #34d399 0%, #a7f3d0 100%) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  color: transparent !important;
+  -webkit-text-fill-color: transparent !important;
+}
+
+[data-theme="light"] .main-content .force-muted-white-text,
+.force-muted-white-text {
+  color: rgba(255, 255, 255, 0.85) !important;
+}

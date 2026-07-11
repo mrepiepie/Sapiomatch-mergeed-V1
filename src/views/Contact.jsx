@@ -331,7 +331,7 @@ export default function Contact({ setView, alert }) {
           }}>
             <div style={{ maxWidth: '600px' }}>
               <h2 style={{ fontSize: '32px', fontFamily: 'var(--font-display)', marginBottom: '12px', color: '#ffffff' }}>
-                <span style={{ color: '#ffffff' }}>We're here to </span><span style={{
+                <span className="force-white-text" style={{ color: '#ffffff' }}>We're here to </span><span className="force-gradient-text" style={{
                   background: 'linear-gradient(135deg, #34d399 0%, #a7f3d0 100%)',
                   WebkitBackgroundClip: 'text',
                   WebkitTextFillColor: 'transparent',
@@ -339,7 +339,7 @@ export default function Contact({ setView, alert }) {
                   color: 'transparent'
                 }}>help you succeed</span>
               </h2>
-              <p style={{ color: 'rgba(255, 255, 255, 0.85)', fontSize: '15px', lineHeight: 1.6 }}>
+              <p className="force-muted-white-text" style={{ color: 'rgba(255, 255, 255, 0.85)', fontSize: '15px', lineHeight: 1.6 }}>
                 Whether you're exploring career-focused degrees, setting up your university's program templates, or need tech support on the matching logs, our administrative and counseling desks are always ready.
               </p>
             </div>
