@@ -1,10 +1,28 @@
 import React, { useState, useEffect } from 'react';
-import { mockMatches, mockInstitutions } from '../mockData';
+import { mockInstitutions } from '../mockData';
+import { getDynamicMatches } from '../services/matchEngine';
 import { Award, Check, ArrowRight, Bookmark, BookmarkCheck, PhoneCall, HelpCircle, AlertCircle, X } from 'lucide-react';
 
-export default function Results({ setView, answers, bookmarks = [], toggleBookmark, applyForCourse, appliedCourses = [], alert, currentUser }) {
+export default function Results({ setView, answers, bookmarks = [], toggleBookmark, applyForCourse, appliedCourses = [], alert, currentUser, plan = 'Standard', onUpdateMembership }) {
   const [compareList, setCompareList] = useState([]);
   const [showCompareModal, setShowCompareModal] = useState(false);
+  const [isProcessingUpgrade, setIsProcessingUpgrade] = useState(false);
+
+  const handleUpgradeClick = () => {
+    if (!currentUser) {
+      localStorage.setItem('learnova_auth_redirect', 'results');
+      setView('auth');
+    } else {
+      setIsProcessingUpgrade(true);
+      setTimeout(() => {
+        setIsProcessingUpgrade(false);
+        if (onUpdateMembership) {
+          onUpdateMembership({ plan: 'Premium', addedCredits: 700 });
+          alert("Payment Successful! You have upgraded to Premium and unlocked all recommendations.");
+        }
+      }, 1500);
+    }
+  };
 
   // Client-side local route guard
   useEffect(() => {
@@ -52,51 +70,12 @@ export default function Results({ setView, answers, bookmarks = [], toggleBookma
     return inst ? inst.name : "Partner Institution";
   };
 
-  const selectedMatches = mockMatches.filter(m => compareList.includes(m.id));
+  const matches = getDynamicMatches(answers);
+  const selectedMatches = matches.filter(m => compareList.includes(m.id));
 
   return (
     <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '40px 24px' }} className="page-fade-enter">
       
-      {/* Guest Mode Active Banner */}
-      {!currentUser && (
-        <div 
-          className="glass-card" 
-          style={{ 
-            display: 'flex', 
-            alignItems: 'center', 
-            justifyContent: 'space-between', 
-            gap: '16px', 
-            padding: '12px 20px', 
-            borderLeft: '4px solid var(--primary)', 
-            marginBottom: '30px',
-            background: 'linear-gradient(90deg, rgba(52, 211, 153, 0.05) 0%, rgba(0,0,0,0) 100%)',
-            position: 'relative',
-            zIndex: 10
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <div style={{
-              width: '8px',
-              height: '8px',
-              borderRadius: '50%',
-              background: 'var(--primary)',
-              boxShadow: '0 0 6px var(--primary)',
-              animation: 'pulse 1.5s infinite alternate'
-            }} />
-            <div style={{ fontSize: '13px', color: '#e5e7eb' }}>
-              <strong>Guest Mode Active:</strong> You are exploring and consulting anonymously. <span style={{ color: 'var(--secondary)' }}>Sign in or create an account</span> to save your recommendations, bookmarks, and apply to programs.
-            </div>
-          </div>
-          <button 
-            className="btn-premium-outline" 
-            onClick={() => setView('auth')} 
-            style={{ padding: '4px 12px', fontSize: '12px' }}
-          >
-            Sign In / Register
-          </button>
-        </div>
-      )}
-
       {/* Header Banner */}
       <div style={{ textAlign: 'center', marginBottom: '40px' }}>
         <div style={{ 
@@ -119,7 +98,7 @@ export default function Results({ setView, answers, bookmarks = [], toggleBookma
           Your <span className="gradient-text">AI Match results</span> are ready
         </h1>
         <p style={{ color: 'var(--text-muted)', maxWidth: '750px', margin: '0 auto' }}>
-          Based on your profile, SapioMatch AI has found these programs matching a {answers.age || '29'}-year-old working professional with a {answers.education || "Bachelor's degree"} background and {answers.experience || "3-5 years"} of experience.
+          Based on your profile, Learnova AI has found these programs matching a {answers.age || '29'}-year-old working professional with a {answers.education || "Bachelor's degree"} background and {answers.experience || "3-5 years"} of experience.
         </p>
       </div>
 
@@ -276,125 +255,269 @@ export default function Results({ setView, answers, bookmarks = [], toggleBookma
 
       {/* Matches Listing */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-        {mockMatches.map(match => {
+        {matches.map((match, index) => {
           const isBookmarked = bookmarks.includes(match.id);
           const isApplied = appliedCourses.some(app => app.courseName === match.title && (app.universityName === getInstitutionName(match.institutionId) || app.institution === getInstitutionName(match.institutionId)));
           const isSelectedForCompare = compareList.includes(match.id);
+          const isBlurred = plan !== 'Premium' && index >= 3;
 
           return (
-            <div key={match.id} className="spotlight-card" onMouseMove={handleMouseMove} onMouseLeave={handleMouseLeave} style={{ padding: '24px', position: 'relative', '--spotlight-color': 'rgba(43, 92, 70, 0.12)' }}>
-              <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', gap: '20px', alignItems: 'flex-start', position: 'relative', zIndex: 2 }}>
-                <div style={{ flex: '1 1 500px' }}>
-                  {/* Match and Institution name */}
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', alignItems: 'center', marginBottom: '12px' }}>
-                    <span style={{
-                      padding: '4px 10px',
-                      borderRadius: 'var(--border-radius-full)',
-                      fontSize: '11px',
-                      fontWeight: 700,
-                      background: 'rgba(43, 92, 70, 0.15)',
-                      color: '#a78bfa',
-                      border: '1px solid rgba(43, 92, 70, 0.2)'
-                    }}>
-                      {getInstitutionName(match.institutionId)}
-                    </span>
-                    <span style={{ fontSize: '13px', color: 'var(--text-muted)' }}>{match.region} · {match.format}</span>
-                  </div>
+            <React.Fragment key={match.id}>
+              {/* Payment Area Card: rendered right before card 4 (index === 3) for standard/guest users */}
+              {plan !== 'Premium' && index === 3 && (
+                <div style={{
+                  padding: '30px 40px',
+                  background: 'linear-gradient(135deg, rgba(180, 83, 9, 0.12) 0%, rgba(124, 58, 237, 0.12) 100%)',
+                  border: '1px solid rgba(180, 83, 9, 0.5)',
+                  borderRadius: '16px',
+                  textAlign: 'center',
+                  margin: '20px 0',
+                  boxShadow: '0 8px 32px rgba(180, 83, 9, 0.25)',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '12px',
+                  position: 'relative',
+                  overflow: 'hidden'
+                }}>
+                  {/* Decorative glowing backdrops */}
+                  <div style={{
+                    position: 'absolute',
+                    top: '-50%',
+                    left: '-20%',
+                    width: '300px',
+                    height: '300px',
+                    borderRadius: '50%',
+                    background: 'radial-gradient(circle, rgba(180, 83, 9, 0.12) 0%, rgba(180, 83, 9, 0) 70%)',
+                    filter: 'blur(40px)',
+                    pointerEvents: 'none'
+                  }} />
+                  <div style={{
+                    position: 'absolute',
+                    bottom: '-50%',
+                    right: '-20%',
+                    width: '300px',
+                    height: '300px',
+                    borderRadius: '50%',
+                    background: 'radial-gradient(circle, rgba(124, 58, 237, 0.12) 0%, rgba(124, 58, 237, 0) 70%)',
+                    filter: 'blur(40px)',
+                    pointerEvents: 'none'
+                  }} />
 
-                  <h3 style={{ fontSize: '22px', marginBottom: '16px', color: 'white', fontFamily: 'var(--font-display)' }}>{match.title}</h3>
+                  <h3 style={{ fontSize: '22px', fontFamily: 'var(--font-display)', color: 'white', margin: 0, fontWeight: 700, letterSpacing: '0.02em', position: 'relative', zIndex: 1 }}>
+                    Want to refine further?
+                  </h3>
+                  <p style={{ color: 'var(--text-muted)', fontSize: '14px', maxWidth: '600px', lineHeight: '1.6', margin: '0 0 10px 0', position: 'relative', zIndex: 1 }}>
+                    Unlock 3+ more premium university matches tailored to your profile, access detailed matching analytics, and speak directly to our educational advisors.
+                  </p>
                   
-                  {/* Matching Reasons */}
-                  <div style={{ marginBottom: '20px' }}>
-                    <h4 style={{ fontSize: '13px', color: 'var(--text-muted)', marginBottom: '8px' }}>Why it matches your profile:</h4>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '8px' }}>
-                      {match.reasons.map((reason, i) => (
-                        <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', fontSize: '13px' }}>
-                          <span style={{ color: 'var(--secondary)', fontWeight: 'bold' }}>✓</span>
-                          <span style={{ color: 'var(--text-muted)' }}>{reason}</span>
-                        </div>
-                      ))}
+                  <button 
+                    id="amtpy" 
+                    className="btn-premium" 
+                    onClick={handleUpgradeClick}
+                    disabled={isProcessingUpgrade}
+                    style={{ padding: '12px 28px', fontSize: '14px', display: 'inline-flex', alignItems: 'center', gap: '8px', position: 'relative', zIndex: 1, fontWeight: 700 }}
+                  >
+                    {isProcessingUpgrade ? (
+                      <>Processing Payment...</>
+                    ) : (
+                      <>
+                        {currentUser ? 'Unlock Premium Recommendations (30 AED)' : 'Login / Register to Unlock Premium'}
+                        <ArrowRight size={16} />
+                      </>
+                    )}
+                  </button>
+                </div>
+              )}
+
+              {/* The Recommendation Card */}
+              <div className="spotlight-card" onMouseMove={handleMouseMove} onMouseLeave={handleMouseLeave} style={{ padding: '24px', position: 'relative', '--spotlight-color': 'rgba(43, 92, 70, 0.12)' }}>
+                
+                {/* Wrapped content that gets blurred */}
+                <div style={{
+                  filter: isBlurred ? 'blur(8px)' : 'none',
+                  pointerEvents: isBlurred ? 'none' : 'auto',
+                  userSelect: isBlurred ? 'none' : 'auto',
+                  transition: 'filter 0.3s ease'
+                }}>
+                  {/* Header info */}
+                  <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', gap: '20px', alignItems: 'flex-start', position: 'relative', zIndex: 2 }}>
+                    <div style={{ flex: '1 1 500px' }}>
+                      {/* Match and Institution name */}
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', alignItems: 'center', marginBottom: '12px' }}>
+                        <span style={{
+                          padding: '4px 10px',
+                          borderRadius: 'var(--border-radius-full)',
+                          fontSize: '11px',
+                          fontWeight: 700,
+                          background: 'rgba(43, 92, 70, 0.15)',
+                          color: '#a78bfa',
+                          border: '1px solid rgba(43, 92, 70, 0.2)'
+                        }}>
+                          {getInstitutionName(match.institutionId)}
+                        </span>
+                        <span style={{ fontSize: '13px', color: 'var(--text-muted)' }}>{match.region} · {match.format}</span>
+                      </div>
+
+                      <h3 style={{ fontSize: '22px', marginBottom: '16px', color: 'white', fontFamily: 'var(--font-display)' }}>{match.title}</h3>
+                    </div>
+
+                    {/* Match score display panel */}
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px', width: '120px' }}>
+                      <div style={{
+                        width: '90px',
+                        height: '90px',
+                        borderRadius: '50%',
+                        border: '3px solid var(--card-border)',
+                        borderTopColor: 'var(--secondary)',
+                        borderRightColor: 'var(--secondary)',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        boxShadow: '0 0 15px var(--secondary-glow)'
+                      }} className="icon-container">
+                        <span style={{ fontSize: '24px', fontWeight: 800, fontFamily: 'var(--font-display)', color: 'var(--secondary)' }}>{currentUser && match.id === 1 ? 100 : match.matchScore}%</span>
+                        <span style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Fit</span>
+                      </div>
                     </div>
                   </div>
 
-                  {/* Program stats summary line */}
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '24px', fontSize: '13px', borderTop: '1px solid var(--card-border)', paddingTop: '16px' }}>
-                    <div>Duration: <strong style={{ color: 'white' }}>{match.duration}</strong></div>
-                    <div>Est. Tuition: <strong style={{ color: 'white' }}>{match.fee}</strong></div>
+                  {/* Details section */}
+                  <div style={{ position: 'relative', marginTop: '16px', zIndex: 1 }}>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', gap: '20px', alignItems: 'flex-start' }}>
+                      <div style={{ flex: '1 1 500px' }}>
+                        {/* Matching Reasons */}
+                        <div style={{ marginBottom: '20px' }}>
+                          <h4 style={{ fontSize: '13px', color: 'var(--text-muted)', marginBottom: '8px' }}>Why it matches your profile:</h4>
+                          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '8px' }}>
+                            {match.reasons.map((reason, i) => (
+                              <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', fontSize: '13px' }}>
+                                <span style={{ color: 'var(--secondary)', fontWeight: 'bold' }}>✓</span>
+                                <span style={{ color: 'var(--text-muted)' }}>{reason}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+
+                        {/* Program stats summary line */}
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '24px', fontSize: '13px', borderTop: '1px solid var(--card-border)', paddingTop: '16px' }}>
+                          <div>Duration: <strong style={{ color: 'white' }}>{match.duration}</strong></div>
+                          <div>Est. Tuition: <strong style={{ color: 'white' }}>{match.fee}</strong></div>
+                        </div>
+                      </div>
+                      
+                      {/* Compare checkbox wrapper */}
+                      <div style={{ width: '120px', display: 'flex', justifyContent: 'center' }}>
+                        <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', cursor: 'pointer', color: 'var(--text-muted)' }}>
+                          <input 
+                            type="checkbox" 
+                            checked={isSelectedForCompare} 
+                            onChange={() => !isBlurred && handleToggleCompare(match.id)}
+                            disabled={isBlurred}
+                            style={{ cursor: 'pointer' }}
+                          />
+                          Compare program
+                        </label>
+                      </div>
+                    </div>
+
+                    {/* Action Buttons Row */}
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', marginTop: '24px', borderTop: '1px solid var(--card-border)', paddingTop: '20px', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
+                      <div style={{ display: 'flex', gap: '12px' }}>
+                        <button 
+                          className={isApplied ? "btn-premium-outline" : "btn-premium"}
+                          onClick={() => {
+                            const checkbox = document.getElementById(`ai-rec-match-${match.id}`);
+                            const reqRec = checkbox ? checkbox.checked : false;
+                            applyForCourse(getInstitutionName(match.institutionId), match.title, reqRec);
+                          }}
+                          disabled={isApplied || isBlurred}
+                          style={{ padding: '8px 20px', fontSize: '13px' }}
+                        >
+                          {isApplied ? "Applied Successfully" : "Apply to Program"}
+                        </button>
+                        <button 
+                          className="btn-premium-outline" 
+                          onClick={() => !isBlurred && toggleBookmark(match.id)}
+                          disabled={isBlurred}
+                          style={{ padding: '8px 16px', fontSize: '13px' }}
+                        >
+                          {isBookmarked ? <BookmarkCheck size={16} style={{ color: 'var(--secondary)' }} /> : <Bookmark size={16} />}
+                          {isBookmarked ? 'Bookmarked' : 'Bookmark'}
+                        </button>
+                        <button 
+                          className="btn-premium-outline"
+                          onClick={() => !isBlurred && alert("Connecting you with an educational advisor. A call has been requested.")}
+                          disabled={isBlurred}
+                          style={{ padding: '8px 16px', fontSize: '13px' }}
+                        >
+                          <PhoneCall size={16} />
+                          Speak to Counselor
+                        </button>
+                      </div>
+                      {!isApplied && (
+                        <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', color: 'var(--text-muted)', cursor: 'pointer' }}>
+                          <input type="checkbox" id={`ai-rec-match-${match.id}`} disabled={isBlurred} style={{ cursor: 'pointer' }} />
+                          Request AI Expert Recommendation
+                        </label>
+                      )}
+                    </div>
                   </div>
                 </div>
 
-                {/* Match score display panel */}
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px', width: '120px' }}>
+                {/* Glassmorphic paywall card overlay for guest users */}
+                {isBlurred && (
                   <div style={{
-                    width: '90px',
-                    height: '90px',
-                    borderRadius: '50%',
-                    border: '3px solid var(--card-border)',
-                    borderTopColor: 'var(--secondary)',
-                    borderRightColor: 'var(--secondary)',
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    background: 'rgba(11, 15, 25, 0.65)',
+                    backdropFilter: 'blur(3px)',
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    boxShadow: '0 0 15px var(--secondary-glow)'
-                  }} className="icon-container">
-                    <span style={{ fontSize: '24px', fontWeight: 800, fontFamily: 'var(--font-display)', color: 'var(--secondary)' }}>{currentUser && match.id === 1 ? 100 : match.matchScore}%</span>
-                    <span style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Fit</span>
+                    padding: '24px',
+                    borderRadius: 'var(--border-radius-md)',
+                    zIndex: 10,
+                    textAlign: 'center'
+                  }}>
+                    <div style={{
+                      background: 'rgba(16, 185, 129, 0.15)',
+                      border: '1px solid rgba(16, 185, 129, 0.35)',
+                      borderRadius: '12px',
+                      padding: '20px 30px',
+                      maxWidth: '420px',
+                      boxShadow: '0 10px 30px rgba(0, 0, 0, 0.4)',
+                      backdropFilter: 'blur(10px)',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      gap: '12px'
+                    }}>
+                      <h4 style={{ fontSize: '18px', fontWeight: 800, color: 'white', margin: 0, letterSpacing: '0.05em', textShadow: '0 0 10px rgba(16, 185, 129, 0.5)' }}>
+                        <span>🔒 Unlock Premium Matches</span>
+                      </h4>
+                      <p style={{ fontSize: '12.5px', color: '#ffffff', lineHeight: '1.55', marginBottom: '14px' }}>
+                        To access detailed match reasons, annual tuition fees, course durations, and apply or speak to an advisor, upgrade to premium.
+                      </p>
+                      <button 
+                        className="btn-premium" 
+                        onClick={handleUpgradeClick}
+                        style={{ padding: '8px 18px', fontSize: '12px', margin: '0 auto', display: 'inline-flex' }}
+                      >
+                        {currentUser ? 'Upgrade Now' : 'Login / Register to Upgrade'}
+                        <ArrowRight size={14} />
+                      </button>
+                    </div>
                   </div>
-                  
-                  {/* Compare Checkbox */}
-                  <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', cursor: 'pointer', color: 'var(--text-muted)' }}>
-                    <input 
-                      type="checkbox" 
-                      checked={isSelectedForCompare} 
-                      onChange={() => handleToggleCompare(match.id)}
-                      style={{ cursor: 'pointer' }}
-                    />
-                    Compare program
-                  </label>
-                </div>
-              </div>
-
-              {/* Action Buttons Row */}
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', marginTop: '24px', borderTop: '1px solid var(--card-border)', paddingTop: '20px', position: 'relative', zIndex: 2, alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
-                <div style={{ display: 'flex', gap: '12px' }}>
-                  <button 
-                    className={isApplied ? "btn-premium-outline" : "btn-premium"}
-                    onClick={() => {
-                      const checkbox = document.getElementById(`ai-rec-match-${match.id}`);
-                      const reqRec = checkbox ? checkbox.checked : false;
-                      applyForCourse(getInstitutionName(match.institutionId), match.title, reqRec);
-                    }}
-                    disabled={isApplied}
-                    style={{ padding: '8px 20px', fontSize: '13px' }}
-                  >
-                    {isApplied ? "Applied Successfully" : "Apply to Program"}
-                  </button>
-                  <button 
-                    className="btn-premium-outline" 
-                    onClick={() => toggleBookmark(match.id)}
-                    style={{ padding: '8px 16px', fontSize: '13px' }}
-                  >
-                    {isBookmarked ? <BookmarkCheck size={16} style={{ color: 'var(--secondary)' }} /> : <Bookmark size={16} />}
-                    {isBookmarked ? 'Bookmarked' : 'Bookmark'}
-                  </button>
-                  <button 
-                    className="btn-premium-outline"
-                    onClick={() => alert("Connecting you with an educational advisor. A call has been requested.")}
-                    style={{ padding: '8px 16px', fontSize: '13px' }}
-                  >
-                    <PhoneCall size={16} />
-                    Speak to Counselor
-                  </button>
-                </div>
-                {!isApplied && (
-                  <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', color: 'var(--text-muted)', cursor: 'pointer' }}>
-                    <input type="checkbox" id={`ai-rec-match-${match.id}`} style={{ cursor: 'pointer' }} />
-                    Request AI Expert Recommendation
-                  </label>
                 )}
               </div>
-            </div>
+            </React.Fragment>
           );
         })}
       </div>
