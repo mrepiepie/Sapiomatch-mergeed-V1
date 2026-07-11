@@ -331,7 +331,7 @@ export default function Contact({ setView, alert }) {
           }}>
             <div style={{ maxWidth: '600px' }}>
               <h2 style={{ fontSize: '32px', fontFamily: 'var(--font-display)', marginBottom: '12px', color: '#ffffff' }}>
-                We're here to <span style={{
+                <span style={{ color: '#ffffff' }}>We're here to </span><span style={{
                   background: 'linear-gradient(135deg, #34d399 0%, #a7f3d0 100%)',
                   WebkitBackgroundClip: 'text',
                   WebkitTextFillColor: 'transparent',
