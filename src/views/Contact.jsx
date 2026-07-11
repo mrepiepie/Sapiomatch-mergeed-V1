@@ -330,10 +330,16 @@ export default function Contact({ setView, alert }) {
             padding: '40px'
           }}>
             <div style={{ maxWidth: '600px' }}>
-              <h2 style={{ fontSize: '32px', fontFamily: 'var(--font-display)', marginBottom: '12px' }}>
-                We're here to <span className="gradient-text">help you succeed</span>
+              <h2 style={{ fontSize: '32px', fontFamily: 'var(--font-display)', marginBottom: '12px', color: '#ffffff' }}>
+                We're here to <span style={{
+                  background: 'linear-gradient(135deg, #34d399 0%, #a7f3d0 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text',
+                  color: 'transparent'
+                }}>help you succeed</span>
               </h2>
-              <p style={{ color: 'var(--text-muted)', fontSize: '15px', lineHeight: 1.6 }}>
+              <p style={{ color: 'rgba(255, 255, 255, 0.85)', fontSize: '15px', lineHeight: 1.6 }}>
                 Whether you're exploring career-focused degrees, setting up your university's program templates, or need tech support on the matching logs, our administrative and counseling desks are always ready.
               </p>
             </div>
@@ -349,7 +355,7 @@ export default function Contact({ setView, alert }) {
             <div style={{ width: '50px', height: '50px', borderRadius: '50%', background: 'rgba(43, 92, 70, 0.1)', color: 'var(--primary)', display: 'flex', alignItems: 'center', justifyContent: 'center' }} className="icon-container">
               <User size={24} />
             </div>
-            <h3 style={{ fontSize: '18px', color: 'white', position: 'relative', zIndex: 2 }}>For Learners</h3>
+            <h3 style={{ fontSize: '18px', color: 'var(--text-heading)', position: 'relative', zIndex: 2 }}>For Learners</h3>
             <p style={{ fontSize: '13px', color: 'var(--text-muted)', lineHeight: 1.5, position: 'relative', zIndex: 2 }}>
               Questions about finding programs, using the platform, or understanding your match results? We're here to guide you.
             </p>
@@ -359,7 +365,7 @@ export default function Contact({ setView, alert }) {
             <div style={{ width: '50px', height: '50px', borderRadius: '50%', background: 'rgba(180, 83, 9, 0.1)', color: 'var(--secondary)', display: 'flex', alignItems: 'center', justifyContent: 'center' }} className="icon-container">
               <Building size={24} />
             </div>
-            <h3 style={{ fontSize: '18px', color: 'white', position: 'relative', zIndex: 2 }}>For Institutions</h3>
+            <h3 style={{ fontSize: '18px', color: 'var(--text-heading)', position: 'relative', zIndex: 2 }}>For Institutions</h3>
             <p style={{ fontSize: '13px', color: 'var(--text-muted)', lineHeight: 1.5, position: 'relative', zIndex: 2 }}>
               Need help setting up your profile, managing programs, or understanding your lead dashboard? Connect with support.
             </p>
@@ -369,7 +375,7 @@ export default function Contact({ setView, alert }) {
             <div style={{ width: '50px', height: '50px', borderRadius: '50%', background: 'rgba(153, 27, 27, 0.1)', color: 'var(--accent)', display: 'flex', alignItems: 'center', justifyContent: 'center' }} className="icon-container">
               <Briefcase size={24} />
             </div>
-            <h3 style={{ fontSize: '18px', color: 'white', position: 'relative', zIndex: 2 }}>For Partners</h3>
+            <h3 style={{ fontSize: '18px', color: 'var(--text-heading)', position: 'relative', zIndex: 2 }}>For Partners</h3>
             <p style={{ fontSize: '13px', color: 'var(--text-muted)', lineHeight: 1.5, position: 'relative', zIndex: 2 }}>
               Interested in technical integrations, custom marketing campaigns, or corporate sponsorships? Let's discuss.
             </p>
