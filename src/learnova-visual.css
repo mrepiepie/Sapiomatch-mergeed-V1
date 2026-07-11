@@ -4890,6 +4890,11 @@ h6,
   --card: #ffffff !important;
   --footer-bg: #FFFDF5 !important;
   --header-bg: rgba(255, 253, 245, 0.94) !important;
+  --chat-window-bg: #ffffff !important;
+  --chat-header-bg: #ffffff !important;
+  --chat-input-area-bg: #f3f4f6 !important;
+  --chat-bubble-ai-bg: #f3f4f6 !important;
+  --chat-toggle-bg: #ffffff !important;
 }
 
 /* Keep custom brand/accent elements green, override catch-all selectors */

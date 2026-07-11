@@ -1640,7 +1640,7 @@ export default function App() {
               <span style={{ fontWeight: 600, fontSize: '13px', display: 'flex', alignItems: 'center', gap: '6px' }}>
                 {isHumanConnected 
                   ? 'Advisor: David (Admissions)' 
-                  : (counselorName === 'Connecting...' ? 'Connecting...' : (geminiApiKey ? 'Aria (Gemini AI Active) âš¡' : 'AI Advisor: Aria ðŸ¤–'))}
+                  : (counselorName === 'Connecting...' ? 'Connecting...' : (geminiApiKey ? 'Aria (Gemini AI Active) ⚡' : 'AI Advisor: Aria 🤖'))}
               </span>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 {!isHumanConnected && (
