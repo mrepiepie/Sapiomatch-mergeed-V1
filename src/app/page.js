@@ -789,6 +789,10 @@ export default function App() {
           }, 1500);
         }
         return;
+      } else if (response.status === 429) {
+        const data = await response.json();
+        setChatMessages(prev => [...prev, { sender: 'ai', text: data.text || "⚠️ **Rate Limit Exceeded:** You are sending messages too quickly. Please wait a minute." }]);
+        return;
       }
     } catch (err) {
       console.warn("Backend API offline. Using client engine.");

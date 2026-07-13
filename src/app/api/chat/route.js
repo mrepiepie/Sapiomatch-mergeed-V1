@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
 import { generateAiResponse } from '../../../services/aiEngine';
-import { db } from '../../../services/db';
 import { promises as fs } from 'fs';
 import path from 'path';
 
@@ -18,7 +17,7 @@ async function getLiveCourses() {
     });
     return formattedText;
   } catch (err) {
-    console.error("[SapioMatch API Route] Error reading courses database, using fallback:", err);
+    console.error("[Learnova API Route] Error reading courses database, using fallback:", err);
     return `- University of Birmingham Dubai: Public Policy Master's (AED 95k, Hybrid), Global Executive MBA (AED 115k, Hybrid), Data Science MSc (AED 90k, On-Campus).
 - Middlesex University Dubai: MBA General (AED 75k, Hybrid), MA International Relations (AED 62k, Hybrid), MSc Cyber Security (AED 68k, Hybrid).
 - American University of Sharjah: Master of Public Policy (AED 88k, Hybrid), MBA (AED 95k, Hybrid), MSc Engineering Systems (AED 92k, On-Campus).
@@ -26,8 +25,33 @@ async function getLiveCourses() {
   }
 }
 
+const rateLimitMap = new Map();
+const LIMIT_WINDOW = 60 * 1000; // 1 minute
+const MAX_REQUESTS = 12; // Max 12 requests per minute
+
 export async function POST(request) {
   try {
+    const ip = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || '127.0.0.1';
+    
+    // In-memory sliding window rate limiter
+    const now = Date.now();
+    if (!rateLimitMap.has(ip)) {
+      rateLimitMap.set(ip, []);
+    }
+    const timestamps = rateLimitMap.get(ip);
+    const validTimestamps = timestamps.filter(t => now - t < LIMIT_WINDOW);
+    
+    if (validTimestamps.length >= MAX_REQUESTS) {
+      console.warn(`[Rate Limit] IP ${ip} exceeded query limit. Blocked.`);
+      return NextResponse.json(
+        { text: "⚠️ **Rate Limit Exceeded:** You are sending messages too quickly. Please wait a minute before trying again." },
+        { status: 429 }
+      );
+    }
+    
+    validTimestamps.push(now);
+    rateLimitMap.set(ip, validTimestamps);
+
     const { message, history, apiKey: clientApiKey } = await request.body ? await request.json() : {};
     
     if (!message) {
@@ -40,7 +64,7 @@ export async function POST(request) {
     }
     
     if (apiKey) {
-      console.log(`[SapioMatch API Route] Querying Gemini 1.5 Flash API...`);
+      console.log(`[Learnova API Route] Querying Gemini 1.5 Flash API...`);
       
       const contents = [];
       if (history && history.length > 0) {
@@ -60,7 +84,7 @@ export async function POST(request) {
 
       const systemInstruction = {
         parts: [{
-          text: `You are Aria, the premium AI Academic Advisor for SapioMatch. Your goal is to guide students and working professionals to find their best-fit programs.
+          text: `You are Aria, the premium AI Academic Advisor for Learnova. Your goal is to guide students and working professionals to find their best-fit programs.
 You must be conversational, warm, friendly, empathetic, and extremely helpful. Stick strictly to topics related to education, universities, vocational bootcamps, tuition fees, career upgrades, promotions, and study formats.
 Use the following partner database to suggest matches when asked:
 ${liveCoursesText}
@@ -81,10 +105,9 @@ Keep your responses concise, user-friendly, and formatted in markdown.`
 
         let response = null;
         let success = false;
-        let modelUsed = 'local-semantic-engine';
 
         for (const model of modelsToTry) {
-          console.log(`[SapioMatch API Route] Trying Gemini model: ${model}...`);
+          console.log(`[Learnova API Route] Trying Gemini model: ${model}...`);
           response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -93,15 +116,14 @@ Keep your responses concise, user-friendly, and formatted in markdown.`
 
           if (response.ok) {
             success = true;
-            modelUsed = model;
             break;
           } else if (response.status !== 404) {
             // If it's a non-404 error (e.g. 400, 403), log it and break to fallback to avoid multiple failed requests
             const errText = await response.text();
-            console.error(`[SapioMatch API Route] Gemini API returned error for model ${model}:`, response.status, errText);
+            console.error(`[Learnova API Route] Gemini API returned error for model ${model}:`, response.status, errText);
             break;
           } else {
-            console.log(`[SapioMatch API Route] Model ${model} not available (404). Trying next...`);
+            console.log(`[Learnova API Route] Model ${model} not available (404). Trying next...`);
           }
         }
 
@@ -114,15 +136,6 @@ Keep your responses concise, user-friendly, and formatted in markdown.`
             if (q.includes('counselor') || q.includes('consultee') || q.includes('real person') || q.includes('talk to someone')) {
               action = 'connect_human';
             }
-            try {
-              db.addAiInteraction({
-                prompt: message,
-                response: responseText,
-                model: modelUsed
-              });
-            } catch (dbErr) {
-              console.warn("Failed to log interaction to db:", dbErr);
-            }
             return NextResponse.json({ text: responseText, action });
           }
         }
@@ -132,17 +145,8 @@ Keep your responses concise, user-friendly, and formatted in markdown.`
     }
 
     // Fallback to local AI Engine
-    console.log(`[SapioMatch API Route] Falling back to local semantic AI Engine...`);
+    console.log(`[Learnova API Route] Falling back to local semantic AI Engine...`);
     const aiResult = generateAiResponse(message, history);
-    try {
-      db.addAiInteraction({
-        prompt: message,
-        response: aiResult.text,
-        model: 'local-semantic-engine'
-      });
-    } catch (dbErr) {
-      console.warn("Failed to log interaction to db:", dbErr);
-    }
     return NextResponse.json(aiResult);
   } catch (err) {
     console.error("Error in /api/chat route:", err);
