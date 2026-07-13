@@ -1294,23 +1294,25 @@ export default function Home({ setView }) {
                       <div className="ag-dev-slide-overlay" />
                       
                       {/* Card Role Badge */}
-                      <div style={{
-                        position: 'absolute',
-                        top: '20px',
-                        left: '20px',
-                        zIndex: 10,
-                        background: 'rgba(11, 15, 25, 0.75)',
-                        backdropFilter: 'blur(8px)',
-                        border: '1px solid rgba(255, 255, 255, 0.1)',
-                        padding: '5px 10px',
-                        borderRadius: '100px',
-                        color: '#ffffff',
-                        fontSize: '11px',
-                        fontWeight: 600,
-                        textTransform: 'uppercase',
-                        letterSpacing: '0.05em',
-                        pointerEvents: 'none'
-                      }}>
+                      <div 
+                        className="force-white-text"
+                        style={{
+                          position: 'absolute',
+                          top: '20px',
+                          left: '20px',
+                          zIndex: 10,
+                          background: 'rgba(11, 15, 25, 0.75)',
+                          backdropFilter: 'blur(8px)',
+                          border: '1px solid rgba(255, 255, 255, 0.1)',
+                          padding: '5px 10px',
+                          borderRadius: '100px',
+                          fontSize: '11px',
+                          fontWeight: 600,
+                          textTransform: 'uppercase',
+                          letterSpacing: '0.05em',
+                          pointerEvents: 'none'
+                        }}
+                      >
                         {slide.role}
                       </div>
                       
