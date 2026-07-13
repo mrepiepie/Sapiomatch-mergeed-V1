@@ -736,7 +736,7 @@ export default function App() {
     if (plan === 'Standard' && chatQueryCount >= 3) {
       setChatMessages(prev => [...prev, 
         { sender: 'user', text: chatInput.trim() },
-        { sender: 'ai', text: "âš ï¸ **System Overcrowding Limit:** You have reached your limit of 3 free counselor queries for this session to ensure a fair chance for all users. Please upgrade to **Premium Plan** in your dashboard to unlock unlimited live advisor consultations!" }
+        { sender: 'ai', text: "⚠️ **System Overcrowding Limit:** You have reached your limit of 3 free counselor queries for this session to ensure a fair chance for all users. Please upgrade to **Premium Plan** in your dashboard to unlock unlimited live advisor consultations!" }
       ]);
       setChatInput('');
       return;
@@ -1383,7 +1383,7 @@ export default function App() {
             Transforming educational search into structured, personalized fits for ambitious candidates.
           </p>
           <div style={{ display: 'flex', gap: '20px', fontSize: '11px', color: 'var(--text-muted)', marginTop: '4px' }}>
-            <span>Â© 2026 Learnova AI. All rights reserved.</span>
+            <span>{"\u00A9"} 2026 Learnova AI. All rights reserved.</span>
             <a href="#about">About Us</a>
             <a href="#contact">Contact Us</a>
           </div>
@@ -1682,7 +1682,7 @@ export default function App() {
                   rel="noreferrer" 
                   style={{ fontSize: '11px', color: '#22d3ee', textDecoration: 'underline', width: 'fit-content' }}
                 >
-                  Get free API key â†—
+                  Get free API key {"\u2197"}
                 </a>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginTop: '2px' }}>
