@@ -1221,16 +1221,16 @@ export default function Home({ setView }) {
               <div className="ag-bento-visual">
                 <div className="ag-bento-palette-preview" style={{ display: 'flex', gap: '6px', width: '100%', height: '100%' }}>
                   <div style={{ flex: 1, height: '100%', background: '#10b981', borderRadius: '6px', padding: '12px', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', minWidth: '45px' }}>
-                    <span style={{ fontSize: '9px', color: '#ffffff', fontWeight: 600 }}>#10B981</span>
+                    <span className="force-white-text" style={{ fontSize: '9px', fontWeight: 600 }}>#10B981</span>
                   </div>
                   <div style={{ flex: 1, height: '100%', background: '#059669', borderRadius: '6px', padding: '12px', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', minWidth: '45px' }}>
-                    <span style={{ fontSize: '9px', color: '#ffffff', fontWeight: 600 }}>#059669</span>
+                    <span className="force-white-text" style={{ fontSize: '9px', fontWeight: 600 }}>#059669</span>
                   </div>
                   <div style={{ flex: 1, height: '100%', background: '#3b82f6', borderRadius: '6px', padding: '12px', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', minWidth: '45px' }}>
-                    <span style={{ fontSize: '9px', color: '#ffffff', fontWeight: 600 }}>#3B82F6</span>
+                    <span className="force-white-text" style={{ fontSize: '9px', fontWeight: 600 }}>#3B82F6</span>
                   </div>
                   <div style={{ flex: 1, height: '100%', background: '#1e3a8a', borderRadius: '6px', padding: '12px', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', minWidth: '45px' }}>
-                    <span style={{ fontSize: '9px', color: '#ffffff', fontWeight: 600 }}>#1E3A8A</span>
+                    <span className="force-white-text" style={{ fontSize: '9px', fontWeight: 600 }}>#1E3A8A</span>
                   </div>
                 </div>
               </div>
