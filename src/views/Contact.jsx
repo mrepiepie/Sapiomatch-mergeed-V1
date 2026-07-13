@@ -331,7 +331,7 @@ export default function Contact({ setView, alert }) {
           }}>
             <div style={{ maxWidth: '600px' }}>
               <h2 style={{ fontSize: '32px', fontFamily: 'var(--font-display)', marginBottom: '12px', color: '#ffffff' }}>
-                <span className="force-white-text" style={{ color: '#ffffff' }}>We're here to </span><span className="force-gradient-text" style={{
+                <span className="force-white-text">We're here to </span><span className="force-gradient-text" style={{
                   background: 'linear-gradient(135deg, #34d399 0%, #a7f3d0 100%)',
                   WebkitBackgroundClip: 'text',
                   WebkitTextFillColor: 'transparent',

@@ -1309,11 +1309,13 @@ button, input, select, textarea {
 }
 
 /* Custom Overrides to defeat aggressive light-theme dashboard overrides */
+html[data-theme="light"] .main-content .force-white-text,
 [data-theme="light"] .main-content .force-white-text,
 .force-white-text {
   color: #ffffff !important;
 }
 
+html[data-theme="light"] .main-content .force-gradient-text,
 [data-theme="light"] .main-content .force-gradient-text,
 .force-gradient-text {
   background: linear-gradient(135deg, #34d399 0%, #a7f3d0 100%) !important;
@@ -1323,6 +1325,7 @@ button, input, select, textarea {
   -webkit-text-fill-color: transparent !important;
 }
 
+html[data-theme="light"] .main-content .force-muted-white-text,
 [data-theme="light"] .main-content .force-muted-white-text,
 .force-muted-white-text {
   color: rgba(255, 255, 255, 0.85) !important;
