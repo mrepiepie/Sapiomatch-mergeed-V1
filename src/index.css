@@ -1330,3 +1330,25 @@ html[data-theme="light"] .main-content .force-muted-white-text,
 .force-muted-white-text {
   color: rgba(255, 255, 255, 0.85) !important;
 }
+
+/* ============================================================
+   LEARNOVA — PRINT STYLES FOR PDF GENERATION
+   ============================================================ */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  #print-report-container, #print-report-container * {
+    visibility: visible !important;
+    display: block !important;
+  }
+  #print-report-container {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100% !important;
+    background: white !important;
+    color: black !important;
+  }
+}
+
