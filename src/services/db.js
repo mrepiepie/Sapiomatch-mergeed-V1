@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import os from 'os';
+import { mockInstitutions } from '../mockData.js';
 
 // Determine a writable DB path. In serverless/Vercel environments, we must write to os.tmpdir()
 const isServerless = process.env.VERCEL || process.env.LAMBDA_TASK_ROOT || !process.env.HOME;
@@ -19,7 +20,30 @@ function readData() {
       return defaultDb;
     }
     const content = fs.readFileSync(DB_PATH, 'utf-8');
-    return JSON.parse(content);
+    const data = JSON.parse(content);
+
+    // Auto-migration: If the universities list is incomplete (e.g. only 2 entries), expand it
+    if (data && (!data.universities || data.universities.length <= 2)) {
+      console.log("Auto-migrating universities list to include all mock institutions...");
+      const seededUnis = [
+        { id: "uni_1", name: "American University of Sharjah", email: "aus@learnova.ai" }
+      ];
+      
+      mockInstitutions.forEach((inst, index) => {
+        if (!inst.name.toLowerCase().includes("sharjah")) {
+          seededUnis.push({
+            id: inst.id || `uni_${index + 2}`,
+            name: inst.name,
+            email: `${inst.id || 'univ'}@learnova.ai`
+          });
+        }
+      });
+      
+      data.universities = seededUnis;
+      fs.writeFileSync(DB_PATH, JSON.stringify(data, null, 2), 'utf-8');
+    }
+
+    return data;
   } catch (err) {
     console.error(`Error reading database file at ${DB_PATH}:`, err.message);
     const tempPath = path.join(os.tmpdir(), 'database.json');
@@ -121,7 +145,14 @@ function getInitialData() {
     ],
     universities: [
       { id: "uni_1", name: "American University of Sharjah", email: "aus@learnova.ai" },
-      { id: "uni_2", name: "University of Birmingham Dubai", email: "birmingham@learnova.ai" }
+      ...mockInstitutions.map((inst, index) => {
+        if (inst.name.toLowerCase().includes("sharjah")) return null;
+        return {
+          id: inst.id || `uni_${index + 2}`,
+          name: inst.name,
+          email: `${inst.id || 'univ'}@learnova.ai`
+        };
+      }).filter(Boolean)
     ],
     notifications: [
       {
