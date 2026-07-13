@@ -3,6 +3,18 @@ import { Mail, Lock, User, Shield, GraduationCap, ArrowRight, Phone, X, Sparkles
 
 
 export default function Auth({ setCurrentUser, setView, alert }) {
+  const handlePostAuthRedirect = (user) => {
+    if (user.role === 'Admin') {
+      setView('admin-dashboard');
+    } else if (user.role === 'University') {
+      setView('institution-dashboard');
+    } else {
+      const target = localStorage.getItem('learnova_auth_redirect') || 'user-dashboard';
+      localStorage.removeItem('learnova_auth_redirect');
+      setView(target);
+    }
+  };
+
   const [isLogin, setIsLogin] = useState(true);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -34,7 +46,7 @@ export default function Auth({ setCurrentUser, setView, alert }) {
   }, []);
 
   const getGoogleClientId = () => {
-    return process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '910117365682-l96gic1k55o43rf3ml6oof93dqp3ikj8.apps.googleusercontent.com';
+    return process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '598386650174-l3ma3cjcms1orpetbufeh8he28s5dua8.apps.googleusercontent.com';
   };
 
   const handleRealGoogleLogin = () => {
@@ -105,13 +117,7 @@ export default function Auth({ setCurrentUser, setView, alert }) {
           alert(`Success! Logged in via Google: ${user.name} (${user.role})`);
           setActiveOAuth(null);
           
-          if (user.role === 'Admin') {
-            setView('admin-dashboard');
-          } else if (user.role === 'University') {
-            setView('institution-dashboard');
-          } else {
-            setView('user-dashboard');
-          }
+          handlePostAuthRedirect(user);
         } else {
           alert('OAuth Login failed.');
         }
@@ -146,13 +152,7 @@ export default function Auth({ setCurrentUser, setView, alert }) {
           setCurrentUser(user);
           alert(`Success! Logged in as ${user.name} (${user.role})`);
           
-          if (user.role === 'Admin') {
-            setView('admin-dashboard');
-          } else if (user.role === 'University') {
-            setView('institution-dashboard');
-          } else {
-            setView('user-dashboard');
-          }
+          handlePostAuthRedirect(user);
         } else {
           const err = await res.json();
           alert(err.error || 'Login failed. Please check your credentials.');
@@ -180,7 +180,7 @@ export default function Auth({ setCurrentUser, setView, alert }) {
           const user = await res.json();
           setCurrentUser(user);
           alert(`Success! Account created for ${user.name}. Allocated 10 Standard credits.`);
-          setView(user.role === 'Admin' ? 'admin-dashboard' : (user.role === 'University' ? 'institution-dashboard' : 'user-dashboard'));
+          handlePostAuthRedirect(user);
         } else {
           const err = await res.json();
           alert(err.error || 'Registration failed.');
@@ -189,6 +189,27 @@ export default function Auth({ setCurrentUser, setView, alert }) {
         console.error("Registration request error:", err);
         alert('Server database connection offline.');
       }
+    }
+  };
+
+  const handleForgotPassword = async () => {
+    const emailToReset = prompt("Please enter your registered email address:", email);
+    if (!emailToReset) return;
+    try {
+      const res = await fetch('/api/auth/forgot-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: emailToReset })
+      });
+      const data = await res.json();
+      if (res.ok) {
+        alert(data.message || `A password reset link has been simulated for ${emailToReset}`);
+      } else {
+        alert(data.error || 'Failed to simulate password recovery.');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Error connecting to authentication service.');
     }
   };
 
@@ -206,13 +227,7 @@ export default function Auth({ setCurrentUser, setView, alert }) {
         const user = await res.json();
         setCurrentUser(user);
         alert(`Success! Demo Login as ${user.name} (${user.role})`);
-        if (user.role === 'Admin') {
-          setView('admin-dashboard');
-        } else if (user.role === 'University') {
-          setView('institution-dashboard');
-        } else {
-          setView('user-dashboard');
-        }
+        handlePostAuthRedirect(user);
       } else {
         alert("Credentials check failed in persistent DB. Resetting mock database now.");
       }
@@ -265,7 +280,7 @@ export default function Auth({ setCurrentUser, setView, alert }) {
         setCurrentUser(user);
         alert(`Account created via ${activeOAuth === 'google' ? 'Google' : 'Apple'}! Welcome ${user.name}. Allocated 10 Standard credits.`);
         setActiveOAuth(null);
-        setView('user-dashboard');
+        handlePostAuthRedirect(user);
       } else {
         const err = await registerRes.json();
         alert(err.error || 'Failed to create student account.');
@@ -309,7 +324,7 @@ export default function Auth({ setCurrentUser, setView, alert }) {
       <div className="glass-card" style={{ padding: '32px' }}>
 
         <h2 style={{ fontSize: '24px', fontFamily: 'var(--font-display)', marginBottom: '8px', textAlign: 'center' }}>
-          {isLogin ? 'Log In to SapioMatch' : 'Create an Account'}
+          {isLogin ? 'Log In to Learnova' : 'Create an Account'}
         </h2>
         <p style={{ color: 'var(--text-muted)', fontSize: '13px', textAlign: 'center', marginBottom: '24px' }}>
           {isLogin ? 'Access your matched courses & credentials portal' : 'Get matched and access premium counselor support'}
@@ -369,7 +384,18 @@ export default function Auth({ setCurrentUser, setView, alert }) {
           </div>
 
           <div>
-            <label style={{ display: 'block', fontSize: '12px', color: 'var(--text-muted)', marginBottom: '6px' }}>Password</label>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+              <label style={{ display: 'block', fontSize: '12px', color: 'var(--text-muted)', margin: 0 }}>Password</label>
+              {isLogin && (
+                <button
+                  type="button"
+                  onClick={handleForgotPassword}
+                  style={{ background: 'none', border: 'none', color: 'var(--primary)', fontSize: '12px', cursor: 'pointer', padding: 0 }}
+                >
+                  Forgot Password?
+                </button>
+              )}
+            </div>
             <div style={{ position: 'relative' }}>
               <input 
                 type="password" 
@@ -478,27 +504,6 @@ export default function Auth({ setCurrentUser, setView, alert }) {
             </button>
           </div>
         </div>
-
-        {/* Demo Fast Login Buttons */}
-        <div style={{ borderTop: '1px solid var(--card-border)', marginTop: '24px', paddingTop: '20px' }}>
-          <div style={{ fontSize: '11px', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '12px', textAlign: 'center' }}>
-            Fast Demo Login Options
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-            <button className="btn-premium-outline" onClick={() => quickLogin('sanji@example.com')} style={{ fontSize: '12.5px', justifyContent: 'center' }}>
-              Student Account (Sanji - 10 Credits)
-            </button>
-            <button className="btn-premium-outline" onClick={() => quickLogin('aus@sapiomatch.ai')} style={{ fontSize: '12.5px', justifyContent: 'center' }}>
-              University Account (AUS Representative)
-            </button>
-            <button className="btn-premium-outline" onClick={() => quickLogin('birmingham@sapiomatch.ai')} style={{ fontSize: '12.5px', justifyContent: 'center' }}>
-              University Account (Birmingham Representative)
-            </button>
-            <button className="btn-premium-outline" onClick={() => quickLogin('operator@sapiomatch.ai')} style={{ fontSize: '12.5px', justifyContent: 'center' }}>
-              Super Administrator Account
-            </button>
-          </div>
-        </div>
       </div>
 
       {/* Simulated OAuth Overlay Modal */}
@@ -519,7 +524,7 @@ export default function Auth({ setCurrentUser, setView, alert }) {
           
           {activeOAuth === 'google' ? (
             /* Redesigned Horizontal Google Sign-In Card */
-            <div style={{ display: 'flex', flexDirection: 'column', width: '100%', maxWidth: '740px', alignItems: 'center' }}>
+            <div className="google-oauth-modal" style={{ display: 'flex', flexDirection: 'column', width: '100%', maxWidth: '740px', alignItems: 'center' }}>
               <div style={{
                 width: '100%',
                 background: '#131314',
@@ -599,7 +604,7 @@ export default function Auth({ setCurrentUser, setView, alert }) {
                       Sign in
                     </h2>
                     <p style={{ fontSize: '16px', color: '#e3e3e3', marginTop: '12px', fontWeight: '300', lineHeight: '1.4' }}>
-                      to continue to <span style={{ color: '#34d399', fontWeight: '500' }}>SapioMatch AI</span>
+                      to continue to <span className="oauth-brand-green" style={{ color: '#34d399', fontWeight: '500' }}>Learnova AI</span>
                     </p>
                   </div>
 
@@ -665,9 +670,9 @@ export default function Auth({ setCurrentUser, setView, alert }) {
 
                             {/* Terms & Privacy disclaimer */}
                             <p style={{ fontSize: '12px', color: '#c4c7c5', lineHeight: '1.5', margin: '8px 0 0 0' }}>
-                              Before using this app, you can review SapioMatch's{' '}
-                              <a href="#privacy" onClick={(e) => {e.preventDefault(); alert('Redirecting to Privacy Policy...');}} style={{ color: '#a8c7fa', textDecoration: 'none' }}>Privacy Policy</a> and{' '}
-                              <a href="#terms" onClick={(e) => {e.preventDefault(); alert('Redirecting to Terms of Service...');}} style={{ color: '#a8c7fa', textDecoration: 'none' }}>Terms of Service</a>.
+                              Before using this app, you can review Learnova's{' '}
+                              <a className="oauth-link-blue" href="#privacy" onClick={(e) => {e.preventDefault(); alert('Redirecting to Privacy Policy...');}} style={{ color: '#a8c7fa', textDecoration: 'none' }}>Privacy Policy</a> and{' '}
+                              <a className="oauth-link-blue" href="#terms" onClick={(e) => {e.preventDefault(); alert('Redirecting to Terms of Service...');}} style={{ color: '#a8c7fa', textDecoration: 'none' }}>Terms of Service</a>.
                             </p>
                           </div>
 
@@ -813,7 +818,7 @@ export default function Auth({ setCurrentUser, setView, alert }) {
                             fontSize: '12.5px',
                             color: '#e3e3e3'
                           }}>
-                            Support: <strong>operator@sapiomatch.ai</strong>
+                            Support: <strong>operator@learnova.ai</strong>
                           </div>
                           
                           <button 
@@ -873,7 +878,7 @@ export default function Auth({ setCurrentUser, setView, alert }) {
                 <div style={{ display: 'flex', gap: '24px' }}>
                   <a 
                     href="#help" 
-                    onClick={(e) => { e.preventDefault(); alert('Google sign-in help center. For app queries, contact operator@sapiomatch.ai'); }}
+                    onClick={(e) => { e.preventDefault(); alert('Google sign-in help center. For app queries, contact operator@learnova.ai'); }}
                     style={{ fontSize: '12px', color: '#c4c7c5', textDecoration: 'none', transition: 'color 0.2s' }}
                     onMouseEnter={(e) => e.currentTarget.style.color = '#ffffff'}
                     onMouseLeave={(e) => e.currentTarget.style.color = '#c4c7c5'}
@@ -882,7 +887,7 @@ export default function Auth({ setCurrentUser, setView, alert }) {
                   </a>
                   <a 
                     href="#privacy" 
-                    onClick={(e) => { e.preventDefault(); alert('Reviewing Google and SapioMatch privacy guidelines.'); }}
+                    onClick={(e) => { e.preventDefault(); alert('Reviewing Google and Learnova privacy guidelines.'); }}
                     style={{ fontSize: '12px', color: '#c4c7c5', textDecoration: 'none', transition: 'color 0.2s' }}
                     onMouseEnter={(e) => e.currentTarget.style.color = '#ffffff'}
                     onMouseLeave={(e) => e.currentTarget.style.color = '#c4c7c5'}
@@ -891,7 +896,7 @@ export default function Auth({ setCurrentUser, setView, alert }) {
                   </a>
                   <a 
                     href="#terms" 
-                    onClick={(e) => { e.preventDefault(); alert('Reviewing Google and SapioMatch terms of use.'); }}
+                    onClick={(e) => { e.preventDefault(); alert('Reviewing Google and Learnova terms of use.'); }}
                     style={{ fontSize: '12px', color: '#c4c7c5', textDecoration: 'none', transition: 'color 0.2s' }}
                     onMouseEnter={(e) => e.currentTarget.style.color = '#ffffff'}
                     onMouseLeave={(e) => e.currentTarget.style.color = '#c4c7c5'}
@@ -936,7 +941,7 @@ export default function Auth({ setCurrentUser, setView, alert }) {
                   <path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 47.5-24.4 76.5 26.9 2.4 51.2-16 68.3-38.9z"/>
                 </svg>
                 <h3 style={{ fontSize: '20px', fontWeight: 600, color: '#ffffff', margin: 0 }}>Sign in with Apple ID</h3>
-                <span style={{ fontSize: '13px', color: '#9ca3af', marginTop: '6px' }}>to continue to SapioMatch AI</span>
+                <span style={{ fontSize: '13px', color: '#9ca3af', marginTop: '6px' }}>to continue to Learnova AI</span>
               </div>
 
               {/* Step 1: Email Input Form */}
@@ -1072,7 +1077,7 @@ export default function Auth({ setCurrentUser, setView, alert }) {
                     fontSize: '12px',
                     color: '#e5e7eb'
                   }}>
-                    Support: <strong>operator@sapiomatch.ai</strong>
+                    Support: <strong>operator@learnova.ai</strong>
                   </div>
                   <button 
                     onClick={() => setActiveOAuth(null)}
