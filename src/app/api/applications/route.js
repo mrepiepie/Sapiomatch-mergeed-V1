@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { db } from '../../../services/db';
 import { checkRateLimit } from '../../../services/rateLimiter';
+import { sendEmail } from '../../../services/emailService';
 
 // GET applications
 export async function GET(request) {
@@ -87,6 +88,18 @@ export async function POST(request) {
       nationality: body.nationality || "International",
       countryOfResidence: body.countryOfResidence || "International"
     });
+
+    // Send transaction booking confirmation email
+    sendEmail({
+      to: studentEmail,
+      subject: `Consultation Booking Confirmed: ${courseName}`,
+      html: `<h2>Booking Confirmed</h2>
+             <p>Hi ${studentName || student.name},</p>
+             <p>We have successfully received your booking request for the program <strong>${courseName}</strong> at <strong>${universityName}</strong>.</p>
+             <p><strong>Counselor Choice:</strong> ${counselorPreference || 'No Counselor'}</p>
+             <p><strong>Scheduled Slot:</strong> ${chatSlot || 'TBD'}</p>
+             <p>An advisor will contact you shortly to confirm the session details.</p>`
+    }).catch(err => console.error("[Booking Email Error]", err));
 
     return NextResponse.json({
       success: true,
