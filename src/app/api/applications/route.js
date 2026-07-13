@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { db } from '../../../services/db';
+import { checkRateLimit } from '../../../services/rateLimiter';
 
 // GET applications
 export async function GET(request) {
@@ -31,7 +32,14 @@ export async function GET(request) {
 // POST submit application
 export async function POST(request) {
   try {
-    const body = await request.json();
+    const ip = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || '127.0.0.1';
+    
+    // Limit application bookings: Max 5 per minute per IP to prevent spamming
+    if (!checkRateLimit(ip, 5)) {
+      return NextResponse.json({ error: 'Too many application submissions. Please wait a minute before trying again.' }, { status: 429 });
+    }
+
+    const body = await request.json().catch(() => ({}));
     const {
       studentName,
       studentEmail,
