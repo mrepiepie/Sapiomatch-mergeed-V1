@@ -46,7 +46,7 @@ export default function Auth({ setCurrentUser, setView, alert }) {
   }, []);
 
   const getGoogleClientId = () => {
-    return process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '910117365682-l96gic1k55o43rf3ml6oof93dqp3ikj8.apps.googleusercontent.com';
+    return process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '598386650174-l3ma3cjcms1orpetbufeh8he28s5dua8.apps.googleusercontent.com';
   };
 
   const handleRealGoogleLogin = () => {
@@ -501,27 +501,6 @@ export default function Auth({ setCurrentUser, setView, alert }) {
                 <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.19-5.57c-1.99 1.33-4.55 2.13-7.7 2.13-6.26 0-11.57-4.22-13.46-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
               </svg>
               Sign in with Google Account
-            </button>
-          </div>
-        </div>
-
-        {/* Demo Fast Login Buttons */}
-        <div style={{ borderTop: '1px solid var(--card-border)', marginTop: '24px', paddingTop: '20px' }}>
-          <div style={{ fontSize: '11px', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '12px', textAlign: 'center' }}>
-            Fast Demo Login Options
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-            <button className="btn-premium-outline" onClick={() => quickLogin('sanji@example.com')} style={{ fontSize: '12.5px', justifyContent: 'center' }}>
-              Student Account (Sanji - 10 Credits)
-            </button>
-            <button className="btn-premium-outline" onClick={() => quickLogin('aus@learnova.ai')} style={{ fontSize: '12.5px', justifyContent: 'center' }}>
-              University Account (AUS Representative)
-            </button>
-            <button className="btn-premium-outline" onClick={() => quickLogin('birmingham@learnova.ai')} style={{ fontSize: '12.5px', justifyContent: 'center' }}>
-              University Account (Birmingham Representative)
-            </button>
-            <button className="btn-premium-outline" onClick={() => quickLogin('operator@learnova.ai')} style={{ fontSize: '12.5px', justifyContent: 'center' }}>
-              Super Administrator Account
             </button>
           </div>
         </div>
