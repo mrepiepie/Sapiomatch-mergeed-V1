@@ -1219,17 +1219,17 @@ export default function Home({ setView }) {
                 <p className="ag-bento-desc">Interactive interface design, portfolio curation, game design, and digital creative direction.</p>
               </div>
               <div className="ag-bento-visual">
-                <div className="ag-bento-palette-preview" style={{ display: 'flex', gap: '6px', width: '100%', minHeight: '60px', alignItems: 'flex-end' }}>
-                  <div style={{ flex: 1, height: '54px', background: '#10b981', borderRadius: '6px', padding: '6px', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', minWidth: '45px' }}>
+                <div className="ag-bento-palette-preview" style={{ display: 'flex', gap: '6px', width: '100%', height: '100%' }}>
+                  <div style={{ flex: 1, height: '100%', background: '#10b981', borderRadius: '6px', padding: '12px', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', minWidth: '45px' }}>
                     <span style={{ fontSize: '9px', color: '#ffffff', fontWeight: 600 }}>#10B981</span>
                   </div>
-                  <div style={{ flex: 1, height: '54px', background: '#059669', borderRadius: '6px', padding: '6px', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', minWidth: '45px' }}>
+                  <div style={{ flex: 1, height: '100%', background: '#059669', borderRadius: '6px', padding: '12px', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', minWidth: '45px' }}>
                     <span style={{ fontSize: '9px', color: '#ffffff', fontWeight: 600 }}>#059669</span>
                   </div>
-                  <div style={{ flex: 1, height: '54px', background: '#3b82f6', borderRadius: '6px', padding: '6px', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', minWidth: '45px' }}>
+                  <div style={{ flex: 1, height: '100%', background: '#3b82f6', borderRadius: '6px', padding: '12px', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', minWidth: '45px' }}>
                     <span style={{ fontSize: '9px', color: '#ffffff', fontWeight: 600 }}>#3B82F6</span>
                   </div>
-                  <div style={{ flex: 1, height: '54px', background: '#1e3a8a', borderRadius: '6px', padding: '6px', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', minWidth: '45px' }}>
+                  <div style={{ flex: 1, height: '100%', background: '#1e3a8a', borderRadius: '6px', padding: '12px', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', minWidth: '45px' }}>
                     <span style={{ fontSize: '9px', color: '#ffffff', fontWeight: 600 }}>#1E3A8A</span>
                   </div>
                 </div>
