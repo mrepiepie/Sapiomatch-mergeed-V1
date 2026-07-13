@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { db } from '../../../services/db';
+import { checkRateLimit } from '../../../services/rateLimiter';
 
 // GET all contacts
 export async function GET(request) {
@@ -15,7 +16,14 @@ export async function GET(request) {
 // POST create contact
 export async function POST(request) {
   try {
-    const body = await request.json();
+    const ip = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || '127.0.0.1';
+    
+    // Limit contact inquiries: Max 5 per minute per IP
+    if (!checkRateLimit(ip, 5)) {
+      return NextResponse.json({ error: 'Too many contact messages. Please wait a minute before trying again.' }, { status: 429 });
+    }
+
+    const body = await request.json().catch(() => ({}));
     const { fullName, email, phone, inquiryType, message } = body;
 
     if (!fullName || !email || !inquiryType || !message) {

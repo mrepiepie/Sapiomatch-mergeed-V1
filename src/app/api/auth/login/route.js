@@ -1,14 +1,25 @@
 import { NextResponse } from 'next/server';
 import { db } from '../../../../services/db';
+import { checkRateLimit } from '../../../../services/rateLimiter';
 
 export async function POST(request) {
   try {
-    const { email, password } = await request.json();
+    const ip = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || '127.0.0.1';
+    
+    // Limit login attempts: Max 10 per minute per IP to prevent brute-forcing
+    if (!checkRateLimit(ip, 10)) {
+      return NextResponse.json({ error: 'Too many login attempts. Please wait a minute before trying again.' }, { status: 429 });
+    }
+
+    const body = await request.json().catch(() => ({}));
+    const { email, password } = body;
+    
     if (!email || !password) {
       return NextResponse.json({ error: 'Email and password are required.' }, { status: 400 });
     }
 
-    const user = db.getUserByEmail(email);
+    const trimmedEmail = email.trim().toLowerCase();
+    const user = db.getUserByEmail(trimmedEmail);
     if (!user || user.password !== password) {
       return NextResponse.json({ error: 'Invalid email or password.' }, { status: 401 });
     }

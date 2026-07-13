@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { generateAiResponse } from '../../../services/aiEngine';
+import { checkRateLimit } from '../../../services/rateLimiter';
 import { promises as fs } from 'fs';
 import path from 'path';
 
@@ -25,32 +26,18 @@ async function getLiveCourses() {
   }
 }
 
-const rateLimitMap = new Map();
-const LIMIT_WINDOW = 60 * 1000; // 1 minute
-const MAX_REQUESTS = 12; // Max 12 requests per minute
-
 export async function POST(request) {
   try {
     const ip = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || '127.0.0.1';
     
-    // In-memory sliding window rate limiter
-    const now = Date.now();
-    if (!rateLimitMap.has(ip)) {
-      rateLimitMap.set(ip, []);
-    }
-    const timestamps = rateLimitMap.get(ip);
-    const validTimestamps = timestamps.filter(t => now - t < LIMIT_WINDOW);
-    
-    if (validTimestamps.length >= MAX_REQUESTS) {
+    // Use shared sliding window rate limiter
+    if (!checkRateLimit(ip, 12)) {
       console.warn(`[Rate Limit] IP ${ip} exceeded query limit. Blocked.`);
       return NextResponse.json(
         { text: "⚠️ **Rate Limit Exceeded:** You are sending messages too quickly. Please wait a minute before trying again." },
         { status: 429 }
       );
     }
-    
-    validTimestamps.push(now);
-    rateLimitMap.set(ip, validTimestamps);
 
     const { message, history, apiKey: clientApiKey } = await request.body ? await request.json() : {};
     
