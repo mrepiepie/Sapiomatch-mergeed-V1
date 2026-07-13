@@ -1057,7 +1057,7 @@ export default function Home({ setView }) {
                   onMouseEnter={() => setActiveIndex(i)}
                 >
                   {/* Background Image */}
-                  <img src={uni.image} alt={uni.name} className="ag-accordion-bg" />
+                  <img src={uni.image} alt={uni.name} className="ag-accordion-bg" loading="lazy" />
                   <div className="ag-accordion-overlay" />
                   
                   {/* Collapsed State: Vertically Rotated Name */}
@@ -1138,7 +1138,7 @@ export default function Home({ setView }) {
               <div className="ag-bento-visual">
                 <div className="ag-bento-tablet-preview">
                   <div className="tablet-frame">
-                    <img src="/imports/guide_step2_wide.png" alt="BA Dashboard Mockup" />
+                    <img src="/imports/guide_step2_wide.png" alt="BA Dashboard Mockup" loading="lazy" />
                   </div>
                 </div>
               </div>
@@ -1290,7 +1290,7 @@ export default function Home({ setView }) {
                         }
                       }}
                     >
-                      <img className="ag-dev-slide-img" src={slide.image} alt={slide.role} />
+                      <img className="ag-dev-slide-img" src={slide.image} alt={slide.role} loading="lazy" />
                       <div className="ag-dev-slide-overlay" />
                       
                       {/* Card Role Badge */}
@@ -1443,7 +1443,7 @@ export default function Home({ setView }) {
                 key={`${item.name}-${activeTestimonialIndex}-${t}`}
                 className={`learnova-testimonial-card ${t === 0 ? 'is-active' : ''}`}
               >
-                <img src={item.image} alt={item.name} />
+                <img src={item.image} alt={item.name} loading="lazy" />
                 <section>
                   <h3>{item.name}</h3>
                   <p className="learnova-meta">{item.meta}</p>
