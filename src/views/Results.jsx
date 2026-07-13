@@ -10,7 +10,38 @@ export default function Results({ setView, answers, bookmarks = [], toggleBookma
   const [loading, setLoading] = useState(true);
 
   const printReport = () => {
-    window.print();
+    if (typeof window === 'undefined') return;
+    
+    // Check if html2pdf is already loaded
+    if (window.html2pdf) {
+      const element = document.getElementById('print-report-container');
+      const opt = {
+        margin: 10,
+        filename: 'Learnova_AI_Match_Report.pdf',
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true, logging: false },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      };
+      window.html2pdf().set(opt).from(element).save();
+      return;
+    }
+
+    const script = document.createElement('script');
+    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js';
+    script.onload = () => {
+      if (window.html2pdf) {
+        const element = document.getElementById('print-report-container');
+        const opt = {
+          margin: 10,
+          filename: 'Learnova_AI_Match_Report.pdf',
+          image: { type: 'jpeg', quality: 0.98 },
+          html2canvas: { scale: 2, useCORS: true, logging: false },
+          jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+        window.html2pdf().set(opt).from(element).save();
+      }
+    };
+    document.body.appendChild(script);
   };
 
   useEffect(() => {
@@ -579,7 +610,7 @@ export default function Results({ setView, answers, bookmarks = [], toggleBookma
       </div>
 
       {/* Hidden print container only visible when printing */}
-      <div id="print-report-container" style={{ display: 'none', position: 'absolute', top: 0, left: 0, width: '100%', padding: '40px', background: 'white', color: 'black', fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+      <div id="print-report-container" style={{ position: 'absolute', left: '-9999px', top: '-9999px', width: '800px', padding: '40px', background: 'white', color: 'black', fontFamily: 'system-ui, -apple-system, sans-serif' }}>
         <div style={{ borderBottom: '2px solid #10b981', paddingBottom: '20px', marginBottom: '30px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div>
             <h1 style={{ fontSize: '28px', fontWeight: 800, margin: 0, color: '#10b981' }}>LEARNOVA AI</h1>
