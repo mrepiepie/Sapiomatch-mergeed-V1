@@ -12,7 +12,7 @@
  * 100% Native CSS animations. Zero GSAP. Cream/Off-white background.
  */
 import React, { useState, useEffect, useRef } from 'react';
-import { Brain, Sparkles, ArrowRight, Shield, Award, BookOpen, Play, Search, GraduationCap, X } from 'lucide-react';
+import { Brain, Sparkles, ArrowRight, Shield, Award, BookOpen, Play, Search, GraduationCap, X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import '../home-antigravity.css';
@@ -32,6 +32,60 @@ export default function Home({ setView }) {
   const [activeCategory, setActiveCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
   const [activeIndex, setActiveIndex] = useState(null);
+  const [answers, setAnswers] = useState({ field: 'Technology & AI' });
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('learnova_questions');
+      if (saved) {
+        try {
+          const qs = JSON.parse(saved);
+          const ans = {};
+          qs.forEach(q => {
+            if (q.value) {
+              ans[q.id] = q.value;
+            }
+          });
+          setAnswers(ans);
+        } catch (e) {
+          console.error("Error loading saved answers on Home", e);
+        }
+      }
+    }
+  }, []);
+
+  const getLiveMatchScore = (uniCategory) => {
+    const field = (answers.field || "Technology & AI").toLowerCase();
+    
+    let isMatched = false;
+    if (uniCategory === 'Engineering') {
+      if (field.includes("tech") || field.includes("computer") || field.includes("ai") || field.includes("software") || field.includes("engineering")) {
+        isMatched = true;
+      }
+    } else if (uniCategory === 'Business') {
+      if (field.includes("business") || field.includes("management") || field.includes("mba") || field.includes("marketing") || field.includes("finance")) {
+        isMatched = true;
+      }
+    } else if (uniCategory === 'Design') {
+      if (field.includes("design") || field.includes("art") || field.includes("creative") || field.includes("media") || field.includes("architecture")) {
+        isMatched = true;
+      }
+    } else if (uniCategory === 'Medicine') {
+      if (field.includes("health") || field.includes("science") || field.includes("medicine") || field.includes("clinical") || field.includes("nursing")) {
+        isMatched = true;
+      }
+    }
+
+    const hash = uniCategory.length + field.length;
+    if (isMatched) {
+      const score = 92 + (hash % 7);
+      return `${score}%`;
+    } else {
+      const score = 68 + (hash % 12);
+      return `${score}%`;
+    }
+  };
+
   const galleryRef = useRef(null);
   const playBtnRef = useRef(null);
   const heroCanvasRef = useRef(null);
@@ -1017,7 +1071,7 @@ export default function Home({ setView }) {
                       <h3 className="ag-accordion-title">{uni.name}</h3>
                       <div className="ag-accordion-match">
                         <GraduationCap size={13} />
-                        <span>{uni.match} Match</span>
+                        <span>{getLiveMatchScore(uni.category)} Match</span>
                       </div>
                     </div>
                     <p className="ag-accordion-desc">{uni.desc}</p>
@@ -1239,6 +1293,27 @@ export default function Home({ setView }) {
                       <img className="ag-dev-slide-img" src={slide.image} alt={slide.role} />
                       <div className="ag-dev-slide-overlay" />
                       
+                      {/* Card Role Badge */}
+                      <div style={{
+                        position: 'absolute',
+                        top: '20px',
+                        left: '20px',
+                        zIndex: 10,
+                        background: 'rgba(11, 15, 25, 0.75)',
+                        backdropFilter: 'blur(8px)',
+                        border: '1px solid rgba(255, 255, 255, 0.1)',
+                        padding: '5px 10px',
+                        borderRadius: '100px',
+                        color: '#ffffff',
+                        fontSize: '11px',
+                        fontWeight: 600,
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.05em',
+                        pointerEvents: 'none'
+                      }}>
+                        {slide.role}
+                      </div>
+                      
                       {/* Typed Header on Slide */}
                       {isActive && (
                         <div className="ag-dev-slide-typed-header">
@@ -1311,39 +1386,109 @@ export default function Home({ setView }) {
           <p>Real stories from students who found their path with Learnova AI</p>
         </div>
 
-        <div 
-          className={`learnova-testimonial-stage ${isTestimonialPaused ? 'is-paused' : ''} ${isTestimonialVisible ? 'is-visible' : ''}`}
-          onMouseEnter={() => setIsTestimonialPaused(true)}
-          onMouseLeave={() => setIsTestimonialPaused(false)}
-          onFocus={() => setIsTestimonialPaused(true)}
-          onBlur={(e) => {
-            if (!e.currentTarget.contains(e.relatedTarget)) {
-              setIsTestimonialPaused(false);
-            }
-          }}
-        >
-          {[
-            testimonialsData[activeTestimonialIndex],
-            testimonialsData[(activeTestimonialIndex + 1) % 6],
-            testimonialsData[(activeTestimonialIndex + 2) % 6]
-          ].map((item, t) => (
-            <article 
-              key={`${item.name}-${activeTestimonialIndex}-${t}`}
-              className={`learnova-testimonial-card ${t === 0 ? 'is-active' : ''}`}
-            >
-              <img src={item.image} alt={item.name} />
-              <section>
-                <h3>{item.name}</h3>
-                <p className="learnova-meta">{item.meta}</p>
-                <span className="learnova-quote-mark">“</span>
-                <p className="learnova-testimonial-quote">{item.quote}</p>
-                <div className="learnova-testimonial-actions">
-                  <span className="learnova-testimonial-tag">Verified student</span>
-                  <button type="button">Story</button>
-                </div>
-              </section>
-            </article>
-          ))}
+        <div style={{ position: 'relative', width: '100%', maxWidth: '1200px', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          {/* Left Arrow Button */}
+          <button
+            type="button"
+            onClick={() => setActiveTestimonialIndex(prev => (prev - 1 + 6) % 6)}
+            style={{
+              position: 'absolute',
+              left: '-60px',
+              background: 'rgba(255, 255, 255, 0.04)',
+              border: '1px solid rgba(255, 255, 255, 0.1)',
+              borderRadius: '50%',
+              width: '44px',
+              height: '44px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: 'var(--text-primary)',
+              cursor: 'pointer',
+              zIndex: 10,
+              transition: 'all 0.2s',
+              boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.12)';
+              e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.25)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.04)';
+              e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+            }}
+            aria-label="Previous testimonial"
+          >
+            <ChevronLeft size={20} />
+          </button>
+
+          <div 
+            className={`learnova-testimonial-stage ${isTestimonialPaused ? 'is-paused' : ''} ${isTestimonialVisible ? 'is-visible' : ''}`}
+            onMouseEnter={() => setIsTestimonialPaused(true)}
+            onMouseLeave={() => setIsTestimonialPaused(false)}
+            onFocus={() => setIsTestimonialPaused(true)}
+            onBlur={(e) => {
+              if (!e.currentTarget.contains(e.relatedTarget)) {
+                setIsTestimonialPaused(false);
+              }
+            }}
+          >
+            {[
+              testimonialsData[activeTestimonialIndex],
+              testimonialsData[(activeTestimonialIndex + 1) % 6],
+              testimonialsData[(activeTestimonialIndex + 2) % 6]
+            ].map((item, t) => (
+              <article 
+                key={`${item.name}-${activeTestimonialIndex}-${t}`}
+                className={`learnova-testimonial-card ${t === 0 ? 'is-active' : ''}`}
+              >
+                <img src={item.image} alt={item.name} />
+                <section>
+                  <h3>{item.name}</h3>
+                  <p className="learnova-meta">{item.meta}</p>
+                  <span className="learnova-quote-mark">“</span>
+                  <p className="learnova-testimonial-quote">{item.quote}</p>
+                  <div className="learnova-testimonial-actions">
+                    <span className="learnova-testimonial-tag">Verified student</span>
+                    <button type="button">Story</button>
+                  </div>
+                </section>
+              </article>
+            ))}
+          </div>
+
+          {/* Right Arrow Button */}
+          <button
+            type="button"
+            onClick={() => setActiveTestimonialIndex(prev => (prev + 1) % 6)}
+            style={{
+              position: 'absolute',
+              right: '-60px',
+              background: 'rgba(255, 255, 255, 0.04)',
+              border: '1px solid rgba(255, 255, 255, 0.1)',
+              borderRadius: '50%',
+              width: '44px',
+              height: '44px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: 'var(--text-primary)',
+              cursor: 'pointer',
+              zIndex: 10,
+              transition: 'all 0.2s',
+              boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.12)';
+              e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.25)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.04)';
+              e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+            }}
+            aria-label="Next testimonial"
+          >
+            <ChevronRight size={20} />
+          </button>
         </div>
 
         <div className="learnova-carousel-dots">
@@ -1421,7 +1566,7 @@ export default function Home({ setView }) {
           </div>
 
           <div className="ag-footer-bottom">
-            <span>© 2026 Learnova AI. All rights reserved.</span>
+            <span>{"\u00A9"} 2026 Learnova AI. All rights reserved.</span>
             <div className="ag-footer-bottom-links">
               <a href="#terms" onClick={(e) => e.preventDefault()}>Terms of Service</a>
               <a href="#privacy" onClick={(e) => e.preventDefault()}>Privacy Policy</a>
