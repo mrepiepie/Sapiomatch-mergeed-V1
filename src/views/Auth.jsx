@@ -24,6 +24,8 @@ export default function Auth({ setCurrentUser, setView, alert }) {
   const [unis, setUnis] = useState([]);
   const [selectedUniId, setSelectedUniId] = useState('');
   const [selectedUniName, setSelectedUniName] = useState('');
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     fetch('/api/universities')
@@ -446,34 +448,155 @@ export default function Auth({ setCurrentUser, setView, alert }) {
               </div>
 
               {role === 'University' && (
-                <div>
+                <div style={{ position: 'relative' }}>
                   <label style={{ display: 'block', fontSize: '12px', color: 'var(--text-muted)', marginBottom: '6px' }}>Partner Institution</label>
-                  <select
-                    value={selectedUniId}
-                    onChange={(e) => {
-                      setSelectedUniId(e.target.value);
-                      const uni = unis.find(u => u.id === e.target.value);
-                      setSelectedUniName(uni ? uni.name : '');
-                    }}
+                  
+                  {/* Dropdown Trigger */}
+                  <button
+                    type="button"
+                    onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                     className="custom-input"
                     style={{
                       width: '100%',
                       padding: '12px 14px',
                       background: 'var(--card-bg)',
                       border: '1px solid var(--card-border)',
-                      color: 'white',
+                      color: selectedUniName ? 'var(--text-heading)' : 'var(--text-muted)',
                       borderRadius: 'var(--border-radius-sm)',
                       fontSize: '14px',
-                      outline: 'none',
-                      cursor: 'pointer'
+                      textAlign: 'left',
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      cursor: 'pointer',
+                      outline: 'none'
                     }}
-                    required
                   >
-                    <option value="" disabled style={{ background: '#0b0e0c' }}>-- Choose University --</option>
-                    {unis.map(u => (
-                      <option key={u.id} value={u.id} style={{ background: '#0b0e0c', color: 'white' }}>{u.name}</option>
-                    ))}
-                  </select>
+                    <span style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>
+                      {selectedUniName || '-- Choose University --'}
+                    </span>
+                    <ChevronDown size={16} style={{ flexShrink: 0, transition: 'transform 0.2s', transform: isDropdownOpen ? 'rotate(180deg)' : 'rotate(0deg)' }} />
+                  </button>
+
+                  {/* Click-outside backdrop overlay */}
+                  {isDropdownOpen && (
+                    <div 
+                      onClick={() => setIsDropdownOpen(false)}
+                      style={{
+                        position: 'fixed',
+                        inset: 0,
+                        zIndex: 999,
+                        background: 'transparent'
+                      }}
+                    />
+                  )}
+
+                  {/* Dropdown List */}
+                  {isDropdownOpen && (
+                    <div style={{
+                      position: 'absolute',
+                      top: '100%',
+                      left: 0,
+                      right: 0,
+                      marginTop: '6px',
+                      background: 'var(--card-bg)',
+                      border: '1px solid var(--card-border)',
+                      borderRadius: 'var(--border-radius-sm)',
+                      boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.3)',
+                      zIndex: 1000,
+                      padding: '12px',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: '10px'
+                    }}>
+                      
+                      {/* Search Input */}
+                      <div style={{ position: 'relative' }}>
+                        <input
+                          type="text"
+                          placeholder="Search university..."
+                          value={searchTerm}
+                          onChange={(e) => setSearchTerm(e.target.value)}
+                          className="custom-input"
+                          style={{
+                            width: '100%',
+                            padding: '8px 12px',
+                            fontSize: '13px',
+                            background: 'rgba(255, 255, 255, 0.02)',
+                            border: '1px solid var(--card-border)',
+                            color: 'var(--text-heading)'
+                          }}
+                          autoFocus
+                          onClick={(e) => e.stopPropagation()} // Prevent closing dropdown on input click
+                        />
+                      </div>
+
+                      {/* List Items */}
+                      <div style={{
+                        maxHeight: '200px',
+                        overflowY: 'auto',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '4px',
+                        paddingRight: '2px'
+                      }}>
+                        {(() => {
+                          const filtered = unis.filter(u => 
+                            u.name.toLowerCase().includes(searchTerm.toLowerCase())
+                          );
+
+                          if (filtered.length === 0) {
+                            return (
+                              <div style={{ padding: '8px', fontSize: '13px', color: 'var(--text-muted)', textAlign: 'center' }}>
+                                No institutions found
+                              </div>
+                            );
+                          }
+
+                          return filtered.map(u => {
+                            const isSelected = selectedUniId === u.id;
+                            return (
+                              <button
+                                key={u.id}
+                                type="button"
+                                onClick={() => {
+                                  setSelectedUniId(u.id);
+                                  setSelectedUniName(u.name);
+                                  setIsDropdownOpen(false);
+                                  setSearchTerm('');
+                                }}
+                                style={{
+                                  width: '100%',
+                                  padding: '8px 12px',
+                                  fontSize: '13.5px',
+                                  textAlign: 'left',
+                                  border: 'none',
+                                  background: isSelected ? 'var(--primary)' : 'transparent',
+                                  color: isSelected ? '#ffffff' : 'var(--text-primary)',
+                                  borderRadius: '4px',
+                                  cursor: 'pointer',
+                                  transition: 'background-color 0.15s, color 0.15s',
+                                  display: 'block'
+                                }}
+                                onMouseEnter={(e) => {
+                                  if (!isSelected) {
+                                    e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.05)';
+                                  }
+                                }}
+                                onMouseLeave={(e) => {
+                                  if (!isSelected) {
+                                    e.currentTarget.style.backgroundColor = 'transparent';
+                                  }
+                                }}
+                              >
+                                {u.name}
+                              </button>
+                            );
+                          });
+                        })()}
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
             </>
