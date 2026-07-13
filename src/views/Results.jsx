@@ -1,12 +1,37 @@
 import React, { useState, useEffect } from 'react';
 import { mockInstitutions } from '../mockData';
-import { getDynamicMatches } from '../services/matchEngine';
 import { Award, Check, ArrowRight, Bookmark, BookmarkCheck, PhoneCall, HelpCircle, AlertCircle, X } from 'lucide-react';
 
 export default function Results({ setView, answers, bookmarks = [], toggleBookmark, applyForCourse, appliedCourses = [], alert, currentUser, plan = 'Standard', onUpdateMembership }) {
   const [compareList, setCompareList] = useState([]);
   const [showCompareModal, setShowCompareModal] = useState(false);
   const [isProcessingUpgrade, setIsProcessingUpgrade] = useState(false);
+  const [matches, setMatches] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let active = true;
+    async function fetchMatches() {
+      try {
+        setLoading(true);
+        const res = await fetch('/api/match', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ answers })
+        });
+        if (res.ok && active) {
+          const data = await res.json();
+          setMatches(data.matches || []);
+        }
+      } catch (err) {
+        console.error("Failed to load live matches from API:", err);
+      } finally {
+        if (active) setLoading(false);
+      }
+    }
+    fetchMatches();
+    return () => { active = false; };
+  }, [answers]);
 
   const handleUpgradeClick = () => {
     if (!currentUser) {
@@ -70,8 +95,30 @@ export default function Results({ setView, answers, bookmarks = [], toggleBookma
     return inst ? inst.name : "Partner Institution";
   };
 
-  const matches = getDynamicMatches(answers);
   const selectedMatches = matches.filter(m => compareList.includes(m.id));
+
+  if (loading) {
+    return (
+      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '40px 24px', textAlign: 'center' }} className="page-fade-enter">
+        <h1 style={{ fontSize: '32px', fontFamily: 'var(--font-display)', marginBottom: '8px', color: 'white' }}>
+          Calculating your matches...
+        </h1>
+        <p style={{ color: 'var(--text-muted)', marginBottom: '32px' }}>
+          Our AI engine is scanning partner university databases to identify your top fits.
+        </p>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+          {[1, 2, 3].map(i => (
+            <div key={i} className="glass-card" style={{ padding: '24px', height: '180px', display: 'flex', flexDirection: 'column', gap: '16px', opacity: 0.7 - i * 0.15, animation: 'pulse 1.8s infinite ease-in-out', border: '1px solid var(--card-border)' }}>
+              <div style={{ width: '40%', height: '16px', background: 'rgba(255,255,255,0.06)', borderRadius: '4px' }} />
+              <div style={{ width: '70%', height: '24px', background: 'rgba(255,255,255,0.08)', borderRadius: '4px' }} />
+              <div style={{ width: '90%', height: '14px', background: 'rgba(255,255,255,0.04)', borderRadius: '4px', marginTop: '12px' }} />
+              <div style={{ width: '50%', height: '14px', background: 'rgba(255,255,255,0.04)', borderRadius: '4px' }} />
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '40px 24px' }} className="page-fade-enter">
