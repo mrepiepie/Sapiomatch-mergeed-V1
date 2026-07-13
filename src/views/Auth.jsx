@@ -21,6 +21,20 @@ export default function Auth({ setCurrentUser, setView, alert }) {
   const [password, setPassword] = useState('');
   const [contactNumber, setContactNumber] = useState('');
   const [role, setRole] = useState('Student');
+  const [unis, setUnis] = useState([]);
+  const [selectedUniId, setSelectedUniId] = useState('');
+  const [selectedUniName, setSelectedUniName] = useState('');
+
+  useEffect(() => {
+    fetch('/api/universities')
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data)) {
+          setUnis(data);
+        }
+      })
+      .catch(err => console.error("Error fetching universities:", err));
+  }, []);
 
   // OAuth Simulated States
   const [activeOAuth, setActiveOAuth] = useState(null); // 'google' or 'apple' or null
@@ -149,6 +163,12 @@ export default function Auth({ setCurrentUser, setView, alert }) {
         
         if (res.ok) {
           const user = await res.json();
+          // Verify that user role matches the selected tab
+          if (role && user.role !== role) {
+            alert(`This account is registered as a ${user.role}, not an ${role === 'Admin' ? 'Operator' : role}. Please select the correct tab above.`);
+            return;
+          }
+          
           setCurrentUser(user);
           alert(`Success! Logged in as ${user.name} (${user.role})`);
           
@@ -162,6 +182,11 @@ export default function Auth({ setCurrentUser, setView, alert }) {
         alert('Server database connection offline.');
       }
     } else {
+      if (role === 'University' && !selectedUniId) {
+        alert('Please select a partner institution.');
+        return;
+      }
+
       // API call to signup
       try {
         const res = await fetch('/api/auth/register', {
@@ -172,14 +197,18 @@ export default function Auth({ setCurrentUser, setView, alert }) {
             email,
             password,
             contactNumber,
-            role
+            role,
+            ...(role === 'University' ? {
+              universityId: selectedUniId,
+              universityName: selectedUniName
+            } : {})
           })
         });
 
         if (res.ok) {
           const user = await res.json();
           setCurrentUser(user);
-          alert(`Success! Account created for ${user.name}. Allocated 10 Standard credits.`);
+          alert(`Success! Account created for ${user.name}.`);
           handlePostAuthRedirect(user);
         } else {
           const err = await res.json();
@@ -330,6 +359,57 @@ export default function Auth({ setCurrentUser, setView, alert }) {
           {isLogin ? 'Access your matched courses & credentials portal' : 'Get matched and access premium counselor support'}
         </p>
 
+        {/* Portal Selection Tabs */}
+        <div style={{
+          display: 'flex',
+          background: 'rgba(255, 255, 255, 0.03)',
+          border: '1px solid var(--card-border)',
+          borderRadius: '100px',
+          padding: '4px',
+          marginBottom: '20px',
+          justifyContent: 'space-between',
+          alignItems: 'center'
+        }}>
+          {[
+            { id: 'Student', label: 'Student', icon: GraduationCap },
+            { id: 'University', label: 'University', icon: Globe },
+            { id: 'Admin', label: 'Operator', icon: Shield }
+          ].map((tab) => {
+            const Icon = tab.icon;
+            const isActive = role === tab.id;
+            return (
+              <button
+                key={tab.id}
+                type="button"
+                onClick={() => {
+                  setRole(tab.id);
+                  setSelectedUniId('');
+                  setSelectedUniName('');
+                }}
+                style={{
+                  flex: 1,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '6px',
+                  padding: '8px 12px',
+                  borderRadius: '100px',
+                  fontSize: '12px',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  border: 'none',
+                  background: isActive ? 'var(--primary)' : 'transparent',
+                  color: isActive ? 'white' : 'var(--text-muted)',
+                  transition: 'all 0.2s ease-in-out'
+                }}
+              >
+                <Icon size={14} />
+                <span>{tab.label}</span>
+              </button>
+            );
+          })}
+        </div>
+
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           {!isLogin && (
             <>
@@ -364,6 +444,38 @@ export default function Auth({ setCurrentUser, setView, alert }) {
                   <Phone size={16} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
                 </div>
               </div>
+
+              {role === 'University' && (
+                <div>
+                  <label style={{ display: 'block', fontSize: '12px', color: 'var(--text-muted)', marginBottom: '6px' }}>Partner Institution</label>
+                  <select
+                    value={selectedUniId}
+                    onChange={(e) => {
+                      setSelectedUniId(e.target.value);
+                      const uni = unis.find(u => u.id === e.target.value);
+                      setSelectedUniName(uni ? uni.name : '');
+                    }}
+                    className="custom-input"
+                    style={{
+                      width: '100%',
+                      padding: '12px 14px',
+                      background: 'var(--card-bg)',
+                      border: '1px solid var(--card-border)',
+                      color: 'white',
+                      borderRadius: 'var(--border-radius-sm)',
+                      fontSize: '14px',
+                      outline: 'none',
+                      cursor: 'pointer'
+                    }}
+                    required
+                  >
+                    <option value="" disabled style={{ background: '#0b0e0c' }}>-- Choose University --</option>
+                    {unis.map(u => (
+                      <option key={u.id} value={u.id} style={{ background: '#0b0e0c', color: 'white' }}>{u.name}</option>
+                    ))}
+                  </select>
+                </div>
+              )}
             </>
           )}
 
@@ -410,42 +522,6 @@ export default function Auth({ setCurrentUser, setView, alert }) {
             </div>
           </div>
 
-          {!isLogin && (
-            <div>
-              <label style={{ display: 'block', fontSize: '12px', color: 'var(--text-muted)', marginBottom: '8px' }}>Select Account Type</label>
-              <div style={{ display: 'flex', gap: '12px' }}>
-                <button
-                  type="button"
-                  className="btn-premium-outline"
-                  onClick={() => setRole('Student')}
-                  style={{
-                    flex: 1,
-                    justifyContent: 'center',
-                    background: role === 'Student' ? 'rgba(43, 92, 70, 0.1)' : 'transparent',
-                    borderColor: role === 'Student' ? 'var(--primary)' : 'var(--card-border)'
-                  }}
-                >
-                  <GraduationCap size={16} />
-                  Student
-                </button>
-                <button
-                  type="button"
-                  className="btn-premium-outline"
-                  onClick={() => setRole('Admin')}
-                  style={{
-                    flex: 1,
-                    justifyContent: 'center',
-                    background: role === 'Admin' ? 'rgba(43, 92, 70, 0.1)' : 'transparent',
-                    borderColor: role === 'Admin' ? 'var(--primary)' : 'var(--card-border)'
-                  }}
-                >
-                  <Shield size={16} />
-                  Operator
-                </button>
-              </div>
-            </div>
-          )}
-
           <button type="submit" className="btn-premium" style={{ width: '100%', justifyContent: 'center', marginTop: '8px' }}>
             {isLogin ? 'Log In' : 'Create Account'}
             <ArrowRight size={16} />
@@ -462,48 +538,50 @@ export default function Auth({ setCurrentUser, setView, alert }) {
           </button>
         </div>
 
-        {/* Social OAuth logins */}
-        <div style={{ marginTop: '24px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <hr style={{ flex: 1, borderColor: 'var(--card-border)', opacity: 0.2 }} />
-            <span style={{ fontSize: '11px', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Or continue with</span>
-            <hr style={{ flex: 1, borderColor: 'var(--card-border)', opacity: 0.2 }} />
-          </div>
+        {/* Social OAuth logins - Only for Students */}
+        {role === 'Student' && (
+          <div style={{ marginTop: '24px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <hr style={{ flex: 1, borderColor: 'var(--card-border)', opacity: 0.2 }} />
+              <span style={{ fontSize: '11px', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Or continue with</span>
+              <hr style={{ flex: 1, borderColor: 'var(--card-border)', opacity: 0.2 }} />
+            </div>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-            <button
-              type="button"
-              onClick={() => handleOAuthClick('google')}
-              style={{
-                width: '100%',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '10px',
-                padding: '12px',
-                borderRadius: '100px',
-                background: '#ffffff',
-                color: '#1f2937',
-                border: '1px solid #dadce0',
-                fontWeight: '600',
-                cursor: 'pointer',
-                fontSize: '14.5px',
-                boxShadow: '0 2px 4px rgba(0,0,0,0.08)',
-                transition: 'background-color 0.2s'
-              }}
-              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f8f9fa'}
-              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#ffffff'}
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="18" height="18">
-                <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
-                <path fill="#4285F4" d="M46.5 24.5c0-1.61-.15-3.16-.41-4.67H24v8.83h12.7c-.55 2.87-2.17 5.3-4.61 6.94l7.19 5.57c4.21-3.88 6.63-9.59 6.63-16.67z"/>
-                <path fill="#FBBC05" d="M10.54 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24s.92 7.54 2.56 10.78l7.98-6.19z"/>
-                <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.19-5.57c-1.99 1.33-4.55 2.13-7.7 2.13-6.26 0-11.57-4.22-13.46-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
-              </svg>
-              Sign in with Google Account
-            </button>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              <button
+                type="button"
+                onClick={() => handleOAuthClick('google')}
+                style={{
+                  width: '100%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '10px',
+                  padding: '12px',
+                  borderRadius: '100px',
+                  background: '#ffffff',
+                  color: '#1f2937',
+                  border: '1px solid #dadce0',
+                  fontWeight: '600',
+                  cursor: 'pointer',
+                  fontSize: '14.5px',
+                  boxShadow: '0 2px 4px rgba(0,0,0,0.08)',
+                  transition: 'background-color 0.2s'
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f8f9fa'}
+                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#ffffff'}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="18" height="18">
+                  <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+                  <path fill="#4285F4" d="M46.5 24.5c0-1.61-.15-3.16-.41-4.67H24v8.83h12.7c-.55 2.87-2.17 5.3-4.61 6.94l7.19 5.57c4.21-3.88 6.63-9.59 6.63-16.67z"/>
+                  <path fill="#FBBC05" d="M10.54 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24s.92 7.54 2.56 10.78l7.98-6.19z"/>
+                  <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.19-5.57c-1.99 1.33-4.55 2.13-7.7 2.13-6.26 0-11.57-4.22-13.46-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+                </svg>
+                Sign in with Google Account
+              </button>
+            </div>
           </div>
-        </div>
+        )}
       </div>
 
       {/* Simulated OAuth Overlay Modal */}
