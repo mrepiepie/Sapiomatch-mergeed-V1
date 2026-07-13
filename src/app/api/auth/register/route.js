@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { db } from '../../../../services/db';
 import { checkRateLimit } from '../../../../services/rateLimiter';
+import { sendEmail } from '../../../../services/emailService';
 
 export async function POST(request) {
   try {
@@ -40,6 +41,13 @@ export async function POST(request) {
       contactNumber: contactNumber || '',
       role
     });
+
+    // Asynchronously send a welcome email transaction notification
+    sendEmail({
+      to: trimmedEmail,
+      subject: `Welcome to Learnova AI, ${newUser.name}!`,
+      html: `<h1>Welcome to Learnova!</h1><p>Hi ${newUser.name}, your account is active. Start matching with university programs now.</p>`
+    }).catch(err => console.error("[Welcome Email Error]", err));
 
     return NextResponse.json({
       name: newUser.name,

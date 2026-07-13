@@ -51,6 +51,61 @@ export async function POST(request) {
     text = text.replace(/[^\x20-\x7E\s]/g, " ");
     const textLower = text.toLowerCase();
 
+    // Check for Gemini API key to run LLM-powered resume parsing
+    const apiKey = process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY;
+    if (apiKey && text.trim().length > 100) {
+      console.log("[Learnova API] Using Gemini LLM to parse resume text...");
+      const modelsToTry = ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-1.5-flash'];
+      
+      const prompt = `Analyze the following resume text and extract a candidate academic profile. 
+You must output a raw JSON object with the following keys and exact value formats. Do not wrap in markdown \`\`\`json blocks.
+{
+  "name": "Candidate's Full Name (or 'Verified Candidate' if missing)",
+  "age": "One of: '16-20', '21-30', '31-40', '41-50', '50+' (educated guess based on experience/graduation years)",
+  "education": "One of: 'High School', 'Bachelor\\'s degree', 'Master\\'s degree', 'Other / Professional'",
+  "field": "One of: 'Technology & AI', 'Business & Management', 'Law & Public Policy', 'Healthcare & Sciences', 'Creative Design & UX'",
+  "experience": "One of: 'No experience', '1–2 years', '3–5 years', '5+ years'",
+  "goal": "One of: 'Get promoted', 'Switch careers', 'Start a business', 'Academic upgrade'",
+  "format": "One of: 'On-campus', 'Hybrid', 'Online', 'Weekend / Evening'",
+  "budget": "One of: 'Low budget / affordable options only', 'Moderate budget (AED 30k - 60k)', 'Premium / international options', 'Open / corporate sponsored'"
+}
+
+Resume Text:
+${text}`;
+
+      for (const model of modelsToTry) {
+        try {
+          const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              contents: [{ role: 'user', parts: [{ text: prompt }] }]
+            })
+          });
+          if (res.ok) {
+            const data = await res.json();
+            let parsedText = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
+            parsedText = parsedText.replace(/```json/g, '').replace(/```/g, '').trim();
+            const profile = JSON.parse(parsedText);
+            
+            // Format check defaults
+            if (!profile.name) profile.name = "Verified Candidate";
+            if (!profile.age) profile.age = "21-30";
+            if (!profile.education) profile.education = "Bachelor's degree";
+            if (!profile.field) profile.field = "Technology & AI";
+            
+            return NextResponse.json({
+              success: true,
+              profile: profile
+            });
+          }
+        } catch (err) {
+          console.warn(`[Learnova API] Failed parsing with ${model}:`, err.message);
+        }
+      }
+    }
+
+    // --- Fallback Heuristic Parser ---
     // --- Name Detection ---
     let name = "Verified Candidate";
     const rawLines = text.split(/\r?\n/).map(line => line.trim()).filter(line => line.length > 0);
