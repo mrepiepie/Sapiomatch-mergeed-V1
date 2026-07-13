@@ -33,6 +33,7 @@ export default function Home({ setView }) {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeIndex, setActiveIndex] = useState(null);
   const [answers, setAnswers] = useState({ field: 'Technology & AI' });
+  const [activeModalDoc, setActiveModalDoc] = useState(null);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -1168,10 +1169,24 @@ export default function Home({ setView }) {
                 <p className="ag-bento-desc">Robotics systems, mechanical design, structural physics, and nanotechnology research.</p>
               </div>
               <div className="ag-bento-visual">
-                <div className="ag-bento-blueprint-preview">
+                <div className="ag-bento-blueprint-preview" style={{ position: 'relative', width: '100%', height: '100%', minHeight: '80px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   <div className="blueprint-circle" />
                   <div className="blueprint-line x" />
                   <div className="blueprint-line y" />
+                  <div style={{
+                    position: 'absolute',
+                    bottom: '10px',
+                    left: '10px',
+                    fontSize: '9px',
+                    fontFamily: 'monospace',
+                    color: 'rgba(255, 255, 255, 0.45)',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    lineHeight: '1.4'
+                  }}>
+                    <span>CAD V1.02 // SCALE 1:12</span>
+                    <span>COORD: X: 142.8 Y: 304.1</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -1184,9 +1199,14 @@ export default function Home({ setView }) {
                 <p className="ag-bento-desc">Pre-med biology pathways, molecular research, biochemistry labs, and clinical genetics.</p>
               </div>
               <div className="ag-bento-visual">
-                <div className="ag-bento-lab-preview">
-                  <div className="pulse-wave" />
-                  <div className="pulse-rate">98 bpm</div>
+                <div className="ag-bento-lab-preview" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', height: '100%', minHeight: '80px' }}>
+                  <svg className="pulse-svg" width="100" height="40" viewBox="0 0 100 40" style={{ fill: 'none', stroke: '#10b981', strokeWidth: 2, strokeLinecap: 'round', strokeLinejoin: 'round' }}>
+                    <path d="M0,20 L30,20 L35,10 L40,30 L45,20 L50,20 L55,0 L60,40 L65,20 L100,20" />
+                  </svg>
+                  <div style={{ display: 'flex', flexDirection: 'column', textAlign: 'left', lineHeight: '1.2' }}>
+                    <span style={{ fontSize: '9px', color: '#10b981', textTransform: 'uppercase', fontWeight: 700, letterSpacing: '0.05em' }}>Vitals Log</span>
+                    <span style={{ fontSize: '20px', fontFamily: 'var(--font-display)', fontWeight: 800, color: '#ffffff' }}>98 bpm</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -1199,11 +1219,19 @@ export default function Home({ setView }) {
                 <p className="ag-bento-desc">Interactive interface design, portfolio curation, game design, and digital creative direction.</p>
               </div>
               <div className="ag-bento-visual">
-                <div className="ag-bento-palette-preview">
-                  <div className="palette-color color1" />
-                  <div className="palette-color color2" />
-                  <div className="palette-color color3" />
-                  <div className="palette-color color4" />
+                <div className="ag-bento-palette-preview" style={{ display: 'flex', gap: '6px', width: '100%', minHeight: '60px', alignItems: 'flex-end' }}>
+                  <div style={{ flex: 1, height: '54px', background: '#10b981', borderRadius: '6px', padding: '6px', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', minWidth: '45px' }}>
+                    <span style={{ fontSize: '9px', color: '#ffffff', fontWeight: 600 }}>#10B981</span>
+                  </div>
+                  <div style={{ flex: 1, height: '54px', background: '#059669', borderRadius: '6px', padding: '6px', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', minWidth: '45px' }}>
+                    <span style={{ fontSize: '9px', color: '#ffffff', fontWeight: 600 }}>#059669</span>
+                  </div>
+                  <div style={{ flex: 1, height: '54px', background: '#3b82f6', borderRadius: '6px', padding: '6px', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', minWidth: '45px' }}>
+                    <span style={{ fontSize: '9px', color: '#ffffff', fontWeight: 600 }}>#3B82F6</span>
+                  </div>
+                  <div style={{ flex: 1, height: '54px', background: '#1e3a8a', borderRadius: '6px', padding: '6px', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', minWidth: '45px' }}>
+                    <span style={{ fontSize: '9px', color: '#ffffff', fontWeight: 600 }}>#1E3A8A</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -1216,9 +1244,10 @@ export default function Home({ setView }) {
                 <p className="ag-bento-desc">International trade laws, digital governance, corporate ethics, and public advocacy.</p>
               </div>
               <div className="ag-bento-visual">
-                <div className="ag-bento-law-preview">
-                  <div className="law-badge">Juris Doctor</div>
-                  <div className="law-badge">Corporate Ethics</div>
+                <div className="ag-bento-law-preview" style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', minHeight: '60px', alignItems: 'center' }}>
+                  <span style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', color: '#e5e7eb', padding: '5px 10px', borderRadius: '6px', fontSize: '11px', whiteSpace: 'nowrap' }}>⚖️ Juris Doctor</span>
+                  <span style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', color: '#e5e7eb', padding: '5px 10px', borderRadius: '6px', fontSize: '11px', whiteSpace: 'nowrap' }}>🛡️ Cyber Governance</span>
+                  <span style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', color: '#e5e7eb', padding: '5px 10px', borderRadius: '6px', fontSize: '11px', whiteSpace: 'nowrap' }}>💼 Corporate Ethics</span>
                 </div>
               </div>
             </div>
@@ -1570,12 +1599,106 @@ export default function Home({ setView }) {
           <div className="ag-footer-bottom">
             <span>{"\u00A9"} 2026 Learnova AI. All rights reserved.</span>
             <div className="ag-footer-bottom-links">
-              <a href="#terms" onClick={(e) => e.preventDefault()}>Terms of Service</a>
-              <a href="#privacy" onClick={(e) => e.preventDefault()}>Privacy Policy</a>
+              <a href="#terms" onClick={(e) => { e.preventDefault(); setActiveModalDoc('terms'); }}>Terms of Service</a>
+              <a href="#privacy" onClick={(e) => { e.preventDefault(); setActiveModalDoc('privacy'); }}>Privacy Policy</a>
             </div>
           </div>
         </div>
       </footer>
+
+      {/* Privacy Policy & Terms of Service Modal */}
+      {activeModalDoc && (
+        <div style={{
+          position: 'fixed',
+          inset: 0,
+          background: 'rgba(0, 0, 0, 0.65)',
+          backdropFilter: 'blur(10px)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 9999,
+          padding: '20px'
+        }}>
+          <div style={{
+            background: 'var(--card-bg)',
+            border: '1px solid var(--card-border)',
+            borderRadius: 'var(--border-radius-md)',
+            width: '100%',
+            maxWidth: '600px',
+            maxHeight: '80vh',
+            overflowY: 'auto',
+            padding: '30px',
+            position: 'relative',
+            boxShadow: '0 20px 50px rgba(0,0,0,0.5)'
+          }}>
+            <button 
+              onClick={() => setActiveModalDoc(null)}
+              style={{
+                position: 'absolute',
+                top: '20px',
+                right: '20px',
+                background: 'rgba(255, 255, 255, 0.03)',
+                border: '1px solid var(--card-border)',
+                borderRadius: '50%',
+                width: '32px',
+                height: '32px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: 'var(--text-primary)',
+                cursor: 'pointer'
+              }}
+              aria-label="Close modal"
+            >
+              <X size={15} />
+            </button>
+
+            {activeModalDoc === 'terms' ? (
+              <div>
+                <h3 style={{ fontSize: '22px', marginBottom: '16px', fontFamily: 'var(--font-display)', color: 'var(--text-heading)', fontWeight: 700 }}>Terms of Service</h3>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', fontSize: '13.5px', color: 'var(--text-muted)', lineHeight: '1.6' }}>
+                  <p>
+                    Welcome to Learnova AI. By accessing or using our matchmaking services, you agree to comply with and be bound by the following terms.
+                  </p>
+                  <h4 style={{ fontSize: '15px', color: 'var(--text-heading)', fontWeight: 600, margin: '8px 0 2px' }}>1. Scope of Service</h4>
+                  <p>
+                    Learnova AI provides candidate profiles to school registrars and automated academic matchmaking. You agree to use the service solely for legitimate educational searches.
+                  </p>
+                  <h4 style={{ fontSize: '15px', color: 'var(--text-heading)', fontWeight: 600, margin: '8px 0 2px' }}>2. User Conduct</h4>
+                  <p>
+                    Candidates are responsible for ensuring the accuracy of all submitted resumes, contact details, and test scores. Fake profiles or malicious activity will result in account deletion.
+                  </p>
+                  <h4 style={{ fontSize: '15px', color: 'var(--text-heading)', fontWeight: 600, margin: '8px 0 2px' }}>3. Limitations of Liability</h4>
+                  <p>
+                    Learnova AI does not guarantee admission. Admissions decisions are fully controlled by partner institutions.
+                  </p>
+                </div>
+              </div>
+            ) : (
+              <div>
+                <h3 style={{ fontSize: '22px', marginBottom: '16px', fontFamily: 'var(--font-display)', color: 'var(--text-heading)', fontWeight: 700 }}>Privacy Policy</h3>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', fontSize: '13.5px', color: 'var(--text-muted)', lineHeight: '1.6' }}>
+                  <p>
+                    At Learnova AI, we value your trust. This Privacy Policy details how we handle, collect, and protect candidate information.
+                  </p>
+                  <h4 style={{ fontSize: '15px', color: 'var(--text-heading)', fontWeight: 600, margin: '8px 0 2px' }}>1. Data Collection</h4>
+                  <p>
+                    We collect questionnaire profile inputs (study format, field of study, budget) and resume parsed texts. No data is shared with third parties without your explicit application consent.
+                  </p>
+                  <h4 style={{ fontSize: '15px', color: 'var(--text-heading)', fontWeight: 600, margin: '8px 0 2px' }}>2. Storage & Security</h4>
+                  <p>
+                    All uploaded files, credentials, and conversation history are processed via secure serverless proxies and saved locally in secure directories.
+                  </p>
+                  <h4 style={{ fontSize: '15px', color: 'var(--text-heading)', fontWeight: 600, margin: '8px 0 2px' }}>3. Your Rights</h4>
+                  <p>
+                    Users have the right to request full deletion of their data at any time by contacting our admissions support desk.
+                  </p>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
     </div>
   );
