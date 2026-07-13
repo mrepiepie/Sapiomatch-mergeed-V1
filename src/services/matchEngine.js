@@ -1,4 +1,4 @@
-import { mockInstitutions } from '../mockData.js';
+import mockInstitutions from '../data/universities_db.json';
 
 const defaultAnswers = {
   age: "21-30",
