@@ -1205,7 +1205,7 @@ export default function Home({ setView }) {
                   </svg>
                   <div style={{ display: 'flex', flexDirection: 'column', textAlign: 'left', lineHeight: '1.2' }}>
                     <span style={{ fontSize: '9px', color: '#10b981', textTransform: 'uppercase', fontWeight: 700, letterSpacing: '0.05em' }}>Vitals Log</span>
-                    <span style={{ fontSize: '20px', fontFamily: 'var(--font-display)', fontWeight: 800, color: '#ffffff' }}>98 bpm</span>
+                    <span className="force-white-text" style={{ fontSize: '20px', fontFamily: 'var(--font-display)', fontWeight: 800 }}>98 bpm</span>
                   </div>
                 </div>
               </div>
